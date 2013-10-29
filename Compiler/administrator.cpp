@@ -121,7 +121,7 @@ bool Administrator::ParserPhase() {
     } else {
       root = parser.Parse();
     }
-    if (show_trace_) {
+    if (show_trace_ && parser.error_free()) {
       messenger_.PrintMessage("\nAbstract Syntax Tree\n");
       root->Accept(new ASTNodePrintVisitor(&messenger_));
     }

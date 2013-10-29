@@ -12,6 +12,7 @@ Parser::Parser(const std::string &file, const std::string &filename,
   : scanner_(file, filename, *administrator), filename_(filename), depth_(0), 
     administrator_(administrator), lookahead_token_(Token::ERROR), synch_() {
   good_ = scanner_.good();
+  error_free_ = true;
   //synch_.push_back(Token::SEMI);
 }
 
@@ -33,17 +34,16 @@ ASTNode *Parser::transition(const std::string &function_name,
 }
 
 void Parser::Match(const Token::TokenName &expected/*, SynchSet &synch*/) {
-  // --
+  // Trace Message
   std::string message = std::string(depth_+1, ' ');
   message += "Matching " + Token::kTokenStrings[lookahead_] + "\n";
   administrator_->messenger()->PrintMessage(message);
-  // --
 
   if (lookahead_ == expected) {
     lookahead_token_ = scanner_.GetToken();
     lookahead_ = lookahead_token_.name();
 
-    // -- 
+    // Trace Message
     message = std::string(depth_+1, ' ');
     message += Administrator::IntToString(scanner_.line_number());
     message += "> " + lookahead_token_.toString() + "\n";
@@ -52,11 +52,9 @@ void Parser::Match(const Token::TokenName &expected/*, SynchSet &synch*/) {
     message = std::string(depth_+1, ' ');
     message += "Loading " + Token::kTokenStrings[lookahead_] + "\n";
     administrator_->messenger()->PrintMessage(message);
-    // --
-
   } else {
-    message = "match ";
-    message += Token::kTokenStrings[expected];
+    message = "Syntax Error: found '" + lookahead_token_.toString() + "', ";
+    message += "expected '" + Token::kTokenStrings[expected] + "'";
     SyntaxError(message);
   }
   //SyntaxCheck(message);
@@ -66,12 +64,12 @@ void Parser::SyntaxCheck(const std::string &message/*, SynchSet &synch*/) {
   auto it = std::find(synch_.begin(), synch_.end(), lookahead_);
   // If the lookahead_ isn't in the synch set...
   if (it == synch_.end()) {
-    fprintf(stdout, "nope\n");
     SyntaxError(message);
   }
 }
 
 void Parser::SyntaxError(const std::string &message/*, SynchSet &synch*/) {
+  error_free_ = false;
   administrator_->messenger()->AddError(filename_, scanner_.line_number(), message);
   auto it = std::find(synch_.begin(), synch_.end(), lookahead_);
   // While the lookahead_ isn't in the synch set...

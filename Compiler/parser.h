@@ -29,6 +29,10 @@ public:
     return depth_;
   }
 
+  inline bool error_free() const {
+    return error_free_;
+  }
+
   // 
   inline std::string filename() const {
     return filename_;
@@ -113,6 +117,9 @@ private:    //
 
   //
   bool good_;
+
+  //
+  bool error_free_;
 
   // TokenName representation of the lookahead token. Used in checking first
   // sets.

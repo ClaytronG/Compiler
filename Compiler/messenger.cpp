@@ -31,7 +31,7 @@ void Messenger::PrintErrors() const {
     fprintf(output_file_, "\nErrors:\n");
     for (auto error = error_list_.begin(); error != error_list_.end(); 
          ++error) {
-      fprintf(output_file_, "%s %d> %s\n", error->first.c_str(), 
+      fprintf(output_file_, "%s(%d): %s\n", error->first.c_str(), 
               error->second.first, error->second.second.c_str());
     }
   }

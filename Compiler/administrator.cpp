@@ -79,10 +79,11 @@ std::string Administrator::IntToString(const int &num) {
 bool Administrator::LexerPhase() {
   bool error_free = true;
 #pragma warning(disable:4018)
-  for (int i = 0; i < input_file_list_.size(); ++i) {
-    // TODO: get filename from path
-    std::string filename = "filename";
-    Scanner scanner(input_file_list_.at(i), filename, *this);
+  auto it = input_file_list_.begin();
+  const auto end = input_file_list_.end();
+  while (it != end) {
+    std::string filename = (*it).substr(0, (*it).find_last_of("\\/"));
+    Scanner scanner(*it, filename, *this);
     if (!scanner.good()) {
       fprintf(stdout, "Error opening %s\n", filename.c_str());
       continue;
@@ -102,8 +103,9 @@ bool Administrator::LexerPhase() {
     message = std::string(filename.size() + line_number.size() + 2, ' ');
     message += line_number + "> " + token.toString() + "\n";
     messenger_.PrintMessage(message);
-
+    // ---
     messenger_.PrintErrors();
+    ++it;
   }
 #pragma warning(default:4018)
   return error_free;
@@ -111,29 +113,54 @@ bool Administrator::LexerPhase() {
 
 bool Administrator::ParserPhase() {
 #pragma warning(disable:4018)
-  for (int i = 0; i < input_file_list_.size(); ++i) {
-    // TODO: get filename from file path
-    std::string filename = "filename";
-    Parser parser(input_file_list_.at(i), filename, this);
+  auto it = input_file_list_.begin();
+  const auto end = input_file_list_.end();
+  while (it != end) {
+    std::string filename = (*it).substr(0, (*it).find_last_of("\\/"));
+    Parser parser(*it, filename, this);
     ASTNode *root = NULL;
     if (!parser.good()) {
       fprintf(stderr, "Error parsing %s\n", filename.c_str());
+      continue;
     } else {
       root = parser.Parse();
-    }
-    if (show_trace_ && parser.error_free()) {
-      messenger_.PrintMessage("\nAbstract Syntax Tree\n");
-      root->Accept(new ASTNodePrintVisitor(&messenger_));
+      if (root && show_trace_) {
+        messenger_.PrintMessage("\nAbstract Syntax Tree\n");
+        root->Accept(new ASTNodePrintVisitor(&messenger_));
+      }
     }
     messenger_.PrintErrors();
+    ++it;
   }
 #pragma warning(default:4018)
   return true;
 }
 
 bool Administrator::SemanticAnalysisPhase() {
-  // TODO: implement semantic analyser.
-  return false;
+  // Run the parser to generate an AST
+  auto it = input_file_list_.begin();
+  const auto end = input_file_list_.end();
+  while (it != end) {
+    std::string filename = (*it).substr(0, (*it).find_last_of("\\/"));
+    Parser parser(*it, filename, this);
+    if (!parser.good()) {
+      fprintf(stderr, "Error parsing file: %s\n", filename);
+      continue;
+    }
+    ASTNode *root = parser.Parse();
+    if (!root) {
+      // If the root node is NULL then the parser encountered errors. Print
+      // those errors and continue on to the next source file.
+      messenger_.PrintErrors();
+      continue;
+    } else {
+      // Begin semantic analysis
+
+    }
+    messenger_.PrintErrors();
+    ++it;
+  }
+  return true;
 }
 
 bool Administrator::TupleGenerationPhase() {

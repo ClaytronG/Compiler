@@ -311,6 +311,11 @@ public:
   //
   CompoundNode *compound() const;
 
+  //
+  int num_parameters() const {
+    return num_parameters_;
+  }
+
   // Returns a pointer to the first paramter of this function. Returns null if
   // this function takes no arguments.
   ParameterNode *parameters() const;
@@ -321,7 +326,15 @@ public:
   // Sets the paramater pointer.
   void set_parameter(ParameterNode *parameter);
 
+  //
+  void set_num_parameters(const int num) {
+    num_parameters_ = num;
+  }
+
 private:
+  //
+  int num_parameters_;
+
   // List of parameters for this function. Null if this function takes no
   // arguments.
   ParameterNode *parameters_;

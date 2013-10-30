@@ -7,13 +7,18 @@
 #include "administrator.h"
 #include "parser.h"
 
-Parser::Parser(const std::string &file, const std::string &filename,
+Parser::Parser(const std::string &file, 
+               const std::string &filename,
                Administrator *administrator) 
-  : scanner_(file, filename, *administrator), filename_(filename), depth_(0), 
-    administrator_(administrator), lookahead_token_(Token::ERROR), synch_() {
+  : scanner_(file, filename, *administrator), 
+    filename_(filename), 
+    administrator_(administrator), 
+    lookahead_token_(Token::ERROR), 
+    synch_() 
+{
+  depth_ = 0;
   good_ = scanner_.good();
   error_free_ = true;
-  //synch_.push_back(Token::SEMI);
 }
 
 ASTNode *Parser::transition(const std::string &function_name,
@@ -62,18 +67,22 @@ void Parser::Match(const Token::TokenName &expected/*, SynchSet &synch*/) {
 
 void Parser::SyntaxCheck(const std::string &message/*, SynchSet &synch*/) {
   auto it = std::find(synch_.begin(), synch_.end(), lookahead_);
-  // If the lookahead_ isn't in the synch set...
-  if (it == synch_.end()) {
+  const auto end = synch_.end();
+  // If lookahead isn't in the synch set report a syntax error.
+  if (it == end) {
     SyntaxError(message);
   }
 }
 
 void Parser::SyntaxError(const std::string &message/*, SynchSet &synch*/) {
   error_free_ = false;
-  administrator_->messenger()->AddError(filename_, scanner_.line_number(), message);
+  administrator_->messenger()->AddError(filename_, scanner_.line_number(), 
+                                        message);
   auto it = std::find(synch_.begin(), synch_.end(), lookahead_);
-  // While the lookahead_ isn't in the synch set...
-  while (it == synch_.end()) {
+  const auto end = synch_.end();
+  // While the lookahead isn't in the synch set, get the next token and check
+  // again.
+  while (it == end) {
     lookahead_token_ = scanner_.GetToken();
     lookahead_ = lookahead_token_.name();
     it = std::find(synch_.begin(), synch_.end(), lookahead_);
@@ -83,7 +92,8 @@ void Parser::SyntaxError(const std::string &message/*, SynchSet &synch*/) {
 ASTNode *Parser::Parse() {
   Token token = scanner_.GetToken();
   lookahead_ = token.name();
-  // --
+  
+  // Trace Message
   std::string message = std::string(depth_ + 1, ' ');
   message += Administrator::IntToString(scanner_.line_number());
   message += "> " + token.toString() + "\n";
@@ -91,10 +101,15 @@ ASTNode *Parser::Parse() {
   message = std::string(depth_ + 1, ' ');
   message += "Loading " + Token::kTokenStrings[lookahead_] + "\n";
   administrator_->messenger()->PrintMessage(message);
-  // --
+
   //SynchSet set;
   //set.push_back(Token::INT, Token::BOOL, Token::VOID, Token::ENDFILE);
-  return transition("program", &Parser::Program);
+  ASTNode *node = transition("program", &Parser::Program);
+  // If the an error occurred during parsing, compilation can't continue.
+  if (error_free_) {
+    return node;
+  }
+  return NULL;
 }
 
 ASTNode *Parser::Program(/*SynchSet &set*/) {
@@ -891,9 +906,8 @@ ASTNode *Parser::AddExp(/*SynchSet &set*/) {
   //synch_.push_back(Token::RSQR);
   //synch_.push_back(Token::SEMI);
   //synch_.push_back(Token::COMMA);
-  ExpressionNode *expression;
+  ExpressionNode *expression = NULL;
   UnaryNode *unary = NULL;
-  bool unary_set = false;
   ////synch_.push_back(Token::MINUS);
   //SyntaxCheck("add-exp");
   if (lookahead_ == Token::MINUS) {
@@ -901,7 +915,7 @@ ASTNode *Parser::AddExp(/*SynchSet &set*/) {
   }
   ExpressionNode *term = dynamic_cast<ExpressionNode*>(transition(
     "term", &Parser::Term));
-  if (unary != NULL) {
+  if (unary) {
     unary->set_expression(term);
     expression = unary;
   } else {
@@ -918,7 +932,9 @@ ASTNode *Parser::AddExp(/*SynchSet &set*/) {
          lookahead_ == Token::OR  || lookahead_ == Token::ORELSE) {
     BinaryNode *add_op = dynamic_cast<BinaryNode*>(transition(
       "add-op", &Parser::Addop));
-    if (return_node == NULL) {
+    if(!add_op) {
+      return NULL;
+    } else if(!return_node) {
       return_node = add_op;
     }
     add_op->set_left_expression(node);
@@ -964,7 +980,10 @@ ASTNode *Parser::Term(/*SynchSet &set*/) {
          lookahead_ == Token::ANDTHEN) {
     BinaryNode *bin_op = dynamic_cast<BinaryNode*>(transition(
       "multop", &Parser::Multop));
-    if (return_node == NULL) {
+    if(!bin_op) {
+      break;
+    }
+    if (!return_node) {
       return_node = bin_op;
     }
     bin_op->set_left_expression(node);
@@ -1083,11 +1102,11 @@ ASTNode *Parser::IdFactor(/*SynchSet &set*/) {
   ASTNode *base_node = transition("id-tail", &Parser::IdTail);
   VariableNode *var_node = dynamic_cast<VariableNode*>(base_node);
   CallNode *call_node = dynamic_cast<CallNode*>(base_node);
-  if (var_node == NULL) {
+  if (call_node) {
     delete var_node;
     call_node->set_identifier(identifier);
     return call_node;
-  } else if (call_node == NULL) {
+  } else if (var_node) {
     delete call_node;
     var_node->set_identifier(identifier);
     return var_node;

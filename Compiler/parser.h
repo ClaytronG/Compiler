@@ -2,8 +2,8 @@
 //
 //
 
-#ifndef KOMPILER_PARSER_H_
-#define KOMPILER_PARSER_H_
+#ifndef COMPILER_PARSER_H_
+#define COMPILER_PARSER_H_
 
 #include <set>
 #include <string>
@@ -18,16 +18,11 @@ class Administrator;
 // 
 class Parser {
 public:
-  typedef std::vector<Token::TokenName> SynchSet;
+  typedef std::set<Token::TokenName> STN;
   typedef ASTNode* (Parser::*ParserFunction)(void);
 
   Parser(const std::string &file, const std::string &filename, 
          Administrator *administrator);
-  
-  // 
-  inline int depth() const {
-    return depth_;
-  }
 
   inline bool error_free() const {
     return error_free_;
@@ -46,19 +41,15 @@ public:
   // 
   ASTNode *Parse();
 
-  // 
-  inline void set_depth(int depth) {
-    depth_ = depth;
-  }
-
   //
   inline Administrator *administrator() const {
     return administrator_;
   }
 
-private:    //
+private:    
+  //
   ASTNode *transition(const std::string &function_name,
-                      ParserFunction function);
+    ParserFunction function/*, STN &synch*/);
 
   ASTNode *Program(/*SynchSet &set*/);
   ASTNode *Declaration(/*SynchSet &set*/);
@@ -113,7 +104,7 @@ private:    //
   const std::string filename_;
   
   //
-  SynchSet synch_;
+  STN synch_;
 
   //
   bool good_;
@@ -134,4 +125,4 @@ private:    //
   //DISALLOW_COPY_AND_ASSIGN(Parser);
 };
 
-#endif // KOMPILER_PARSER_H_
+#endif // COMPILER_PARSER_H_

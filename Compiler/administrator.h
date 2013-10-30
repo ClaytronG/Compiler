@@ -106,6 +106,8 @@ class Administrator {
   //
   bool show_trace_;
 
+  static const std::string kBuiltInFunctions;
+
   //DISALLOW_COPY_AND_ASSIGN(Administrator);
 };
 

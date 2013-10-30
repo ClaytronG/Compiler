@@ -8,6 +8,9 @@
 #include "ast_node_print_visitor.h"
 #include "messenger.h"
 
+const std::string Administrator::kBuiltInFunctions = 
+  "int readint(void) {return 0;}\nvoid writeint(int outint) {return;}\nbool readbool(void) {return true;}\nvoid writebool(bool outbool) {return;}\n";
+
 Administrator::Administrator(const std::vector<std::string> file_list)
   : input_file_list_(file_list), messenger_(), show_trace_(false) {
 }
@@ -83,7 +86,7 @@ bool Administrator::LexerPhase() {
   const auto end = input_file_list_.end();
   while (it != end) {
     std::string filename = (*it).substr(0, (*it).find_last_of("\\/"));
-    Scanner scanner(*it, filename, *this);
+    Scanner scanner(*it, filename, this);
     if (!scanner.good()) {
       fprintf(stdout, "Error opening %s\n", filename.c_str());
       continue;
@@ -116,7 +119,7 @@ bool Administrator::ParserPhase() {
   auto it = input_file_list_.begin();
   const auto end = input_file_list_.end();
   while (it != end) {
-    std::string filename = (*it).substr(0, (*it).find_last_of("\\/"));
+    std::string filename = (*it).substr((*it).find_last_of("\\/")+1, (*it).length());
     Parser parser(*it, filename, this);
     ASTNode *root = NULL;
     if (!parser.good()) {
@@ -141,10 +144,10 @@ bool Administrator::SemanticAnalysisPhase() {
   auto it = input_file_list_.begin();
   const auto end = input_file_list_.end();
   while (it != end) {
-    std::string filename = (*it).substr(0, (*it).find_last_of("\\/"));
+    std::string filename = (*it).substr((*it).find_last_of("/"), (*it).length());
     Parser parser(*it, filename, this);
     if (!parser.good()) {
-      fprintf(stderr, "Error parsing file: %s\n", filename);
+      fprintf(stderr, "Error parsing file: %s\n", filename.c_str());
       continue;
     }
     ASTNode *root = parser.Parse();
@@ -155,7 +158,11 @@ bool Administrator::SemanticAnalysisPhase() {
       continue;
     } else {
       // Begin semantic analysis
-
+      // Get the AST for the built in functions
+      // disable trace
+      Parser p(kBuiltInFunctions, this);
+      ASTNode *new_root = p.Parse();
+      // Prepend the new root 
     }
     messenger_.PrintErrors();
     ++it;

@@ -21,6 +21,9 @@ public:
   typedef std::set<Token::TokenName> STN;
   typedef ASTNode* (Parser::*ParserFunction)(void);
 
+  Parser(const std::string built_in_functions_source, 
+         Administrator *administrator);
+
   Parser(const std::string &file, const std::string &filename, 
          Administrator *administrator);
 

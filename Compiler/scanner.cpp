@@ -7,7 +7,16 @@
 
 #include "administrator.h"
 
-Scanner::Scanner(const std::string &file_path, const std::string &filename, Administrator &administrator)
+Scanner::Scanner(const std::string &built_in_functions_source, Administrator *administrator) 
+  : filename_("built-in"), done_(false), administrator_(administrator) {
+    source_ = built_in_functions_source;
+    good_ = true;
+    current_char_ = source_.begin();
+    line_number_ = 1;
+    PrintLine();
+}
+
+Scanner::Scanner(const std::string &file_path, const std::string &filename, Administrator *administrator)
   : filename_(filename), done_(false), administrator_(administrator) {
   // Get the source as a string and remove whitespace before and after the 
   // source code
@@ -20,7 +29,8 @@ Scanner::Scanner(const std::string &file_path, const std::string &filename, Admi
     in.close();    
     std::size_t startpos = source_.find_first_not_of(" ");
     std::size_t endpos = source_.find_last_not_of(" ");
-    source_ = source_.substr(startpos, endpos+1);
+    std::string source = source_.substr(startpos, endpos+1);
+    source_ = kBuiltInFunctions + source;
     current_char_ = source_.begin();
 		line_number_ = 1;
 		PrintLine();

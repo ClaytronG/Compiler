@@ -7,10 +7,22 @@
 #include "administrator.h"
 #include "parser.h"
 
+Parser::Parser(const std::string built_in_function_source,
+               Administrator *administrator) 
+  : scanner_(built_in_function_source, administrator),
+    filename_("built-in"),
+    administrator_(administrator),
+    lookahead_token_(Token::ERROR),
+    synch_() {
+  depth_ = 0;
+  good_ = scanner_.good();
+  error_free_ = true;
+}
+
 Parser::Parser(const std::string &file, 
                const std::string &filename,
                Administrator *administrator) 
-  : scanner_(file, filename, *administrator), 
+  : scanner_(file, filename, administrator), 
     filename_(filename), 
     administrator_(administrator), 
     lookahead_token_(Token::ERROR), 
@@ -107,6 +119,8 @@ ASTNode *Parser::Parse() {
   ASTNode *node = transition("program", &Parser::Program);
   // If the an error occurred during parsing, compilation can't continue.
   if (error_free_) {
+    ParameterNode *param = new ParameterNode();
+
     return node;
   }
   return NULL;

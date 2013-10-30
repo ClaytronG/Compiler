@@ -18,9 +18,14 @@ class Administrator;
 // 
 class Scanner {
  public:
+   
+   Scanner(const std::string &built_in_functions_source, 
+           Administrator *administrator);
+
   // Creates a scanner for a C13 source file.
   Scanner(const std::string &file_path, const std::string &filename, 
-          Administrator &administrator);
+          Administrator *administrator);
+
   ~Scanner() {};
 
   // Gets the next token from the source file. The scanner reads in characters
@@ -76,7 +81,7 @@ class Scanner {
   void PrintLine();
   
   //
-  Administrator &administrator_;
+  Administrator *administrator_;
 
   // Current character that the scanner is looking at. This gets changed by
   // GetChar, PeekChar and PrintLine and should never be modified by the user.
@@ -98,6 +103,7 @@ class Scanner {
   // The contents of the source file, with preceding and trailing whitespace
   // removed.
   std::string source_;
+
 
   //DISALLOW_COPY_AND_ASSIGN(Scanner);
 };

@@ -29,8 +29,7 @@ Scanner::Scanner(const std::string &file_path, const std::string &filename, Admi
     in.close();    
     std::size_t startpos = source_.find_first_not_of(" ");
     std::size_t endpos = source_.find_last_not_of(" ");
-    std::string source = source_.substr(startpos, endpos+1);
-    source_ = kBuiltInFunctions + source;
+    source_ = source_.substr(startpos, endpos+1);
     current_char_ = source_.begin();
 		line_number_ = 1;
 		PrintLine();
@@ -132,7 +131,7 @@ Token Scanner::GetToken() {
 			}
       
       // TODO: How do I access Administrator's messenger
-      administrator_.messenger()->AddError(filename_, line_number_, 
+      administrator_->messenger()->AddError(filename_, line_number_, 
                                             "Invalid Token '&'");
 			return Token(Token::ERROR);
 			break;
@@ -144,7 +143,7 @@ Token Scanner::GetToken() {
 			}
       
       // TODO: How do I access Administrator's messenger
-      administrator_.messenger()->AddError(filename_, line_number_,
+      administrator_->messenger()->AddError(filename_, line_number_,
                                             "Invalid Token '|'");
 			return Token(Token::ERROR);
 			break;
@@ -221,7 +220,7 @@ Token Scanner::GetToken() {
         std::string message = "Invalid Token '";
         message += temp;
         message += "'";
-        administrator_.messenger()->AddError(filename_, line_number_, 
+        administrator_->messenger()->AddError(filename_, line_number_, 
                                               message);
 			  return Token(Token::ERROR);
 			  break;
@@ -237,7 +236,7 @@ Token Scanner::GetToken() {
         message += "'";
 
         // TODO: How do I access Administrator's messenger
-        administrator_.messenger()->AddError(filename_, line_number_, 
+        administrator_->messenger()->AddError(filename_, line_number_, 
                                               message);
         return Token(Token::ERROR);
       }
@@ -247,7 +246,7 @@ Token Scanner::GetToken() {
   
   // TODO: How do I access Administrator's messenger
   std::string message = "An unexpected error has occurred.";
-  administrator_.messenger()->AddError(filename_, line_number_, message);
+  administrator_->messenger()->AddError(filename_, line_number_, message);
 	return Token(Token::ERROR);
 }
 
@@ -259,7 +258,7 @@ int Scanner::EatComment() {
 		if (done_) {
       // TODO: How do I access Administrator's messenger
       std::string message = "Reached EOF before comment was closed.";
-      administrator_.messenger()->AddError(filename_, start_comment_line,
+      administrator_->messenger()->AddError(filename_, start_comment_line,
                                             message);
 			return -1;
 		}	else if (PeekChar() == '\n') {
@@ -378,6 +377,6 @@ void Scanner::PrintLine() {
   message += line;
   message += "\n";
   // TODO: How do I access Administrator's messenger
-  administrator_.messenger()->PrintMessage(message);
+  administrator_->messenger()->PrintMessage(message);
   current_char_ = originalPosition;
 }

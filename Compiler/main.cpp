@@ -12,7 +12,6 @@
 #include <string>
 #include <vector>
 
-
 #include <tclap/CmdLine.h>
 
 #include "administrator.h"
@@ -96,8 +95,7 @@ int main(int argc, char* argv[]) {
     } else if (parse_switch.isSet()) {
       admin->ParserPhase();
     } else if (sem_switch.getValue()) {
-      // TODO: semantic analyser
-      return -1;
+		  admin->SemanticAnalysisPhase();
     } else if (tup_switch.isSet()) {
       // TODO: tuple generation
       return -1;

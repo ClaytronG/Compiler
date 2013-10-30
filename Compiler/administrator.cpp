@@ -89,6 +89,7 @@ bool Administrator::LexerPhase() {
     Scanner scanner(*it, filename, this);
     if (!scanner.good()) {
       fprintf(stdout, "Error opening %s\n", filename.c_str());
+      ++it;
       continue;
     }
 
@@ -124,6 +125,7 @@ bool Administrator::ParserPhase() {
     ASTNode *root = NULL;
     if (!parser.good()) {
       fprintf(stderr, "Error parsing %s\n", filename.c_str());
+      ++it;
       continue;
     } else {
       root = parser.Parse();
@@ -144,25 +146,37 @@ bool Administrator::SemanticAnalysisPhase() {
   auto it = input_file_list_.begin();
   const auto end = input_file_list_.end();
   while (it != end) {
-    std::string filename = (*it).substr((*it).find_last_of("/"), (*it).length());
+    std::string filename = (*it).substr((*it).find_last_of("/")+1, (*it).length());
     Parser parser(*it, filename, this);
     if (!parser.good()) {
       fprintf(stderr, "Error parsing file: %s\n", filename.c_str());
+      ++it;
       continue;
-    }
+    }      
+    // Get the AST for the built in functions
+    // disable trace
+    Parser p(kBuiltInFunctions, this);
+    ASTNode *new_root = p.Parse();
     ASTNode *root = parser.Parse();
     if (!root) {
       // If the root node is NULL then the parser encountered errors. Print
       // those errors and continue on to the next source file.
       messenger_.PrintErrors();
+      ++it;
       continue;
     } else {
       // Begin semantic analysis
-      // Get the AST for the built in functions
-      // disable trace
-      Parser p(kBuiltInFunctions, this);
-      ASTNode *new_root = p.Parse();
-      // Prepend the new root 
+
+      // Append the original root not to the end of the new_root
+      // Get to the last declaration in new_root
+	    DeclarationNode *node = dynamic_cast<ProgramNode*>(new_root)->declaration_node();
+	    while (node->next_node()) {
+		    node = dynamic_cast<DeclarationNode*>(node->next_node());
+	    }
+	    DeclarationNode *next = dynamic_cast<ProgramNode*>(root)->declaration_node();
+	    node->set_next_node(next);
+      messenger_.PrintMessage("\nAST\n");
+	    new_root->Accept(new ASTNodePrintVisitor(&messenger_));
     }
     messenger_.PrintErrors();
     ++it;

@@ -119,8 +119,6 @@ ASTNode *Parser::Parse() {
   ASTNode *node = transition("program", &Parser::Program);
   // If the an error occurred during parsing, compilation can't continue.
   if (error_free_) {
-    ParameterNode *param = new ParameterNode();
-
     return node;
   }
   return NULL;

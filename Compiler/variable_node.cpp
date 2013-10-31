@@ -54,3 +54,11 @@ void VariableNode::set_identifier(const std::string &string_identifier) {
 std::string VariableNode::StringIdentifier() const {
   return Administrator::spelling_table[identifier_];
 }
+
+DeclarationNode *VariableNode::declaration_pointer() const {
+  return declaration_pointer_;
+}
+
+void VariableNode::set_declaration_pointer(DeclarationNode *declaration_pointer) {
+  declaration_pointer_ = declaration_pointer;
+}

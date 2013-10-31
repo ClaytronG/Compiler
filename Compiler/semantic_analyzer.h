@@ -3,10 +3,13 @@
 #ifndef COMPILER_SEMANTICANALYZER_H_
 #define COMPILER_SEMANTICANALYZER_H_
 
+#include "ast_node.h"
+#include "symbol_table.h"
+
 class SemanticAnalyzer {
 public:
 
-  SemanticAnalyzer();
+  SemanticAnalyzer(ASTNode *root);
 
   void InitTraversal();
 
@@ -15,6 +18,12 @@ public:
 private:
   // 
   bool error_free_;
+
+  //
+  ASTNode *root_;
+
+  //
+  SymbolTable symbol_table_;
 
 };
 

@@ -7,6 +7,7 @@
 #include "ast_node.h"
 #include "ast_node_print_visitor.h"
 #include "messenger.h"
+#include "semantic_analyzer.h"
 
 const std::string Administrator::kBuiltInFunctions = 
   "int readint(void) {return 0;}\nvoid writeint(int outint) {return;}\nbool readbool(void) {return true;}\nvoid writebool(bool outbool) {return;}\n";
@@ -165,8 +166,6 @@ bool Administrator::SemanticAnalysisPhase() {
       ++it;
       continue;
     } else {
-      // Begin semantic analysis
-
       // Append the original root not to the end of the new_root
       // Get to the last declaration in new_root
 	    DeclarationNode *node = dynamic_cast<ProgramNode*>(new_root)->declaration_node();
@@ -174,9 +173,10 @@ bool Administrator::SemanticAnalysisPhase() {
 		    node = dynamic_cast<DeclarationNode*>(node->next_node());
 	    }
 	    DeclarationNode *next = dynamic_cast<ProgramNode*>(root)->declaration_node();
-	    node->set_next_node(next);
-      messenger_.PrintMessage("\nAST\n");
-	    new_root->Accept(new ASTNodePrintVisitor(&messenger_));
+      node->set_next_node(next);
+      // Begin semantic analysis
+      SemanticAnalyzer sem(new_root);
+      sem.InitTraversal();
     }
     messenger_.PrintErrors();
     ++it;

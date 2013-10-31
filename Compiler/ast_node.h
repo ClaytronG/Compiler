@@ -803,7 +803,16 @@ public:
   //
   std::string StringIdentifier() const;
 
-private:  
+  //
+  DeclarationNode *declaration_pointer() const;
+
+  //
+  void set_declaration_pointer(DeclarationNode *declaration_pointer);
+
+private:
+  //
+  DeclarationNode *declaration_pointer_;
+
   //
   ExpressionNode *array_expression_;
 

@@ -28,6 +28,7 @@ class Administrator {
 
   // Creates an administrator with a list of c13 files to compile.
   explicit Administrator(const std::vector<std::string> file_list);
+
   // Creates an administrator with a list of  c13 files to compile and defines
   // an optional file to output trace and error messages to.
   Administrator(const std::vector<std::string> file_list, 

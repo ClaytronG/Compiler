@@ -3,7 +3,6 @@
 #ifndef COMPILER_SYMBOLTABLE_H_
 #define COMPILER_SYMBOLTABLE_H_
 
-#include <array>
 #include <string>
 #include <vector>
 
@@ -23,17 +22,27 @@ public:
   SymbolTable();
 
   //
-  static IdentificationTableEntry CreateIdentificationTableEntry(int l, DeclarationNode *dec_ptr,
-                                                                 int next, int lex_i);
+  static IdentificationTableEntry CreateIdentificationTableEntry(
+    int l, 
+    DeclarationNode *dec_ptr,
+    int next, 
+    int lex_i);
 
   //
   void PopBlock();
 
+  void AccessTableAddElementAt(const unsigned int index, const int value);
+
   //
   void PushBack(const IdentificationTableEntry &entry);
 
+  IdentificationTableEntry IdentificationTableAt(const unsigned int index);
+
   //
-  std::string ToString();
+  void PrintTables();
+
+  //
+  int IdentificationTableSize() const;
                                                           
 private:
 
@@ -44,7 +53,7 @@ private:
   void InitIdentificationTable();
 
   //
-  std::array<int, 20> access_table_;
+  std::vector<int> access_table_;
 
   //
   std::vector<IdentificationTableEntry> identification_table_;

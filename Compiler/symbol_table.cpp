@@ -2,15 +2,9 @@
 
 #include "symbol_table.h"
 
-SymbolTable::SymbolTable() : access_table_(), identification_table_() {
-  InitAccessTable();
+SymbolTable::SymbolTable() : access_table_(Administrator::spelling_table.size()), identification_table_() {
+  access_table_.reserve(Administrator::spelling_table.size());
   InitIdentificationTable();
-}
-
-void SymbolTable::InitAccessTable() {
-  for (auto& e : access_table_) {
-    e = 0;
-  }
 }
 
 void SymbolTable::InitIdentificationTable() {
@@ -39,19 +33,37 @@ void SymbolTable::PopBlock() {
   }
 }
 
+void SymbolTable::AccessTableAddElementAt(const unsigned int index, const int value) {
+  if (index > access_table_.size()) {
+    return;
+  }
+  access_table_.at(index) = value;
+}
+
 void SymbolTable::PushBack(
     const SymbolTable::IdentificationTableEntry &entry) {
   identification_table_.push_back(entry);
 }
 
-std::string SymbolTable::ToString() {
-  std::string temp = "\nL\tDecPtr\tNext\tLexI\n";
-  printf("%s", temp.c_str());
+void SymbolTable::PrintTables() {
+  printf("\nL\tDecPtr\tNext\tLexI\n");
   for (auto& e : identification_table_) {
-    if (true) {
-      printf("%d\t-\t%d\t%d\n", e.L, e.Next, e.LexI);
-    } //else 
-      //printf("%d\t-\t%d\t%s\n", e.L, e.Next, Administrator::spelling_table[e.LexI].c_str());
+    if (e.LexI > -1) {
+      printf("%d\t-\t%d\t%d\t%s\n", e.L, e.Next, e.LexI, Administrator::spelling_table[e.LexI].c_str());
+    } else 
+      printf("%d\t-\t%d\t%d\tNULL\n", e.L, e.Next, e.LexI);
   }
-  return temp;
+  printf("\n");
+  int count = 0;
+  for (auto& e : access_table_) {
+    printf("%d\t%s\n", e, Administrator::spelling_table[count++].c_str());
+  }
+}
+
+SymbolTable::IdentificationTableEntry SymbolTable::IdentificationTableAt(const unsigned int index) {
+  return identification_table_.at(index);
+}
+
+int SymbolTable::IdentificationTableSize() const {
+  return identification_table_.size();
 }

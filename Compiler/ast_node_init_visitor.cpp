@@ -25,7 +25,10 @@ void ASTNodeInitVisitor::Visit(const FunctionDeclarationNode &node) {
   entry.DecPtr = &node;
   entry.Next = 0;
   entry.LexI = node.identifier();
+  // Add this declaration to the Identification Table
   symbol_table_->PushBack(entry);
+  // Update the Access Table
+  symbol_table_->AccessTableAddElementAt(node.identifier(), symbol_table_->IdentificationTableSize()-1);
   if (node.next_node()) {
     node.next_node()->Accept(this);
   }
@@ -51,7 +54,10 @@ void ASTNodeInitVisitor::Visit(const VariableDeclarationNode &node) {
   entry.DecPtr = &node;
   entry.Next = 0;
   entry.LexI = node.identifier();
+  // Add this declaration to the Identification Table
   symbol_table_->PushBack(entry);
+  // Update the Access Table
+  symbol_table_->AccessTableAddElementAt(node.identifier(), symbol_table_->IdentificationTableSize()-1);
   if (node.next_variable_declaration()) {
     node.next_variable_declaration()->Accept(this);
   }

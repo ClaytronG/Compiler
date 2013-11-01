@@ -158,13 +158,16 @@ void ASTNodePrintVisitor::Visit(const CompoundNode &node){
   std::string message = std::string(depth_*2, ' ');
   message += "Compound\n";
   ++depth_;
-  message += std::string(depth_*2, ' ');
-  if (node.local_variables()) {
-    message += "variables:\n";
-    messenger_->PrintMessage(message);
+  message += std::string(depth_ * 2, ' ');
+  message += "variables:\n";
+  messenger_->PrintMessage(message);
+  VariableDeclarationNode *current_var = node.local_variables();
+  while (current_var != NULL) {
     ++depth_;
-    node.local_variables()->Accept(this);
+    current_var->Accept(this);
     --depth_;
+    current_var = dynamic_cast<VariableDeclarationNode*>(
+      current_var->next_node());
   }  
   message = std::string(depth_*2, ' ');
   message += "statements:\n";

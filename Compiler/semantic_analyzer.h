@@ -3,6 +3,9 @@
 #ifndef COMPILER_SEMANTICANALYZER_H_
 #define COMPILER_SEMANTICANALYZER_H_
 
+#include <string>
+
+#include "administrator.h"
 #include "ast_node.h"
 
 class SemanticAnalyzer {
@@ -20,13 +23,13 @@ public:
     std::vector<IdentificationTableEntry> identifier_table_;
   };
 
-  SemanticAnalyzer(ASTNode *root);
+  SemanticAnalyzer(ASTNode *root, const std::string &filename, Administrator *administrator);
 
   void InitTraversal();
 
   void FullTraversal();
 
-  void PrintSymbolTable() const;
+  static void PrintSymbolTable(const SymbolTable &table);
 
 private:
   //
@@ -40,6 +43,12 @@ private:
 
   //
   SymbolTable symbol_table_;
+
+  //
+  Administrator *administrator_;
+
+  //
+  std::string filename_;
 
 };
 

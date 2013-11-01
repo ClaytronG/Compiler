@@ -20,3 +20,7 @@ void ASTNode::set_next_node(ASTNode *next_node) {
 ASTNode::ASTNode() {
   next_node_ = NULL;
 }
+
+void ASTNode::set_line_number(const int line_number) {
+  line_number_ = line_number;
+}

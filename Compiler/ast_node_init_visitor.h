@@ -3,6 +3,8 @@
 #ifndef COMPILER_ASTNODEINITVISITOR_H_
 #define COMPILER_ASTNODEINITVISITOR_H_
 
+#include <string>
+
 #include "ast_node.h"
 #include "ast_node_visitor.h"
 #include "semantic_analyzer.h"
@@ -12,7 +14,7 @@ public:
   typedef SemanticAnalyzer::SymbolTable SymbolTable;
 
   //
-  ASTNodeInitVisitor(SymbolTable *symbol_table);
+  ASTNodeInitVisitor(SymbolTable *symbol_table, const std::string &filename, Administrator *administrator);
 
   void Visit(const AssignmentNode &node);
   void Visit(const ASTNode &node);
@@ -42,6 +44,12 @@ private:
   typedef SemanticAnalyzer::SymbolTable::IdentificationTableEntry IdentificationTableEntry;
 
   SymbolTable *symbol_table_;
+
+  Administrator *administrator_;
+
+  std::string filename_;
+
+  bool error_free_;
 };
 
 #endif // COMPILER_ASTNODEINITVISITOR_H_

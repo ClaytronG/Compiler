@@ -24,12 +24,23 @@ public:
   //
   virtual void Accept(ASTNodeVisitor *visitor) const = 0;
 
+  //
+  void set_line_number(const int line_number);
+
+  //
+  int line_number() const {
+    return line_number_;
+  }
+
 protected:
   //
   ASTNode();
 
   //
   ASTNode *next_node_;
+
+  //
+  int line_number_;
 };
 
 class DeclarationNode : public ASTNode {

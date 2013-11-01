@@ -175,8 +175,9 @@ bool Administrator::SemanticAnalysisPhase() {
 	    DeclarationNode *next = dynamic_cast<ProgramNode*>(root)->declaration_node();
       node->set_next_node(next);
       // Begin semantic analysis
-      SemanticAnalyzer sem(new_root);
+      SemanticAnalyzer sem(new_root, filename, this);
       sem.InitTraversal();
+      sem.FullTraversal();
     }
     messenger_.PrintErrors();
     ++it;

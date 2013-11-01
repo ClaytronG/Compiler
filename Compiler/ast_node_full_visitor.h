@@ -11,7 +11,7 @@ class ASTNodeFullVisitor : public ASTNodeVisitor {
 public:
   typedef SemanticAnalyzer::SymbolTable SymbolTable;
   // 
-  ASTNodeFullVisitor(SymbolTable *symbol_table);
+  ASTNodeFullVisitor(SymbolTable *symbol_table, const std::string &filename, Administrator *administrator);
 
   void Visit(const AssignmentNode &node);
   void Visit(const ASTNode &node);
@@ -40,11 +40,19 @@ public:
 private:
   typedef SemanticAnalyzer::SymbolTable::IdentificationTableEntry IdentificationTableEntry;
 
+  void PopStack();
+
   int depth_;
 
   SymbolTable *symbol_table_;
 
   bool compound_variable_;
+
+  std::string filename_;
+
+  Administrator *administrator_;
+
+  bool error_free_;
 };
 
 #endif // COMPILER_ASTNODEFULLVISITOR_H_

@@ -133,6 +133,7 @@ ASTNode *Parser::Program(/*SynchSet &set*/) {
   ////synch_.push_back(Token::VOID);
   ////synch_.push_back(Token::ENDFILE);
   ProgramNode *program = new ProgramNode();
+  program->set_line_number(scanner_.line_number());
   program->set_declaration_node(dynamic_cast<DeclarationNode*>(transition(
     "declaration", &Parser::Declaration)));
   DeclarationNode *current_node = program->declaration_node();
@@ -249,6 +250,7 @@ ASTNode *Parser::VarDecTail(/*SynchSet &set*/) {
   ////synch_.push_back(Token::ID);
   ////synch_.push_back(Token::BRANCH);
   VariableDeclarationNode *variable = new VariableDeclarationNode();
+  variable->set_line_number(scanner_.line_number());
   //////synch_.push_back(Token::LSQR);
   //SyntaxCheck("var-dec-tail");
   if (lookahead_ == Token::LSQR) {
@@ -277,6 +279,7 @@ ASTNode *Parser::VarName(/*SynchSet &set*/) {
   ////synch_.push_back(Token::COMMA);
   ////synch_.push_back(Token::SEMI);
   VariableDeclarationNode *variable = new VariableDeclarationNode();
+  variable->set_line_number(scanner_.line_number());
   int identifier = lookahead_token_.value();
   Match(Token::ID/*, set*/);
   variable->set_identifier(identifier);
@@ -301,6 +304,7 @@ ASTNode *Parser::FunDecTail(/*SynchSet &set*/) {
   int identifier = lookahead_token_.value();
   Match(Token::LPAREN/*, set*/);
   FunctionDeclarationNode *function = new FunctionDeclarationNode();
+  function->set_line_number(scanner_.line_number());
   function->set_identifier(identifier);
   function->set_parameter(dynamic_cast<ParameterNode*>(transition(
     "params", &Parser::Params)));
@@ -341,6 +345,7 @@ ASTNode *Parser::Param(/*SynchSet &set*/) {
   ////synch_.push_back(Token::COMMA);
   ////synch_.push_back(Token::RPAREN);
   ParameterNode *param = new ParameterNode();
+  param->set_line_number(scanner_.line_number());
   if (lookahead_ == Token::REF) {
     Match(Token::REF/*, set*/);
     Token::TokenName type = NonvoidSpecifier();
@@ -490,6 +495,7 @@ ASTNode *Parser::AssignStmtTail(/*SynchSet &set*/) {
   ////synch_.push_back(Token::CASE);
   ////synch_.push_back(Token::DEFAULT);
   AssignmentNode *assign = new AssignmentNode();
+  assign->set_line_number(scanner_.line_number());
   //////synch_.push_back(Token::LSQR);
   //SyntaxCheck("assign-stmt-tail");
   if (lookahead_ == Token::LSQR) {
@@ -523,6 +529,7 @@ ASTNode *Parser::CallStmtTail(/*SynchSet &set*/) {
   ////synch_.push_back(Token::CASE);
   ////synch_.push_back(Token::DEFAULT);
   CallNode *call = new CallNode();
+  call->set_line_number(scanner_.line_number());
   call->set_argurments(dynamic_cast<ExpressionNode*>(
   transition("call-tail", &Parser::CallTail)));
   Match(Token::SEMI/*, set*/);
@@ -606,6 +613,7 @@ ASTNode *Parser::CompoundStmt(/*SynchSet &set*/) {
   //synch_.push_back(Token::ENDFILE);
   Match(Token::LCRLY/*, set*/);
   CompoundNode *compound = new CompoundNode();
+  compound->set_line_number(scanner_.line_number());
   Token::TokenName type;
   // Parse optional variable declarations
   VariableDeclarationNode *first_variable = NULL;
@@ -613,7 +621,8 @@ ASTNode *Parser::CompoundStmt(/*SynchSet &set*/) {
   ////synch_.push_back(Token::BOOL);
   //SyntaxCheck("compound-stmt");
   if (lookahead_ == Token::INT || lookahead_ == Token::BOOL) {
-    first_variable = new VariableDeclarationNode();
+    //first_variable = new VariableDeclarationNode();
+    //first_variable->set_line_number(scanner_.line_number());
     type = NonvoidSpecifier();
     int identifier = lookahead_token_.value();
     Match(Token::ID/*, set*/);
@@ -625,6 +634,23 @@ ASTNode *Parser::CompoundStmt(/*SynchSet &set*/) {
       current_node->set_type(type);
       current_node = current_node->next_variable_declaration();
     }
+  }
+  VariableDeclarationNode *current_variable = first_variable;
+  VariableDeclarationNode *node;
+  while (lookahead_ == Token::INT || lookahead_ == Token::BOOL) {
+    type = NonvoidSpecifier();
+    int identifier = lookahead_token_.value();
+    Match(Token::ID/*, set*/);
+    node = dynamic_cast<VariableDeclarationNode*>(transition(
+      "var-dec-tail", &Parser::VarDecTail));
+    node->set_identifier(identifier);
+    VariableDeclarationNode *current_node = node;
+    while (current_node != NULL) {
+      current_node->set_type(type);
+      current_node = current_node->next_variable_declaration();
+    }
+    current_variable->set_next_node(node);
+    current_variable = dynamic_cast<VariableDeclarationNode*>(current_variable->next_node());
   }
   compound->set_local_variable(first_variable);
 
@@ -676,6 +702,7 @@ ASTNode *Parser::IfStmt(/*SynchSet &set*/) {
   StatementNode *statement = dynamic_cast<StatementNode*>(transition(
     "statement", &Parser::Statement));
   IfNode *node = new IfNode(expression, statement);
+  node->set_line_number(scanner_.line_number());
   ////synch_.push_back(Token::ELSE);
   //SyntaxCheck("if-stmt");
   if (lookahead_ == Token::ELSE) {
@@ -705,6 +732,7 @@ ASTNode *Parser::LoopStmt(/*SynchSet &set*/) {
   Match(Token::LOOP/*, set*/);
   LoopNode *loop = new LoopNode(dynamic_cast<StatementNode*>(transition(
     "statement", &Parser::Statement)));
+  loop->set_line_number(scanner_.line_number());
   StatementNode *node = loop->statements();
   while(lookahead_ == Token::LCRLY     || lookahead_ == Token::IF ||
          lookahead_ == Token::LOOP     || lookahead_ == Token::EXIT ||
@@ -737,7 +765,9 @@ ASTNode *Parser::ExitStmt(/*SynchSet &set*/) {
   //synch_.push_back(Token::DEFAULT);
   Match(Token::EXIT/*, set*/);
   Match(Token::SEMI/*, set*/);
-  return new ExitNode();
+  ExitNode *node = new ExitNode();
+  node->set_line_number(scanner_.line_number());
+  return node;
 }
 
 ASTNode *Parser::ContinueStmt(/*SynchSet &set*/) {
@@ -758,7 +788,9 @@ ASTNode *Parser::ContinueStmt(/*SynchSet &set*/) {
   //synch_.push_back(Token::DEFAULT);
   Match(Token::CONTINUE/*, set*/);
   Match(Token::SEMI/*, set*/);
-  return new ContinueNode();
+  ContinueNode *node = new ContinueNode();
+  node->set_line_number(scanner_.line_number());
+  return node;
 }
 
 ASTNode *Parser::ReturnStmt(/*SynchSet &set*/) {
@@ -778,7 +810,8 @@ ASTNode *Parser::ReturnStmt(/*SynchSet &set*/) {
   //synch_.push_back(Token::CASE);
   //synch_.push_back(Token::DEFAULT);
   Match(Token::RETURN/*, set*/);
-  ReturnNode *return_node = new ReturnNode();  
+  ReturnNode *return_node = new ReturnNode(); 
+  return_node->set_line_number(scanner_.line_number());
   ////synch_.push_back(Token::MINUS);
   ////synch_.push_back(Token::NOT);
   ////synch_.push_back(Token::LPAREN);
@@ -813,7 +846,9 @@ ASTNode *Parser::NullStmt(/*SynchSet &set*/) {
   //synch_.push_back(Token::CASE);
   //synch_.push_back(Token::DEFAULT);
   Match(Token::SEMI/*, set*/);
-  return new NullNode();
+  NullNode *node = new NullNode();
+  node->set_line_number(scanner_.line_number());
+  return node;
 }
 
 ASTNode *Parser::BranchStmt(/*SynchSet &set*/) {
@@ -833,6 +868,7 @@ ASTNode *Parser::BranchStmt(/*SynchSet &set*/) {
   //synch_.push_back(Token::CASE);
   //synch_.push_back(Token::DEFAULT);
   BranchNode *branch = new BranchNode();
+  branch->set_line_number(scanner_.line_number());
   Match(Token::BRANCH/*, set*/);
   Match(Token::LPAREN/*, set*/);
   ExpressionNode *expression = dynamic_cast<ExpressionNode*>(transition(
@@ -875,13 +911,17 @@ ASTNode *Parser::CaseStmt(/*SynchSet &set*/) {
     Match(Token::COLON/*, set*/);
     StatementNode *statement = dynamic_cast<StatementNode*>(transition(
       "statement", &Parser::Statement));
-    return new CaseNode(number, statement);
+    CaseNode *case_node = new CaseNode(number, statement);
+    case_node->set_line_number(scanner_.line_number());
+    return case_node;
   } else if (lookahead_ == Token::DEFAULT) {
     Match(Token::DEFAULT/*, set*/);
     Match(Token::COLON/*, set*/);
     StatementNode *statement = dynamic_cast<StatementNode*>(transition(
       "statement", &Parser::Statement));
-    return new CaseNode(statement);
+    CaseNode *case_node = new CaseNode(statement);
+    case_node->set_line_number(scanner_.line_number());
+    return case_node;
   } else {
     SyntaxError("case-stmt");
     return NULL;
@@ -1079,7 +1119,9 @@ ASTNode *Parser::NidFactor(/*SynchSet &set*/) {
     Match(Token::NOT/*, set*/);
     ExpressionNode *node = dynamic_cast<ExpressionNode*>(
       transition("factor", &Parser::Factor));
-    return new UnaryNode(Token::NOT, node);
+    UnaryNode *unary = new UnaryNode(Token::NOT, node);
+    unary->set_line_number(scanner_.line_number());
+    return unary;
   } else if (lookahead_ == Token::LPAREN) {
     Match(Token::LPAREN/*, set*/);
     ASTNode *node = transition("expression", &Parser::Expression);
@@ -1088,11 +1130,15 @@ ASTNode *Parser::NidFactor(/*SynchSet &set*/) {
   } else if (lookahead_ == Token::NUM) {
     int value = lookahead_token_.value();
     Match(Token::NUM/*, set*/);
-    return new LiteralNode(value, false, true);
+    LiteralNode *lit = new LiteralNode(value, false, true);
+    lit->set_line_number(scanner_.line_number());
+    return lit;
   } else if (lookahead_ == Token::BLIT) {
     int value = lookahead_token_.value();
     Match(Token::BLIT/*, set*/);
-    return new LiteralNode(value, true, false);
+    LiteralNode *lit = new LiteralNode(value, true, false);
+    lit->set_line_number(scanner_.line_number());
+    return lit;
   } else {
     SyntaxError("nid-factor");
     return NULL;
@@ -1162,6 +1208,7 @@ ASTNode *Parser::IdTail(/*SynchSet &set*/) {
     return transition("var-tail", &Parser::VarTail);
   } else if (lookahead_ == Token::LPAREN) {
     CallNode *node = new CallNode();
+    node->set_line_number(scanner_.line_number());
     ExpressionNode *arguments = dynamic_cast<ExpressionNode*>(
       transition("call-tail", &Parser::CallTail));
     node->set_argurments(arguments);
@@ -1169,7 +1216,9 @@ ASTNode *Parser::IdTail(/*SynchSet &set*/) {
   } else {
     //SyntaxCheck("id-tail");
   }
-  return new VariableNode();
+  VariableNode *var_node = new VariableNode();
+  var_node->set_line_number(scanner_.line_number());
+  return var_node;
 }
 
 ASTNode *Parser::VarTail(/*SynchSet &set*/) {
@@ -1194,6 +1243,7 @@ ASTNode *Parser::VarTail(/*SynchSet &set*/) {
   //synch_.push_back(Token::SEMI);
   //synch_.push_back(Token::COMMA);
   VariableNode *variable = new VariableNode();
+  variable->set_line_number(scanner_.line_number());
   ////synch_.push_back(Token::MINUS);
   ////synch_.push_back(Token::NOT);
   ////synch_.push_back(Token::LPAREN);
@@ -1215,22 +1265,34 @@ ASTNode *Parser::VarTail(/*SynchSet &set*/) {
 ASTNode *Parser::Relop(/*SynchSet &set*/) {
   if (lookahead_ == Token::LTEQ) {
     Match(Token::LTEQ/*, set*/);
-    return new BinaryNode(Token::LTEQ);
+    BinaryNode *node = new BinaryNode(Token::LTEQ);
+    node->set_line_number(scanner_.line_number());
+    return node;
   } else if (lookahead_ == Token::LT) {
     Match(Token::LT/*, set*/);
-    return new BinaryNode(Token::LT);
+    BinaryNode *node = new BinaryNode(Token::LT);
+    node->set_line_number(scanner_.line_number());
+    return node;
   } else if (lookahead_ == Token::GT) {
     Match(Token::GT/*, set*/);
-    return new BinaryNode(Token::GT);
+    BinaryNode *node = new BinaryNode(Token::GT);
+    node->set_line_number(scanner_.line_number());
+    return node;
   } else if (lookahead_ == Token::GTEQ) {
     Match(Token::GTEQ/*, set*/);
-    return new BinaryNode(Token::GTEQ);
+    BinaryNode *node = new BinaryNode(Token::GTEQ);
+    node->set_line_number(scanner_.line_number());
+    return node;
   } else if (lookahead_ == Token::EQ) {
     Match(Token::EQ/*, set*/);
-    return new BinaryNode(Token::EQ);
+    BinaryNode *node = new BinaryNode(Token::EQ);
+    node->set_line_number(scanner_.line_number());
+    return node;
   } else if (lookahead_ == Token::NEQ) {
     Match(Token::NEQ/*, set*/);
-    return new BinaryNode(Token::NEQ);
+    BinaryNode *node = new BinaryNode(Token::NEQ);
+    node->set_line_number(scanner_.line_number());
+    return node;
   } else {
     SyntaxError("Relop"/*, set*/);
     return NULL;
@@ -1240,16 +1302,24 @@ ASTNode *Parser::Relop(/*SynchSet &set*/) {
 ASTNode *Parser::Addop(/*SynchSet &set*/) {
   if (lookahead_ == Token::PLUS) {
     Match(Token::PLUS/*, set*/);
-    return new BinaryNode(Token::PLUS);
+    BinaryNode *node = new BinaryNode(Token::PLUS);
+    node->set_line_number(scanner_.line_number());
+    return node;
   } else if (lookahead_ == Token::MINUS) {
     Match(Token::MINUS/*, set*/);
-    return new BinaryNode(Token::MINUS);
+    BinaryNode *node = new BinaryNode(Token::MINUS);
+    node->set_line_number(scanner_.line_number());
+    return node;
   } else if (lookahead_ == Token::OR) {
     Match(Token::OR/*, set*/);
-    return new BinaryNode(Token::OR);
+    BinaryNode *node = new BinaryNode(Token::OR);
+    node->set_line_number(scanner_.line_number());
+    return node;
   } else if (lookahead_ == Token::ORELSE) {
     Match(Token::ORELSE/*, set*/);
-    return new BinaryNode(Token::ORELSE);
+    BinaryNode *node = new BinaryNode(Token::ORELSE);
+    node->set_line_number(scanner_.line_number());
+    return node;
   } else {
     SyntaxError("Addop"/*, set*/);
     return NULL;
@@ -1259,19 +1329,29 @@ ASTNode *Parser::Addop(/*SynchSet &set*/) {
 ASTNode *Parser::Multop(/*SynchSet &set*/) {
   if (lookahead_ == Token::MULT) {
     Match(Token::MULT/*, set*/);
-    return new BinaryNode(Token::MULT);
+    BinaryNode *node = new BinaryNode(Token::MULT);
+    node->set_line_number(scanner_.line_number());
+    return node;
   } else if (lookahead_ == Token::DIV) {
     Match(Token::DIV/*, set*/);
-    return new BinaryNode(Token::DIV);
+    BinaryNode *node = new BinaryNode(Token::DIV);
+    node->set_line_number(scanner_.line_number());
+    return node;
   } else if (lookahead_ == Token::MOD) {
     Match(Token::MOD/*, set*/);
-    return new BinaryNode(Token::MOD);
+    BinaryNode *node = new BinaryNode(Token::MOD);
+    node->set_line_number(scanner_.line_number());
+    return node;
   } else if (lookahead_ == Token::AND) {
     Match(Token::AND/*, set*/);
-    return new BinaryNode(Token::AND);
+    BinaryNode *node = new BinaryNode(Token::AND);
+    node->set_line_number(scanner_.line_number());
+    return node;
   } else if (lookahead_ == Token::ANDTHEN) {
     Match(Token::ANDTHEN/*, set*/);
-    return new BinaryNode(Token::ANDTHEN);
+    BinaryNode *node = new BinaryNode(Token::ANDTHEN);
+    node->set_line_number(scanner_.line_number());
+    return node;
   } else {
     SyntaxError("Addop"/*, set*/);
     return NULL;
@@ -1281,7 +1361,9 @@ ASTNode *Parser::Multop(/*SynchSet &set*/) {
 ASTNode *Parser::Uminus(/*SynchSet &set*/) {
   if (lookahead_ == Token::MINUS) {
     Match(Token::MINUS/*, set*/);
-    return new UnaryNode(Token::MINUS);
+    UnaryNode *node = new UnaryNode(Token::MINUS);
+    node->set_line_number(scanner_.line_number());
+    return node;
   } else {
     SyntaxError("Addop"/*, set*/);
     return NULL;

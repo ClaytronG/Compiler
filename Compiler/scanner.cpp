@@ -371,9 +371,9 @@ void Scanner::PrintLine() {
     GetChar();
   }
   std::string message = filename_;
-  message += " ";
+  message += "(";
   message += Administrator::IntToString(line_number_);
-  message += "> ";
+  message += "): ";
   message += line;
   message += "\n";
   // TODO: How do I access Administrator's messenger

@@ -5,10 +5,11 @@
 
 #include "ast_node.h"
 #include "ast_node_visitor.h"
-#include "symbol_table.h"
+#include "semantic_analyzer.h"
 
 class ASTNodeFullVisitor : public ASTNodeVisitor {
 public:
+  typedef SemanticAnalyzer::SymbolTable SymbolTable;
   // 
   ASTNodeFullVisitor(SymbolTable *symbol_table);
 
@@ -37,11 +38,13 @@ public:
   void Visit(const VariableNode &node);
 
 private:
-  typedef SymbolTable::IdentificationTableEntry IdentificationTableEntry;
+  typedef SemanticAnalyzer::SymbolTable::IdentificationTableEntry IdentificationTableEntry;
 
   int depth_;
 
   SymbolTable *symbol_table_;
+
+  bool compound_variable_;
 };
 
 #endif // COMPILER_ASTNODEFULLVISITOR_H_

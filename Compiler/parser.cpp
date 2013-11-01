@@ -70,7 +70,7 @@ void Parser::Match(const Token::TokenName &expected/*, SynchSet &synch*/) {
     message += "Loading " + Token::kTokenStrings[lookahead_] + "\n";
     administrator_->messenger()->PrintMessage(message);
   } else {
-    message = "Syntax Error: found '" + lookahead_token_.toString() + "', ";
+    message = "Syntax Error: found '" + Token::kTokenStrings[lookahead_token_.name()] + "', ";
     message += "expected '" + Token::kTokenStrings[expected] + "'";
     SyntaxError(message);
   }
@@ -94,11 +94,13 @@ void Parser::SyntaxError(const std::string &message/*, SynchSet &synch*/) {
   const auto end = synch_.end();
   // While the lookahead isn't in the synch set, get the next token and check
   // again.
-  while (it == end) {
-    lookahead_token_ = scanner_.GetToken();
-    lookahead_ = lookahead_token_.name();
-    it = std::find(synch_.begin(), synch_.end(), lookahead_);
-  }
+  //while (it == end) {
+  //  lookahead_token_ = scanner_.GetToken();
+  //  lookahead_ = lookahead_token_.name();
+  //  it = std::find(synch_.begin(), synch_.end(), lookahead_);
+  //}
+  lookahead_token_ = scanner_.GetToken();
+  lookahead_ = lookahead_token_.name();
 }
 
 ASTNode *Parser::Parse() {
@@ -186,7 +188,7 @@ ASTNode *Parser::Declaration(/*SynchSet &set*/) {
     }
     return NULL;
   } else {
-    SyntaxError("declaration");
+    SyntaxError("Invalid type specifier. Must be int, bool, or void.");
     return NULL;
   }
 }
@@ -209,7 +211,7 @@ Token::TokenName Parser::NonvoidSpecifier(/*SynchSet &set*/) {
     return Token::BOOL;
   } else {    
     administrator_->messenger()->PrintMessage(leave_message);
-    SyntaxError("nonvoid-specifier");
+    SyntaxError("Invalid type specifier. Must be int or bool.");
     return Token::ERROR;
   }
 }
@@ -226,7 +228,7 @@ ASTNode *Parser::DecTail(/*SynchSet &set*/) {
   } else if (lookahead_ == Token::LPAREN) {
     return transition("fun-dec-tail", &Parser::FunDecTail);
   } else {
-    SyntaxError("dec-tail");
+    SyntaxError("Invalid variable or function end token.");
     return NULL;
   }
 }
@@ -329,7 +331,7 @@ ASTNode *Parser::Params(/*SynchSet &set*/) {
     Match(Token::VOID/*, set*/);
     return NULL;
   } else {
-    SyntaxError("params");
+    SyntaxError("Invalid parameter type. Parameter must be of type ref, int, or bool. Or void if no paramters.");
     return NULL;
   }
 }
@@ -342,6 +344,10 @@ ASTNode *Parser::Param(/*SynchSet &set*/) {
   if (lookahead_ == Token::REF) {
     Match(Token::REF/*, set*/);
     Token::TokenName type = NonvoidSpecifier();
+    if (type == Token::ERROR) {
+      SyntaxError("Expected type specifier after ref.");
+      return NULL;
+    }
     int identifier = lookahead_token_.value();
     Match(Token::ID/*, set*/);
     param->set_identifier(identifier);
@@ -363,7 +369,7 @@ ASTNode *Parser::Param(/*SynchSet &set*/) {
     param->set_type(type);
     return param;
   } else {
-    SyntaxError("param");
+    SyntaxError("Invalid type specifier. Must be ref, int, or bool.");
     return NULL;
   }
 }
@@ -403,7 +409,7 @@ ASTNode *Parser::Statement(/*SynchSet &set*/) {
   } else if (lookahead_ == Token::BRANCH) {
     return transition("branch-stmt", &Parser::BranchStmt);
   } else {
-    SyntaxError("statement");
+    SyntaxError("Statement Error");
     return NULL;
   }
 }
@@ -625,6 +631,11 @@ ASTNode *Parser::CompoundStmt(/*SynchSet &set*/) {
   // Parse the statement list
   StatementNode *first_statement = dynamic_cast<StatementNode*>(transition(
     "statement", &Parser::Statement));
+  // ERROR. There needs to be atleast 1 or more statements.
+  if (first_statement == NULL) {
+    SyntaxError("Missing statement");
+    return NULL;
+  }
   compound->set_statement(first_statement);
   StatementNode *current_statement = first_statement;
   while(lookahead_ == Token::LCRLY     || lookahead_ == Token::IF ||

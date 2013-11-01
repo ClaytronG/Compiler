@@ -5,10 +5,12 @@
 
 #include "ast_node.h"
 #include "ast_node_visitor.h"
-#include "symbol_table.h"
+#include "semantic_analyzer.h"
 
 class ASTNodeInitVisitor : public ASTNodeVisitor {
 public:
+  typedef SemanticAnalyzer::SymbolTable SymbolTable;
+
   //
   ASTNodeInitVisitor(SymbolTable *symbol_table);
 
@@ -37,7 +39,7 @@ public:
   void Visit(const VariableNode &node);
 
 private:
-  typedef SymbolTable::IdentificationTableEntry IdentificationTableEntry;
+  typedef SemanticAnalyzer::SymbolTable::IdentificationTableEntry IdentificationTableEntry;
 
   SymbolTable *symbol_table_;
 };

@@ -10,7 +10,7 @@
 #include "semantic_analyzer.h"
 
 const std::string Administrator::kBuiltInFunctions = 
-  "int readint(void) {return 0;}\nvoid writeint(int outint) {return;}\nbool readbool(void) {return true;}\nvoid writebool(bool outbool) {return;}\n";
+  "int readint(void) {return 0;}\nvoid writeint(int outint) {;}\nbool readbool(void) {return true;}\nvoid writebool(bool outbool) {;}\n";
 
 Administrator::Administrator(const std::vector<std::string> file_list)
   : input_file_list_(file_list), messenger_(), show_trace_(false) {

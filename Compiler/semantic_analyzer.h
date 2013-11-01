@@ -4,10 +4,21 @@
 #define COMPILER_SEMANTICANALYZER_H_
 
 #include "ast_node.h"
-#include "symbol_table.h"
 
 class SemanticAnalyzer {
 public:
+
+  struct SymbolTable {
+    struct IdentificationTableEntry {
+      int L;                          // Block Level
+      const ASTNode *DecPtr;  // Pointer to declaration node in the AST
+      int Next;                       // Next closest declaration
+      int LexI;                       // Spelling table entry
+    };
+
+    std::vector<int> acces_table_;
+    std::vector<IdentificationTableEntry> identifier_table_;
+  };
 
   SemanticAnalyzer(ASTNode *root);
 
@@ -15,7 +26,12 @@ public:
 
   void FullTraversal();
 
+  void PrintSymbolTable() const;
+
 private:
+  //
+  void InitSymbolTable();
+
   // 
   bool error_free_;
 

@@ -26,9 +26,9 @@ void ASTNodeInitVisitor::Visit(const FunctionDeclarationNode &node) {
   entry.Next = 0;
   entry.LexI = node.identifier();
   // Add this declaration to the Identification Table
-  symbol_table_->PushBack(entry);
+  symbol_table_->identifier_table_.push_back(entry);
   // Update the Access Table
-  symbol_table_->AccessTableAddElementAt(node.identifier(), symbol_table_->IdentificationTableSize()-1);
+  symbol_table_->acces_table_.at(symbol_table_->identifier_table_.size()-1) = node.identifier();
   if (node.next_node()) {
     node.next_node()->Accept(this);
   }
@@ -55,9 +55,9 @@ void ASTNodeInitVisitor::Visit(const VariableDeclarationNode &node) {
   entry.Next = 0;
   entry.LexI = node.identifier();
   // Add this declaration to the Identification Table
-  symbol_table_->PushBack(entry);
+  symbol_table_->identifier_table_.push_back(entry);
   // Update the Access Table
-  symbol_table_->AccessTableAddElementAt(node.identifier(), symbol_table_->IdentificationTableSize()-1);
+  symbol_table_->acces_table_.at(symbol_table_->identifier_table_.size()) = node.identifier();
   if (node.next_variable_declaration()) {
     node.next_variable_declaration()->Accept(this);
   }

@@ -23,6 +23,7 @@ void ASTNodeFullVisitor::Visit(const CompoundNode &node) {
   if (node.local_variables()) {
     node.local_variables()->Accept(this);
   }
+  compound_variable_ = false;
   node.statements()->Accept(this);
 
   --depth_;
@@ -62,11 +63,11 @@ void ASTNodeFullVisitor::Visit(const ParameterNode &node) {
     IdentificationTableEntry entry;
     entry.L = depth_;
     entry.Next = symbol_table_->acces_table_.at(node.identifier());
-    // Update the access table
-    symbol_table_->acces_table_.at(symbol_table_->identifier_table_.at(symbol_table_->identifier_table_.size() - 1).Next) = node.identifier();
     entry.DecPtr = &node;
     entry.LexI = node.identifier();
     symbol_table_->identifier_table_.push_back(entry);
+    // Update the access table
+    symbol_table_->acces_table_.at(node.identifier()) = symbol_table_->identifier_table_.size()-1;
   } else {
     std::string message = "Double Definition: " + Token::kTokenStrings[node.type()] + " " + Administrator::spelling_table[node.identifier()];
     administrator_->messenger()->AddError(filename_, node.line_number(), message);
@@ -94,12 +95,13 @@ void ASTNodeFullVisitor::Visit(const VariableDeclarationNode &node) {
       IdentificationTableEntry entry;
       entry.L = depth_;
       entry.DecPtr = &node;
-      entry.Next = 0;
+      entry.Next = symbol_table_->acces_table_.at(node.identifier());
       entry.LexI = node.identifier();
       // Add this declaration to the Identification Table
       symbol_table_->identifier_table_.push_back(entry);
       // Update the Access Table
-      symbol_table_->acces_table_.at(symbol_table_->identifier_table_.at(symbol_table_->identifier_table_.size()-1).Next) = node.identifier();
+      symbol_table_->acces_table_.at(node.identifier()) = symbol_table_->identifier_table_.size()-1;
+      //symbol_table_->acces_table_.at(symbol_table_->identifier_table_.at(symbol_table_->identifier_table_.size()-1).Next) = node.identifier();
     } else {
       std::string message = "Double Definiton: " + Token::kTokenStrings[node.type()] + " " + Administrator::spelling_table[node.identifier()];
       administrator_->messenger()->AddError(filename_, node.line_number(), message);
@@ -112,7 +114,6 @@ void ASTNodeFullVisitor::Visit(const VariableDeclarationNode &node) {
   if (node.next_node()) {
     node.next_node()->Accept(this);
   }
-  compound_variable_ = false;
 }
 
 void ASTNodeFullVisitor::Visit(const VariableNode &node) { }

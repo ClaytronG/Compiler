@@ -17,10 +17,11 @@ void SemanticAnalyzer::InitTraversal() {
   root_->Accept(new ASTNodeInitVisitor(&symbol_table_, filename_, administrator_));
   // Make sure "int main(void)" is the last declaration
   const FunctionDeclarationNode *last_declaration = dynamic_cast<const FunctionDeclarationNode*>((symbol_table_.identifier_table_.end()-1)->DecPtr);
-  if (last_declaration->type() != Token::INT ||
+  if (last_declaration == NULL) {
+    administrator_->messenger()->AddError(filename_, 0, "Last Declaration must be 'int main(void)'");
+  } else if (last_declaration->type() != Token::INT ||
       Administrator::spelling_table[last_declaration->identifier()].compare("main") != 0 ||
       last_declaration->parameters() != NULL) {
-    printf("has parameters\n");
     administrator_->messenger()->AddError(filename_, last_declaration->line_number(), "Last Declaration must be 'int main(void)'");
     error_free_ = false;
   }
@@ -45,19 +46,20 @@ void SemanticAnalyzer::InitSymbolTable() {
 void SemanticAnalyzer::PrintSymbolTable(const SymbolTable &table) {
   // Print the identification table
   printf("Symbol Table\nIdentifier Table:\n");
-  printf("L\tDecPtr\tNext\tLexI\n");
+  printf("IdI: L  DecPtr Next LexI Identifier:\n");
+  int count = 0;
   for (auto &e : table.identifier_table_) {
     if (e.LexI == -1) {
-      printf("%d\t \t%d\t-\tNULL\n", e.L, e.Next);
+      printf("%-5i%-3i%-7s%-5i%-5i%-12s\n", count++, e.L, "  -", e.Next, -1, "NULL");
     } else {
-      printf("%d\t \t%d\t%d\t%s\n", e.L, e.Next, e.LexI, Administrator::spelling_table[e.LexI].c_str());
+      printf("%-5i%-3i%-7s%-5i%-5i%-12s\n", count++, e.L, "  -", e.Next, e.LexI, Administrator::spelling_table[e.LexI].c_str());
     }
   }
 
   printf("\nAccess Table:\n");
-
-  int count = 0;
-  for (auto &e : table.acces_table_) {
-    printf("%d\t%s\n", e, Administrator::spelling_table[count++].c_str());
+  printf("Identifier: LexI: IdI\n");
+  count = 0;
+  for (int i = 0; i < table.acces_table_.size(); ++i) {
+    printf("%-12s%-6i%-4i\n", Administrator::spelling_table[i].c_str(), i, table.acces_table_.at(i));
   }
 }

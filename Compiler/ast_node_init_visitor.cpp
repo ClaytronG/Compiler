@@ -43,7 +43,7 @@ void ASTNodeInitVisitor::Visit(const VariableDeclarationNode &node) {
     // Add this declaration to the Identification Table
     symbol_table_->identifier_table_.push_back(entry);
     // Update the Access Table
-    symbol_table_->acces_table_.at(symbol_table_->identifier_table_.size()) = node.identifier();
+    symbol_table_->acces_table_.at(node.identifier()) = symbol_table_->identifier_table_.size()-1;
   } else {
     std::string message = "Double Definiton: " + Token::kTokenStrings[node.type()] + " " + Administrator::spelling_table[node.identifier()];
     administrator_->messenger()->AddError(filename_, node.line_number(), message);

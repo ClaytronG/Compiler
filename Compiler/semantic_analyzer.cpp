@@ -48,12 +48,15 @@ void SemanticAnalyzer::PrintSymbolTable(const SymbolTable &table) {
   printf("Symbol Table\nIdentifier Table:\n");
   printf("IdI: L  DecPtr Next LexI Identifier:\n");
   int count = 0;
-  for (auto &e : table.identifier_table_) {
-    if (e.LexI == -1) {
-      printf("%-5i%-3i%-7s%-5i%-5i%-12s\n", count++, e.L, "  -", e.Next, -1, "NULL");
+  auto it = table.identifier_table_.begin();
+  const auto end = table.identifier_table_.end();
+  while (it != end) {
+    if (it->LexI == -1) {
+      printf("%-5i%-3i%-7s%-5i%-5i%-12s\n", count++, it->L, "  -", it->Next, -1, "NULL");
     } else {
-      printf("%-5i%-3i%-7s%-5i%-5i%-12s\n", count++, e.L, "  -", e.Next, e.LexI, Administrator::spelling_table[e.LexI].c_str());
+      printf("%-5i%-3i%-7s%-5i%-5i%-12s\n", count++, it->L, "  -", it->Next, it->LexI, Administrator::spelling_table[it->LexI].c_str());
     }
+    ++it;
   }
 
   printf("\nAccess Table:\n");

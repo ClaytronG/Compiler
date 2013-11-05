@@ -35,6 +35,11 @@ void ASTNodeInitVisitor::Visit(const FunctionDeclarationNode &node) {
 
 void ASTNodeInitVisitor::Visit(const VariableDeclarationNode &node) {
   if (symbol_table_->acces_table_.at(node.identifier()) == 0) {
+    // Check to see if the array expression is an integer and can be statically defined
+    // i.e. no variables in the expression
+    if (node.array_expression()) {
+
+    }
     IdentificationTableEntry entry;
     entry.L = 0;
     entry.DecPtr = &node;

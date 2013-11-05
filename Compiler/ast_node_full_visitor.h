@@ -40,6 +40,9 @@ public:
 private:
   typedef SemanticAnalyzer::SymbolTable::IdentificationTableEntry IdentificationTableEntry;
 
+  // Returns NUM, BLIT, or ERROR based on the final outcome of the expression
+  Token::TokenName EvaluateExpression(const ExpressionNode &node);
+
   void PopStack();
 
   int depth_;
@@ -53,6 +56,12 @@ private:
   Administrator *administrator_;
 
   bool error_free_;
+
+  bool in_loop_;
+
+  bool nonvoid_function_;
+
+  bool return_statement_;
 };
 
 #endif // COMPILER_ASTNODEFULLVISITOR_H_

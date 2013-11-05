@@ -7,6 +7,9 @@ ASTNodeFullVisitor::ASTNodeFullVisitor(SymbolTable *symbol_table, const std::str
   depth_ = 0;
   compound_variable_ = false;
   error_free_ = false;
+  in_loop_ = false;
+  nonvoid_function_ = false;
+  return_statement_ = false;
 }
 
 void ASTNodeFullVisitor::Visit(const AssignmentNode &node) { }
@@ -33,9 +36,24 @@ void ASTNodeFullVisitor::Visit(const CompoundNode &node) {
   }
 }
 
-void ASTNodeFullVisitor::Visit(const ContinueNode &node) { }
+void ASTNodeFullVisitor::Visit(const ContinueNode &node) { 
+  if (!in_loop_) {
+    std::string message = "CONTINUE statement outside of LOOP";
+    administrator_->messenger()->AddError(filename_, node.line_number(), message);
+    error_free_ = false;
+  }
+}
+
 void ASTNodeFullVisitor::Visit(const DeclarationNode &node) { }
-void ASTNodeFullVisitor::Visit(const ExitNode &node) { }
+
+void ASTNodeFullVisitor::Visit(const ExitNode &node) { 
+  if (!in_loop_) {
+    std::string message = "Exit statement outside of LOOP";
+    administrator_->messenger()->AddError(filename_, node.line_number(), message);
+    error_free_ = false;
+  }
+}
+
 void ASTNodeFullVisitor::Visit(const ExpressionNode &node) { }
 
 void ASTNodeFullVisitor::Visit(const FunctionDeclarationNode &node) {
@@ -43,19 +61,35 @@ void ASTNodeFullVisitor::Visit(const FunctionDeclarationNode &node) {
   if (node.parameters() != NULL) {
     ++depth_;
     node.parameters()->Accept(this);
+    nonvoid_function_ = true;
     --depth_;
   }
   // Continue onto the compound
   node.compound()->Accept(this);
+
+  nonvoid_function_ = false;
 
   if (node.next_node()) {
     node.next_node()->Accept(this);
   }
 }
 
-void ASTNodeFullVisitor::Visit(const IfNode &node) { }
+void ASTNodeFullVisitor::Visit(const IfNode &node) { 
+  // Check the that the if expression is 
+}
+
 void ASTNodeFullVisitor::Visit(const LiteralNode &node) { }
-void ASTNodeFullVisitor::Visit(const LoopNode &node) { }
+
+void ASTNodeFullVisitor::Visit(const LoopNode &node) { 
+  ++depth_;
+  in_loop_ = true;
+
+  node.statements()->Accept(this);
+
+  --depth_;
+  in_loop_ = false;
+}
+
 void ASTNodeFullVisitor::Visit(const NullNode &node) { }
 
 void ASTNodeFullVisitor::Visit(const ParameterNode &node) {
@@ -84,7 +118,16 @@ void ASTNodeFullVisitor::Visit(const ProgramNode &node) {
   node.declaration_node()->Accept(this);
 }
 
-void ASTNodeFullVisitor::Visit(const ReturnNode &node) { }
+void ASTNodeFullVisitor::Visit(const ReturnNode &node) {
+  // If we are in a nonvoid function and there is no return expression
+  // report an error.
+  if (nonvoid_function_ && !node.expression()) {
+
+  } else {
+
+  }
+}
+
 void ASTNodeFullVisitor::Visit(const StatementNode &node) { }
 void ASTNodeFullVisitor::Visit(const UnaryNode &node) { }
 
@@ -130,4 +173,10 @@ void ASTNodeFullVisitor::PopStack() {
     // Pop this element
     symbol_table_->identifier_table_.pop_back();
   }
+}
+
+Token::TokenName ASTNodeFullVisitor::EvaluateExpression(const ExpressionNode &node) {
+
+
+  return Token::ERROR;
 }

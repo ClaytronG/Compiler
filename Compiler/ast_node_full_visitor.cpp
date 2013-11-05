@@ -75,7 +75,16 @@ void ASTNodeFullVisitor::Visit(const FunctionDeclarationNode &node) {
 }
 
 void ASTNodeFullVisitor::Visit(const IfNode &node) { 
-  // Check the that the if expression is 
+  // Check the that the if expression is of BOOLEAN
+
+
+  // Move on to the if statement
+  node.then_statement()->Accept(this);
+
+  // If there is an else statement visit it
+  if (node.else_statement()) {
+    node.else_statement()->Accept(this);
+  }
 }
 
 void ASTNodeFullVisitor::Visit(const LiteralNode &node) { }
@@ -119,16 +128,25 @@ void ASTNodeFullVisitor::Visit(const ProgramNode &node) {
 }
 
 void ASTNodeFullVisitor::Visit(const ReturnNode &node) {
-  // If we are in a nonvoid function and there is no return expression
-  // report an error.
-  if (nonvoid_function_ && !node.expression()) {
+  // Check if we're in a nonvoid function
+  if (nonvoid_function_) {
+    // If we're in a nonvoid function and there is no return expression, report
+    // an error
+    if (!node.expression()) {
+      std::string message = "Return statement missing expression";
+      administrator_->messenger()->AddError(filename_, node.line_number(), message);
+      error_free_ = false;
+    }
+    // If there is a return expression make sure it is returning the correct
+    // type for the function.
+    else {
 
-  } else {
-
+    }
   }
 }
 
 void ASTNodeFullVisitor::Visit(const StatementNode &node) { }
+
 void ASTNodeFullVisitor::Visit(const UnaryNode &node) { }
 
 void ASTNodeFullVisitor::Visit(const VariableDeclarationNode &node) { 

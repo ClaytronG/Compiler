@@ -62,7 +62,7 @@ void SemanticAnalyzer::PrintSymbolTable(const SymbolTable &table) {
   printf("\nAccess Table:\n");
   printf("Identifier: LexI: IdI\n");
   count = 0;
-  for (int i = 0; i < table.acces_table_.size(); ++i) {
+  for (unsigned int i = 0; i < table.acces_table_.size(); ++i) {
     printf("%-12s%-6i%-4i\n", Administrator::spelling_table[i].c_str(), i, table.acces_table_.at(i));
   }
 }

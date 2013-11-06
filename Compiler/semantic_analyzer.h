@@ -14,7 +14,7 @@ public:
   struct SymbolTable {
     struct IdentificationTableEntry {
       int L;                          // Block Level
-      const ASTNode *DecPtr;  // Pointer to declaration node in the AST
+      ASTNode *DecPtr;                // Pointer to declaration node in the AST
       int Next;                       // Next closest declaration
       int LexI;                       // Spelling table entry
     };

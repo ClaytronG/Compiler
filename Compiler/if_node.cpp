@@ -29,7 +29,7 @@ IfNode::~IfNode() {
   delete then_statement_;
 }
 
-void IfNode::Accept(ASTNodeVisitor *visitor) const {
+void IfNode::Accept(ASTNodeVisitor *visitor) {
   visitor->Visit(*this);
 }
 

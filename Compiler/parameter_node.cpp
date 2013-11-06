@@ -35,7 +35,7 @@ ParameterNode::~ParameterNode() {
   delete next_parameter_;
 }
 
-void ParameterNode::Accept(ASTNodeVisitor *visitor) const {
+void ParameterNode::Accept(ASTNodeVisitor *visitor) {
   visitor->Visit(*this);
 }
 

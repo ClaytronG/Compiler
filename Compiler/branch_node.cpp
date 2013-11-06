@@ -19,7 +19,7 @@ BranchNode::~BranchNode() {
   delete expression_;
 }
 
-void BranchNode::Accept(ASTNodeVisitor *visitor) const {
+void BranchNode::Accept(ASTNodeVisitor *visitor) {
   visitor->Visit(*this);
 }
 

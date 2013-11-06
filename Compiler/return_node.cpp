@@ -16,7 +16,7 @@ ReturnNode::~ReturnNode() {
   delete expression_;
 }
 
-void ReturnNode::Accept(ASTNodeVisitor *visitor) const {
+void ReturnNode::Accept(ASTNodeVisitor *visitor) {
   visitor->Visit(*this);
 }
 

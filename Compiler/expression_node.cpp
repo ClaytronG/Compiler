@@ -4,6 +4,6 @@
 
 #include "ast_node.h"
 
-void ExpressionNode::Accept(ASTNodeVisitor *visitor) const {
+void ExpressionNode::Accept(ASTNodeVisitor *visitor) {
   visitor->Visit(*this);
 }

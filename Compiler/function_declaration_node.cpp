@@ -30,7 +30,7 @@ FunctionDeclarationNode::FunctionDeclarationNode(const int identifier,
   compound_ = NULL;
 }
 
-void FunctionDeclarationNode::Accept(ASTNodeVisitor *visitor) const {
+void FunctionDeclarationNode::Accept(ASTNodeVisitor *visitor) {
   visitor->Visit(*this);
 }
 

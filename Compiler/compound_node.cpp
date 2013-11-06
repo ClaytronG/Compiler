@@ -25,7 +25,7 @@ CompoundNode::~CompoundNode() {
   delete statements_;
 }
 
-void CompoundNode::Accept(ASTNodeVisitor *visitor) const {
+void CompoundNode::Accept(ASTNodeVisitor *visitor) {
   visitor->Visit(*this); 
 }
 

@@ -36,7 +36,7 @@ BinaryNode::~BinaryNode() {
   delete right_expression_;
 }
 
-void BinaryNode::Accept(ASTNodeVisitor *visitor) const {
+void BinaryNode::Accept(ASTNodeVisitor *visitor) {
   visitor->Visit(*this);
 }
 

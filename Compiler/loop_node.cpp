@@ -12,7 +12,7 @@ LoopNode::~LoopNode() {
   delete statements_;
 }
 
-void LoopNode::Accept(ASTNodeVisitor *visitor) const {
+void LoopNode::Accept(ASTNodeVisitor *visitor) {
   visitor->Visit(*this);
 }
 

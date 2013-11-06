@@ -27,7 +27,7 @@ VariableNode::~VariableNode() {
   delete array_expression_;
 }
 
-void VariableNode::Accept(ASTNodeVisitor *visitor) const {
+void VariableNode::Accept(ASTNodeVisitor *visitor) {
   visitor->Visit(*this);
 }
 

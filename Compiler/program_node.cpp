@@ -16,7 +16,7 @@ ProgramNode::~ProgramNode() {
   delete declaration_node_;
 }
 
-void ProgramNode::Accept(ASTNodeVisitor *visitor) const {
+void ProgramNode::Accept(ASTNodeVisitor *visitor) {
   visitor->Visit(*this);
 }
 

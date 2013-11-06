@@ -39,7 +39,7 @@ VariableDeclarationNode::~VariableDeclarationNode() {
   delete next_variable_declaration_;
 }
 
-void VariableDeclarationNode::Accept(ASTNodeVisitor *visitor) const {
+void VariableDeclarationNode::Accept(ASTNodeVisitor *visitor) {
   visitor->Visit(*this);
 }
 

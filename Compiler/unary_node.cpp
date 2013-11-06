@@ -26,7 +26,7 @@ UnaryNode::~UnaryNode() {
   delete expression_;
 }
 
-void UnaryNode::Accept(ASTNodeVisitor *visitor) const {
+void UnaryNode::Accept(ASTNodeVisitor *visitor) {
   visitor->Visit(*this);
   expression_->Accept(visitor);
 }

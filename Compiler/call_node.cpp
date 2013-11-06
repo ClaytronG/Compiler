@@ -23,7 +23,7 @@ CallNode::~CallNode() {
   delete arguments_;
 }
 
-void CallNode::Accept(ASTNodeVisitor *visitor) const {
+void CallNode::Accept(ASTNodeVisitor *visitor) {
   visitor->Visit(*this);
 }
 

@@ -33,7 +33,7 @@ AssignmentNode::~AssignmentNode() {
   delete value_;
 }
 
-void AssignmentNode::Accept(ASTNodeVisitor *visitor) const {
+void AssignmentNode::Accept(ASTNodeVisitor *visitor) {
   visitor->Visit(*this);
 }
 

@@ -4,7 +4,7 @@
 
 #include "ast_node.h"
 
-void DeclarationNode::Accept(ASTNodeVisitor *visitor) const {
+void DeclarationNode::Accept(ASTNodeVisitor *visitor) {
   visitor->Visit(*this);
 }
 

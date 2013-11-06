@@ -19,54 +19,55 @@ class Token {
  public:
   // A list of all of the symbolic names of the tokens in the C*13 language.
 	enum TokenName {
-		AND,	
-		BOOL, 
-		BRANCH,
-		CASE,
-		CONTINUE,
-		DEFAULT,
-		ELSE,
-		END,
-		EXIT,
-		IF,
-		INT,
-		LOOP,
-		MOD,
+    AND,
+    BOOL,
+    BRANCH,
+    CASE,
+    CONTINUE,
+    DEFAULT,
+    ELSE,
+    END,
+    EXIT,
+    IF,
+    INT,
+    LOOP,
+    MOD,
     NOT,
-		OR,
-		REF,
-		RETURN,
-		VOID,
-		// -------------
-		ID,			  // identifier
-		NUM,		  // numeral
-		BLIT,		  // boolean literal ('true', 'false') 
-		ENDFILE,	// end of source text (added by scanner)
-		ERROR,		// erroneous token
-		// -------------
-		PLUS,		  // '+'
-		MINUS,		// '-'
-		MULT,		  // '*'
-		DIV,		  // '/'
-		ANDTHEN,	// '&&'
-		ORELSE,		// '||'
-		LT,			  // '<'
-		LTEQ,		  // '<='
-		GT,			  // '>'
-		GTEQ,		  // '>='
-		EQ,			  // '='
-		NEQ,		  // '/='
-		ASSIGN,		// ':='
-		SEMI,		  // ';'
+    OR,
+    REF,
+    RETURN,
+    VOID,
+    // -------------
+    ID,			  // identifier
+    NUM,		  // numeral
+    BLIT,		  // boolean literal ('true', 'false') 
+    ENDFILE,	// end of source text (added by scanner)
+    ERROR,		// erroneous token
+    // -------------
+    PLUS,		  // '+'
+    MINUS,		// '-'
+    MULT,		  // '*'
+    DIV,		  // '/'
+    ANDTHEN,	// '&&'
+    ORELSE,		// '||'
+    LT,			  // '<'
+    LTEQ,		  // '<='
+    GT,			  // '>'
+    GTEQ,		  // '>='
+    EQ,			  // '='
+    NEQ,		  // '/='
+    ASSIGN,		// ':='
+    SEMI,		  // ';'
     COLON,    // ':'
-		COMMA,		// ','
-		LPAREN,		// '('
-		RPAREN,		// ')'
-		LSQR,		  // '['
-		RSQR,		  // ']'
-		LCRLY,		// '{'
-		RCRLY,	  // '}'
-    LAST_TOKEN_NAME // Used for iterating over the TokenName enum
+    COMMA,		// ','
+    LPAREN,		// '('
+    RPAREN,		// ')'
+    LSQR,		  // '['
+    RSQR,		  // ']'
+    LCRLY,		// '{'
+    RCRLY,	  // '}'
+    LAST_TOKEN_NAME, // Used for iterating over the TokenName enum
+    UNIVERSAL
 	};
 
   // A token can be a STD_TOKEN, WORD_TOKEN, or a NUM_TOKEN. A STD_TOKEN is a

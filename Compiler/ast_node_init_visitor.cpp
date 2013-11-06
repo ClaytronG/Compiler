@@ -7,11 +7,11 @@ ASTNodeInitVisitor::ASTNodeInitVisitor(SymbolTable *symbol_table, const std::str
   error_free_ = true;
 }
 
-void ASTNodeInitVisitor::Visit(const ProgramNode &node) {
+void ASTNodeInitVisitor::Visit(ProgramNode &node) {
   node.declaration_node()->Accept(this);
 }
 
-void ASTNodeInitVisitor::Visit(const FunctionDeclarationNode &node) {
+void ASTNodeInitVisitor::Visit(FunctionDeclarationNode &node) {
   // Check to see if this is a double definition
   if (symbol_table_->acces_table_.at(node.identifier()) == 0) {
     IdentificationTableEntry entry;
@@ -33,7 +33,7 @@ void ASTNodeInitVisitor::Visit(const FunctionDeclarationNode &node) {
   }
 }
 
-void ASTNodeInitVisitor::Visit(const VariableDeclarationNode &node) {
+void ASTNodeInitVisitor::Visit(VariableDeclarationNode &node) {
   if (symbol_table_->acces_table_.at(node.identifier()) == 0) {
     // Check to see if the array expression is an integer and can be statically defined
     // i.e. no variables in the expression
@@ -63,23 +63,23 @@ void ASTNodeInitVisitor::Visit(const VariableDeclarationNode &node) {
 }
 
 // These nodes aren't traversed
-void ASTNodeInitVisitor::Visit(const VariableNode &node) { }
-void ASTNodeInitVisitor::Visit(const AssignmentNode &node) { }
-void ASTNodeInitVisitor::Visit(const ASTNode &node) { }
-void ASTNodeInitVisitor::Visit(const BinaryNode &node) { }
-void ASTNodeInitVisitor::Visit(const BranchNode &node) { }
-void ASTNodeInitVisitor::Visit(const CallNode &node) { }
-void ASTNodeInitVisitor::Visit(const CaseNode &node) { }
-void ASTNodeInitVisitor::Visit(const CompoundNode &node) { }
-void ASTNodeInitVisitor::Visit(const ContinueNode &node) { }
-void ASTNodeInitVisitor::Visit(const DeclarationNode &node) { }
-void ASTNodeInitVisitor::Visit(const ExitNode &node) { }
-void ASTNodeInitVisitor::Visit(const ExpressionNode &node) { }
-void ASTNodeInitVisitor::Visit(const IfNode &node) { }
-void ASTNodeInitVisitor::Visit(const LiteralNode &node) { }
-void ASTNodeInitVisitor::Visit(const LoopNode &node) { }
-void ASTNodeInitVisitor::Visit(const NullNode &node) { }
-void ASTNodeInitVisitor::Visit(const ParameterNode &node) { }
-void ASTNodeInitVisitor::Visit(const ReturnNode &node) { }
-void ASTNodeInitVisitor::Visit(const StatementNode &node) { }
-void ASTNodeInitVisitor::Visit(const UnaryNode &node) { }
+void ASTNodeInitVisitor::Visit(VariableNode &node) { }
+void ASTNodeInitVisitor::Visit(AssignmentNode &node) { }
+void ASTNodeInitVisitor::Visit(ASTNode &node) { }
+void ASTNodeInitVisitor::Visit(BinaryNode &node) { }
+void ASTNodeInitVisitor::Visit(BranchNode &node) { }
+void ASTNodeInitVisitor::Visit(CallNode &node) { }
+void ASTNodeInitVisitor::Visit(CaseNode &node) { }
+void ASTNodeInitVisitor::Visit(CompoundNode &node) { }
+void ASTNodeInitVisitor::Visit(ContinueNode &node) { }
+void ASTNodeInitVisitor::Visit(DeclarationNode &node) { }
+void ASTNodeInitVisitor::Visit(ExitNode &node) { }
+void ASTNodeInitVisitor::Visit(ExpressionNode &node) { }
+void ASTNodeInitVisitor::Visit(IfNode &node) { }
+void ASTNodeInitVisitor::Visit(LiteralNode &node) { }
+void ASTNodeInitVisitor::Visit(LoopNode &node) { }
+void ASTNodeInitVisitor::Visit(NullNode &node) { }
+void ASTNodeInitVisitor::Visit(ParameterNode &node) { }
+void ASTNodeInitVisitor::Visit(ReturnNode &node) { }
+void ASTNodeInitVisitor::Visit(StatementNode &node) { }
+void ASTNodeInitVisitor::Visit(UnaryNode &node) { }

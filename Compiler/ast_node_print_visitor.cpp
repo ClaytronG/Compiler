@@ -16,7 +16,7 @@ ASTNodePrintVisitor::ASTNodePrintVisitor(Messenger *messenger) {
 //       ...
 //     equals:
 //       ...
-void ASTNodePrintVisitor::Visit(const AssignmentNode &node) {
+void ASTNodePrintVisitor::Visit(AssignmentNode &node) {
   std::string message = std::string(depth_*2, ' ');
   message += "Assignment\n";
   ++depth_;
@@ -46,7 +46,7 @@ void ASTNodePrintVisitor::Visit(const AssignmentNode &node) {
 //     right:
 //       ...
 //   ...
-void ASTNodePrintVisitor::Visit(const BinaryNode &node) {
+void ASTNodePrintVisitor::Visit(BinaryNode &node) {
   std::string message = std::string(depth_*2, ' ');
   message += "Binary Node\n";
   ++depth_;
@@ -73,7 +73,7 @@ void ASTNodePrintVisitor::Visit(const BinaryNode &node) {
 //       ...
 //     cases:
 //       ...
-void ASTNodePrintVisitor::Visit(const BranchNode &node) {
+void ASTNodePrintVisitor::Visit(BranchNode &node) {
   std::string message = std::string(depth_*2, ' ');
   message += "Branch\n";
   ++depth_;
@@ -102,7 +102,7 @@ void ASTNodePrintVisitor::Visit(const BranchNode &node) {
 //     id: add
 //     arguments:
 //       ...
-void ASTNodePrintVisitor::Visit(const CallNode &node) {
+void ASTNodePrintVisitor::Visit(CallNode &node) {
   std::string message = std::string(depth_*2, ' ');
   message += "Call\n";
   ++depth_;
@@ -128,7 +128,7 @@ void ASTNodePrintVisitor::Visit(const CallNode &node) {
 //     number: 1
 //     statement:
 //       ...
-void ASTNodePrintVisitor::Visit(const CaseNode &node) {
+void ASTNodePrintVisitor::Visit(CaseNode &node) {
   std::string message = std::string(depth_*2, ' ');
   message += "Case\n";
   ++depth_;
@@ -154,7 +154,7 @@ void ASTNodePrintVisitor::Visit(const CaseNode &node) {
 //       ...
 //     statements:
 //       ...
-void ASTNodePrintVisitor::Visit(const CompoundNode &node){ 
+void ASTNodePrintVisitor::Visit(CompoundNode &node){ 
   std::string message = std::string(depth_*2, ' ');
   message += "Compound\n";
   ++depth_;
@@ -185,7 +185,7 @@ void ASTNodePrintVisitor::Visit(const CompoundNode &node){
 
 // Prints a continue node. Exmaple:
 //   Continue
-void ASTNodePrintVisitor::Visit(const ContinueNode &node){ 
+void ASTNodePrintVisitor::Visit(ContinueNode &node){ 
   std::string message = std::string(depth_*2, ' ');
   message += "Continue\n";
   messenger_->PrintMessage(message);
@@ -193,11 +193,11 @@ void ASTNodePrintVisitor::Visit(const ContinueNode &node){
 
 // Prints a declaration node. Because there is no base declaration, this method
 // tries casting to subclasses and calls their accept.
-void ASTNodePrintVisitor::Visit(const DeclarationNode &node) {
-  const FunctionDeclarationNode *func = 
-    dynamic_cast<const FunctionDeclarationNode*>(&node);
-  const VariableDeclarationNode *variable =
-    dynamic_cast<const VariableDeclarationNode*>(&node);
+void ASTNodePrintVisitor::Visit(DeclarationNode &node) {
+  FunctionDeclarationNode *func = 
+    dynamic_cast<FunctionDeclarationNode*>(&node);
+  VariableDeclarationNode *variable =
+    dynamic_cast<VariableDeclarationNode*>(&node);
 
   if (func) {
     delete variable;
@@ -210,7 +210,7 @@ void ASTNodePrintVisitor::Visit(const DeclarationNode &node) {
 
 // Prints an exit node. Example:
 //   Exit
-void ASTNodePrintVisitor::Visit(const ExitNode &node){ 
+void ASTNodePrintVisitor::Visit(ExitNode &node){ 
   std::string message = std::string(depth_*2, ' ');
   message += "EXIT\n";
   messenger_->PrintMessage(message);
@@ -218,11 +218,11 @@ void ASTNodePrintVisitor::Visit(const ExitNode &node){
 
 // Prints an expression node. Because there is no base expression, this method
 // tries casting to subclasses and calls their Accept().
-void ASTNodePrintVisitor::Visit(const ExpressionNode &node) {
-  const BinaryNode *binary = dynamic_cast<const BinaryNode*>(&node);
-  const UnaryNode *unary = dynamic_cast<const UnaryNode*>(&node);
-  const LiteralNode *literal = dynamic_cast<const LiteralNode*>(&node);
-  const VariableNode *variable = dynamic_cast<const VariableNode*>(&node);
+void ASTNodePrintVisitor::Visit(ExpressionNode &node) {
+   BinaryNode *binary = dynamic_cast< BinaryNode*>(&node);
+  UnaryNode *unary = dynamic_cast<UnaryNode*>(&node);
+  LiteralNode *literal = dynamic_cast<LiteralNode*>(&node);
+  VariableNode *variable = dynamic_cast<VariableNode*>(&node);
 
   if (binary) {
     delete unary;
@@ -255,7 +255,7 @@ void ASTNodePrintVisitor::Visit(const ExpressionNode &node) {
 //       ...
 //     compound:
 //       ...
-void ASTNodePrintVisitor::Visit(const FunctionDeclarationNode &node){ 
+void ASTNodePrintVisitor::Visit(FunctionDeclarationNode &node){ 
   std::string message = std::string(depth_*2, ' ');
   message += "Function Declaration\n";
   ++depth_;
@@ -289,7 +289,7 @@ void ASTNodePrintVisitor::Visit(const FunctionDeclarationNode &node){
 //       ...
 //     else statement:
 //       ...
-void ASTNodePrintVisitor::Visit(const IfNode &node) {
+void ASTNodePrintVisitor::Visit(IfNode &node) {
   std::string message = std::string(depth_*2, ' ');
   message += "If Node\n";
   ++depth_;
@@ -320,7 +320,7 @@ void ASTNodePrintVisitor::Visit(const IfNode &node) {
 //   false
 // OR
 //   123
-void ASTNodePrintVisitor::Visit(const LiteralNode &node) {
+void ASTNodePrintVisitor::Visit(LiteralNode &node) {
   std::string message = std::string(depth_*2, ' ');
   if (node.boolean_literal()) {
     message += Token::kBlitStrings[node.value()] + "\n";
@@ -334,7 +334,7 @@ void ASTNodePrintVisitor::Visit(const LiteralNode &node) {
 //   Loop
 //     statement:
 //       ...
-void ASTNodePrintVisitor::Visit(const LoopNode &node){ 
+void ASTNodePrintVisitor::Visit(LoopNode &node){ 
   std::string message = std::string(depth_*2, ' ');
   message += "Loop\n";
   ++depth_;
@@ -352,7 +352,7 @@ void ASTNodePrintVisitor::Visit(const LoopNode &node){
 
 // Prints a null node. Example:
 //   Null
-void ASTNodePrintVisitor::Visit(const NullNode &node){ 
+void ASTNodePrintVisitor::Visit(NullNode &node){ 
   std::string message = std::string(depth_*2, ' ');
   message += "NULL\n";
   messenger_->PrintMessage(message);
@@ -369,8 +369,8 @@ void ASTNodePrintVisitor::Visit(const NullNode &node){
 //     id: done
 //     type: bool[]
 //   ...
-void ASTNodePrintVisitor::Visit(const ParameterNode &node){
-  const ParameterNode *param = &node;
+void ASTNodePrintVisitor::Visit(ParameterNode &node){
+  ParameterNode *param = &node;
   while (param != NULL) {
     std::string message = std::string(depth_*2, ' ');
     message += "Param\n";
@@ -395,7 +395,7 @@ void ASTNodePrintVisitor::Visit(const ParameterNode &node){
 // Prints a program node and its children. Example:
 //   Program
 //     ...
-void ASTNodePrintVisitor::Visit(const ProgramNode &node){ 
+void ASTNodePrintVisitor::Visit(ProgramNode &node){ 
   messenger_->PrintMessage("Program\n");
   DeclarationNode *current_node = node.declaration_node();
   ++depth_;
@@ -410,7 +410,7 @@ void ASTNodePrintVisitor::Visit(const ProgramNode &node){
 //   Return
 //     expression:
 //       ...
-void ASTNodePrintVisitor::Visit(const ReturnNode &node){ 
+void ASTNodePrintVisitor::Visit(ReturnNode &node){ 
   std::string message = std::string(depth_*2, ' ');
   message += "Return\n";
   if (node.expression() != NULL) {
@@ -428,17 +428,17 @@ void ASTNodePrintVisitor::Visit(const ReturnNode &node){
 
 // Prints a statement node. Because there is no base statement, this method
 // tries casting to subclasses and calls their Accept().
-void ASTNodePrintVisitor::Visit(const StatementNode &node) {
-  const AssignmentNode *assign = dynamic_cast<const AssignmentNode*>(&node);
-  const IfNode *if_statement = dynamic_cast<const IfNode*>(&node);
-  const LoopNode *loop = dynamic_cast<const LoopNode*>(&node);
-  const ReturnNode *return_statement = dynamic_cast<const ReturnNode*>(&node);
-  const BranchNode *branch = dynamic_cast<const BranchNode*>(&node);
-  const CaseNode *case_statement = dynamic_cast<const CaseNode*>(&node);
-  const ExitNode *exit = dynamic_cast<const ExitNode*>(&node);
-  const ContinueNode *continue_statement = 
-    dynamic_cast<const ContinueNode*>(&node);
-  const NullNode *null_statement = dynamic_cast<const NullNode*>(&node);
+void ASTNodePrintVisitor::Visit(StatementNode &node) {
+  AssignmentNode *assign = dynamic_cast<AssignmentNode*>(&node);
+  IfNode *if_statement = dynamic_cast<IfNode*>(&node);
+  LoopNode *loop = dynamic_cast<LoopNode*>(&node);
+  ReturnNode *return_statement = dynamic_cast<ReturnNode*>(&node);
+  BranchNode *branch = dynamic_cast<BranchNode*>(&node);
+  CaseNode *case_statement = dynamic_cast<CaseNode*>(&node);
+  ExitNode *exit = dynamic_cast<ExitNode*>(&node);
+  ContinueNode *continue_statement = 
+    dynamic_cast<ContinueNode*>(&node);
+  NullNode *null_statement = dynamic_cast<NullNode*>(&node);
 
   if (assign) {
     delete if_statement;
@@ -538,7 +538,7 @@ void ASTNodePrintVisitor::Visit(const StatementNode &node) {
 //     op: MINUS
 //     expression:
 //       ...
-void ASTNodePrintVisitor::Visit(const UnaryNode &node) {
+void ASTNodePrintVisitor::Visit(UnaryNode &node) {
   std::string message = std::string(depth_*2, ' ');
   message += "Unary Node\n";
   ++depth_;
@@ -563,12 +563,12 @@ void ASTNodePrintVisitor::Visit(const UnaryNode &node) {
 //       id: y
 //       type: int
 //     ...
-void ASTNodePrintVisitor::Visit(const VariableDeclarationNode &node){ 
+void ASTNodePrintVisitor::Visit(VariableDeclarationNode &node){ 
   std::string message = std::string(depth_*2, ' ');
   message += "Variable Declaration\n";
   messenger_->PrintMessage(message);
   ++depth_;
-  const VariableDeclarationNode *current_var = &node;
+  VariableDeclarationNode *current_var = &node;
   while (current_var != NULL) {
     message = std::string(depth_*2, ' ');
     message += "var:\n";
@@ -601,7 +601,7 @@ void ASTNodePrintVisitor::Visit(const VariableDeclarationNode &node){
 //     id: x
 //     array expression:
 //       ...
-void ASTNodePrintVisitor::Visit(const VariableNode &node){ 
+void ASTNodePrintVisitor::Visit(VariableNode &node){ 
   std::string message = std::string(depth_*2, ' ');
   message += "Variable\n";
   ++depth_;

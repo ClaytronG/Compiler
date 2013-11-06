@@ -26,7 +26,7 @@ CaseNode::~CaseNode() {
   delete statement_;
 }
 
-void CaseNode::Accept(ASTNodeVisitor *visitor) const {
+void CaseNode::Accept(ASTNodeVisitor *visitor) {
   visitor->Visit(*this);
 }
 

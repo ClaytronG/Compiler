@@ -4,6 +4,6 @@
 
 #include "ast_node.h"
 
-void ContinueNode::Accept(ASTNodeVisitor *visitor) const {
+void ContinueNode::Accept(ASTNodeVisitor *visitor) {
   visitor->Visit(*this);
 }

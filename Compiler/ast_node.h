@@ -22,7 +22,7 @@ public:
   void set_next_node(ASTNode *next_node);
 
   //
-  virtual void Accept(ASTNodeVisitor *visitor) const = 0;
+  virtual void Accept(ASTNodeVisitor *visitor) = 0;
 
   //
   void set_line_number(const int line_number);
@@ -49,7 +49,7 @@ public:
   ~DeclarationNode() { }
 
   //
-  void Accept(ASTNodeVisitor *visitor) const;
+  void Accept(ASTNodeVisitor *visitor);
 
   // Returns the index of this declaration's string ID in the spelling table.
   int identifier() const {
@@ -100,7 +100,7 @@ public:
   ~ProgramNode();
 
   //
-  void Accept(ASTNodeVisitor *visitor) const;
+  void Accept(ASTNodeVisitor *visitor);
 
   // Get the pointer to the first declaration in this program.
   DeclarationNode *declaration_node() const;
@@ -131,7 +131,7 @@ public:
   ~ParameterNode();
 
   //
-  void Accept(ASTNodeVisitor *visitor) const;
+  void Accept(ASTNodeVisitor *visitor);
 
   // Returns true if this is an array parameter.
   bool array_parameter() const {
@@ -198,13 +198,13 @@ private:
 class StatementNode : public virtual ASTNode {
 public:
   //
-  virtual void Accept(ASTNodeVisitor *visitor) const;
+  virtual void Accept(ASTNodeVisitor *visitor);
 };
 
 class ExpressionNode : public virtual ASTNode {
 public:
   //
-  void Accept(ASTNodeVisitor *visitor) const;
+  void Accept(ASTNodeVisitor *visitor);
 };
 
 class VariableDeclarationNode : public DeclarationNode {
@@ -231,7 +231,7 @@ public:
   ~VariableDeclarationNode();
   
   //
-  void Accept(ASTNodeVisitor *visitor) const;
+  void Accept(ASTNodeVisitor *visitor);
 
   //
   ExpressionNode *array_expression() const;
@@ -249,6 +249,16 @@ public:
   void set_next_variable_declaration(
       VariableDeclarationNode *next_variable_declaration);
 
+  //
+  void set_index(const int index) {
+    index_ = index;
+  }
+
+  //
+  int index() const {
+    return index_;
+  }
+
 private:
   //
   ExpressionNode *array_expression_;
@@ -258,6 +268,9 @@ private:
 
   // Pointer to the next variable of the same type but different identifier.
   VariableDeclarationNode *next_variable_declaration_;
+
+  //
+  int index_;
 };
 
 class CompoundNode : public StatementNode {
@@ -275,7 +288,7 @@ public:
   ~CompoundNode();
   
   //
-  void Accept(ASTNodeVisitor *visitor) const;
+  void Accept(ASTNodeVisitor *visitor);
 
   //
   VariableDeclarationNode *local_variables() const;
@@ -317,7 +330,7 @@ public:
   ~FunctionDeclarationNode();
   
   //
-  void Accept(ASTNodeVisitor *visitor) const;
+  void Accept(ASTNodeVisitor *visitor);
 
   //
   CompoundNode *compound() const;
@@ -371,7 +384,7 @@ public:
   ~AssignmentNode();
   
   //
-  void Accept(ASTNodeVisitor *visitor) const;
+  void Accept(ASTNodeVisitor *visitor);
 
   //
   bool array_assignment() const {
@@ -437,7 +450,7 @@ public:
   ~IfNode();
   
   //
-  void Accept(ASTNodeVisitor *visitor) const;
+  void Accept(ASTNodeVisitor *visitor);
 
   //
   StatementNode *else_statement() const;
@@ -477,7 +490,7 @@ public:
   ~LoopNode();
 
   //
-  void Accept(ASTNodeVisitor *visitor) const;
+  void Accept(ASTNodeVisitor *visitor);
 
   //
   void set_statements(StatementNode *statement);
@@ -502,7 +515,7 @@ public:
   ~ReturnNode();
   
   //
-  void Accept(ASTNodeVisitor *visitor) const;
+  void Accept(ASTNodeVisitor *visitor);
 
   //
   ExpressionNode *expression() const;
@@ -531,7 +544,7 @@ public:
   ~CaseNode();
 
   //
-  void Accept(ASTNodeVisitor *visitor) const;
+  void Accept(ASTNodeVisitor *visitor);
 
   //
   int case_number() const {
@@ -578,7 +591,7 @@ public:
   ~BranchNode();
   
   //
-  void Accept(ASTNodeVisitor *visitor) const;
+  void Accept(ASTNodeVisitor *visitor);
 
   //
   CaseNode *cases() const;
@@ -606,7 +619,7 @@ public:
   ~ExitNode() { }
 
   //
-  void Accept(ASTNodeVisitor *visitor) const;
+  void Accept(ASTNodeVisitor *visitor);
 };
 
 class ContinueNode : public StatementNode {
@@ -615,7 +628,7 @@ public:
   ~ContinueNode() { }
   
   //
-  void Accept(ASTNodeVisitor *visitor) const;
+  void Accept(ASTNodeVisitor *visitor);
 };
 
 class NullNode : public StatementNode {
@@ -624,7 +637,7 @@ public:
   ~NullNode() { }
   
   //
-  void Accept(ASTNodeVisitor *visitor) const;
+  void Accept(ASTNodeVisitor *visitor);
 };
 
 class BinaryNode : public ExpressionNode {
@@ -646,7 +659,7 @@ public:
   ~BinaryNode();
   
   //
-  void Accept(ASTNodeVisitor *visitor) const;
+  void Accept(ASTNodeVisitor *visitor);
 
   //
   ExpressionNode *left_expression() const;
@@ -695,7 +708,7 @@ public:
   ~UnaryNode();
   
   //
-  void Accept(ASTNodeVisitor *visitor) const;
+  void Accept(ASTNodeVisitor *visitor);
   
   //
   ExpressionNode *expression() const;
@@ -732,7 +745,7 @@ public:
   ~LiteralNode() { }
   
   //
-  void Accept(ASTNodeVisitor *visitor) const;
+  void Accept(ASTNodeVisitor *visitor);
 
   //
   bool boolean_literal() const {
@@ -784,7 +797,7 @@ public:
   ~VariableNode();
   
   //
-  void Accept(ASTNodeVisitor *visitor) const;
+  void Accept(ASTNodeVisitor *visitor);
 
   //
   ExpressionNode *array_expression() const;
@@ -820,6 +833,16 @@ public:
   //
   void set_declaration_pointer(DeclarationNode *declaration_pointer);
 
+  //
+  void set_array_index(const int index) {
+    index_ = index;
+  }
+
+  //
+  int get_array_index() const {
+    return index_;
+  }
+
 private:
   //
   DeclarationNode *declaration_pointer_;
@@ -832,6 +855,9 @@ private:
 
   //
   int identifier_;
+
+  //
+  int index_;
 };
 
 class CallNode : public ExpressionNode, public StatementNode {
@@ -849,7 +875,7 @@ public:
   ~CallNode();
   
   //
-  void Accept(ASTNodeVisitor *visitor) const;
+  void Accept(ASTNodeVisitor *visitor);
 
   //
   ExpressionNode *arguments() const;

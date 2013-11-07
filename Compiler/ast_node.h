@@ -203,8 +203,25 @@ public:
 
 class ExpressionNode : public virtual ASTNode {
 public:
+  ExpressionNode() {
+    type_ = Token::UNIVERSAL;
+  }
+
   //
   void Accept(ASTNodeVisitor *visitor);
+
+  //
+  Token::TokenName type() const {
+    return type_;
+  }
+
+  //
+  void set_type(const Token::TokenName type) {
+    type_ = type;
+  }
+
+private:
+  Token::TokenName type_;
 };
 
 class VariableDeclarationNode : public DeclarationNode {

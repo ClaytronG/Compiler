@@ -41,11 +41,25 @@ void ASTNodeFullVisitor::Visit(AssignmentNode &node) {
 
 void ASTNodeFullVisitor::Visit(ASTNode &node) { }
 
-void ASTNodeFullVisitor::Visit(BinaryNode &node) { }
+void ASTNodeFullVisitor::Visit(BinaryNode &node) { 
+  node.left_expression()->Accept(this);
+  Token::TokenName left_type = node.left_expression()->type();
+  node.right_expression()->Accept(this);
+  Token::TokenName right_type = node.right_expression()->type();
+
+  if (left_type != right_type) {
+
+  }
+}
 
 void ASTNodeFullVisitor::Visit(BranchNode &node) { 
   // TODO check if branch's expression resolves to INT
-
+  node.expresion()->Accept(this);
+  if (node.expresion()->type() != Token::INT || node.expresion()->type() != Token::UNIVERSAL) {
+    std::string message = "BRANCH expression must be of type INT";
+    administrator_->messenger()->AddError(filename_, node.line_number(), message);
+    error_free_ = false;
+  }
 
   // Check the cases
   node.cases()->Accept(this);
@@ -135,7 +149,7 @@ void ASTNodeFullVisitor::Visit(DeclarationNode &node) { }
 
 void ASTNodeFullVisitor::Visit(ExitNode &node) { 
   if (!in_loop_) {
-    std::string message = "Exit statement outside of LOOP";
+    std::string message = "EXIT statement outside of LOOP";
     administrator_->messenger()->AddError(filename_, node.line_number(), message);
     error_free_ = false;
   }
@@ -169,7 +183,12 @@ void ASTNodeFullVisitor::Visit(FunctionDeclarationNode &node) {
 
 void ASTNodeFullVisitor::Visit(IfNode &node) { 
   // Check the that the if expression is of BOOLEAN
-
+  node.expression()->Accept(this);
+  if (node.expression()->type() != Token::BOOL) {
+    std::string message = "If expression must be of type BOOL";
+    administrator_->messenger()->AddError(filename_, node.line_number(), message);
+    error_free_ = false;
+  }
 
   // Move on to the if statement
   node.then_statement()->Accept(this);
@@ -180,7 +199,14 @@ void ASTNodeFullVisitor::Visit(IfNode &node) {
   }
 }
 
-void ASTNodeFullVisitor::Visit(LiteralNode &node) { }
+void ASTNodeFullVisitor::Visit(LiteralNode &node) { 
+  if (node.boolean_literal()) {
+    node.set_type(Token::BOOL);
+  }
+  else if (node.number_literal()) {
+    node.set_type(Token::INT);
+  }
+}
 
 void ASTNodeFullVisitor::Visit(LoopNode &node) { 
   ++depth_;
@@ -195,6 +221,7 @@ void ASTNodeFullVisitor::Visit(LoopNode &node) {
   }
 
   --depth_;
+  exit_statement_ = false;
   in_loop_ = false;
 }
 
@@ -239,17 +266,25 @@ void ASTNodeFullVisitor::Visit(ReturnNode &node) {
     // If there is a return expression make sure it is returning the correct
     // type for the function.
     else {
-      // TODO get type from return expression
+      node.expression()->Accept(this);
+      if (function_return_type_ != node.expression()->type()) {
+        std::string message = "Invalid return type";
+        administrator_->messenger()->AddError(filename_, node.line_number(), message);
+        error_free_ = false;
+      }
     }
   }
 }
 
 void ASTNodeFullVisitor::Visit(StatementNode &node) { }
 
-void ASTNodeFullVisitor::Visit(UnaryNode &node) { }
+void ASTNodeFullVisitor::Visit(UnaryNode &node) {
+
+}
 
 void ASTNodeFullVisitor::Visit(VariableDeclarationNode &node) { 
-  // If we are inside of a compound, then this is a local variable declaration
+  // If we are inside of a compound, then this is a local variable declaration. InitTraversal will have taken
+  // care of global variable declarations.
   if (compound_variable_) {
     if (symbol_table_->identifier_table_.at(symbol_table_->acces_table_.at(node.identifier())).L != depth_) {
       IdentificationTableEntry entry;
@@ -278,8 +313,14 @@ void ASTNodeFullVisitor::Visit(VariableDeclarationNode &node) {
 void ASTNodeFullVisitor::Visit(VariableNode &node) {
   // Check to see if this is an array variable
   if (node.array_variable()) {
+    // Go into the expression and resolve type
+    node.array_expression()->Accept(this);
     // If it is make sure the expression resolves to an integer
-    // TODO check expression
+    if (node.array_expression()->type() != Token::INT) {
+      std::string message = "Array expression must be of type INT";
+      administrator_->messenger()->AddError(filename_, node.line_number(), message);
+      error_free_ = false;
+    }
   }
   IdentificationTableEntry entry;
   int index = symbol_table_->acces_table_.at(node.identifier());
@@ -295,10 +336,12 @@ void ASTNodeFullVisitor::Visit(VariableNode &node) {
     symbol_table_->identifier_table_.push_back(entry);
     // Update the access table
     symbol_table_->acces_table_.at(node.identifier()) = symbol_table_->identifier_table_.size() - 1;
+    node.set_type(Token::UNIVERSAL);
   }
   else {
     // Link this variable with its declaration
     node.set_declaration_pointer(dynamic_cast<DeclarationNode*>(symbol_table_->identifier_table_.at(index).DecPtr));
+    node.set_type(node.declaration_pointer()->type());
   }
   // gross
   expression_return_type = dynamic_cast<const VariableDeclarationNode*>(symbol_table_->identifier_table_.at(symbol_table_->acces_table_.at(node.identifier())).DecPtr)->type();

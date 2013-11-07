@@ -22,6 +22,15 @@ void ASTNodeFullVisitor::Visit(AssignmentNode &node) {
     std::string message = "Undeclared identifier";
     administrator_->messenger()->AddError(filename_, node.line_number(), message);
     error_free_ = false;
+    // If it is an array, check that expression
+    if (node.array_assignment()) {
+      node.array_expression()->Accept(this);
+      if (node.array_expression()->type() != Token::INT) {
+        std::string message = "Array expression must be of type INT";
+        administrator_->messenger()->AddError(filename_, node.line_number(), message);
+        error_free_ = false;
+      }
+    }
     // Add it to the symbol table to avoid more errors
     IdentificationTableEntry entry;
     entry.L = depth_;
@@ -34,8 +43,24 @@ void ASTNodeFullVisitor::Visit(AssignmentNode &node) {
     symbol_table_->identifier_table_.push_back(entry);
   }
   // Otherwise it's been defined the assignment type should be checked
-  else {
-    // TODO match assignment type
+  else {    
+    // If it is an array, check that expression
+    if (node.array_assignment()) {
+      node.array_expression()->Accept(this);
+      if (node.array_expression()->type() != Token::INT) {
+        std::string message = "Array expression must be of type INT";
+        administrator_->messenger()->AddError(filename_, node.line_number(), message);
+        error_free_ = false;
+      }
+    }
+    
+    node.value()->Accept(this);
+    Token::TokenName type = dynamic_cast<DeclarationNode*>(symbol_table_->identifier_table_.at(symbol_table_->acces_table_.at(node.identifier())).DecPtr)->type();
+    if (type != node.value()->type()) {
+      std::string message = "Invalid assignment type";
+      administrator_->messenger()->AddError(filename_, node.line_number(), message);
+      error_free_ = false;
+    }
   }
 }
 
@@ -48,7 +73,15 @@ void ASTNodeFullVisitor::Visit(BinaryNode &node) {
   Token::TokenName right_type = node.right_expression()->type();
 
   if (left_type != right_type) {
-
+    if (left_type == Token::UNIVERSAL) {
+      node.set_type(right_type);
+    }
+    else {
+      node.set_type(left_type);
+    }
+  }
+  else {
+    node.set_type(left_type);
   }
 }
 
@@ -361,8 +394,8 @@ void ASTNodeFullVisitor::PopStack() {
   }
 }
 
-Token::TokenName ASTNodeFullVisitor::EvaluateExpression(const ExpressionNode &node) {
-
-
-  return Token::ERROR;
+void ASTNodeFullVisitor::AddNode(ASTNode *node) {
+  IdentificationTableEntry entry;
+  entry.L = depth_;
+  entry.DecPtr = NULL;
 }

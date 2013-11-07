@@ -42,8 +42,7 @@ public:
 private:
   typedef SemanticAnalyzer::SymbolTable::IdentificationTableEntry IdentificationTableEntry;
 
-  // Returns NUM, BLIT, or ERROR based on the final outcome of the expression
-  Token::TokenName EvaluateExpression(const ExpressionNode &node);
+  void AddNode(ASTNode *node);
 
   void PopStack();
 

@@ -11,9 +11,9 @@ ASTNodeFullVisitor::ASTNodeFullVisitor(SymbolTable *symbol_table, const std::str
   nonvoid_function_ = false;
   return_statement_ = false;
   exit_statement_ = false;
-  function_return_type_ = Token::ERROR;
-  expression_return_type = Token::ERROR;
   default_case_ = false;
+  variable_array_expression_ = false;
+  function_return_type_ = Token::ERROR;
 }
 
 void ASTNodeFullVisitor::Visit(AssignmentNode &node) { 
@@ -56,7 +56,7 @@ void ASTNodeFullVisitor::Visit(AssignmentNode &node) {
     
     node.value()->Accept(this);
     Token::TokenName type = dynamic_cast<DeclarationNode*>(symbol_table_->identifier_table_.at(symbol_table_->acces_table_.at(node.identifier())).DecPtr)->type();
-    if (type != node.value()->type()) {
+    if (node.value()->type() != Token::UNIVERSAL && type != node.value()->type()) {
       std::string message = "Invalid assignment type";
       administrator_->messenger()->AddError(filename_, node.line_number(), message);
       error_free_ = false;
@@ -76,19 +76,62 @@ void ASTNodeFullVisitor::Visit(BinaryNode &node) {
     if (left_type == Token::UNIVERSAL) {
       node.set_type(right_type);
     }
-    else {
+    else if (right_type == Token::UNIVERSAL) {
       node.set_type(left_type);
     }
+    else {
+      std::string message = "Operands must be of the same type";
+      administrator_->messenger()->AddError(filename_, node.line_number(), message);
+      error_free_ = false;
+      // Choose the left expression for no reason
+      node.set_type(Token::UNIVERSAL);
+    }
   }
+  // Otherwise both expression are of the same type
   else {
-    node.set_type(left_type);
+    if (left_type == Token::BOOL) {
+      if (node.op() == Token::AND || node.op() == Token::ANDTHEN || node.op() == Token::OR || 
+          node.op() == Token::ORELSE || node.op() == Token::NOT || node.op() == Token::LTEQ ||
+          node.op() == Token::LT || node.op() == Token::GT || node.op() == Token::GTEQ || 
+          node.op() == Token::EQ || node.op() == Token::NEQ) {
+        node.set_type(Token::BOOL);
+      }
+      else {
+        std::string message = "Invalid operator";
+        administrator_->messenger()->AddError(filename_, node.line_number(), message);
+        error_free_ = false;
+        // TODO: What type should this be?
+        node.set_type(Token::UNIVERSAL); // ?
+      }
+    }
+    else if (left_type == Token::INT) {
+      if (node.op() == Token::PLUS || node.op() == Token::MINUS || node.op() == Token::MULT || 
+          node.op() == Token::DIV || node.op() == Token::MOD) {
+        node.set_type(Token::INT);
+      }
+      else if (node.op() == Token::LTEQ || node.op() == Token::LT || node.op() == Token::GT || 
+               node.op() == Token::GTEQ || node.op() == Token::EQ || node.op() == Token::NEQ) {
+        node.set_type(Token::BOOL);
+      }
+      else {
+        std::string message = "Invalid operator";
+        administrator_->messenger()->AddError(filename_, node.line_number(), message);
+        error_free_ = false;
+        // TODO: What type should this be?
+        node.set_type(Token::UNIVERSAL); // ?
+      }
+    }
+    // Otherwise both nodes are UNIVERSAL type, so the operator has
+    // to be as well.
+    else {
+      node.set_type(Token::UNIVERSAL);
+    }
   }
 }
 
-void ASTNodeFullVisitor::Visit(BranchNode &node) { 
-  // TODO check if branch's expression resolves to INT
+void ASTNodeFullVisitor::Visit(BranchNode &node) {
   node.expresion()->Accept(this);
-  if (node.expresion()->type() != Token::INT || node.expresion()->type() != Token::UNIVERSAL) {
+  if (node.expresion()->type() != Token::UNIVERSAL && node.expresion()->type() != Token::INT) {
     std::string message = "BRANCH expression must be of type INT";
     administrator_->messenger()->AddError(filename_, node.line_number(), message);
     error_free_ = false;
@@ -106,7 +149,6 @@ void ASTNodeFullVisitor::Visit(CallNode &node) {
     std::string message = "Function not declarared";
     administrator_->messenger()->AddError(filename_, node.line_number(), message);
     error_free_ = false;
-    expression_return_type = Token::UNIVERSAL;
     // Add this to the symbol table to avoid more errors
     IdentificationTableEntry entry;
     entry.L = depth_;
@@ -139,18 +181,25 @@ void ASTNodeFullVisitor::Visit(CaseNode &node) {
   // Otherwise it's a numbered case, check to see if the number hasn't been used yet
   else {
     auto it = case_numbers_.find(node.case_number());
-    if (it != case_numbers_.end()) {
+    // If the iterator is at the end, this is a new case number
+    if (it == case_numbers_.end()) {
+      printf("*****Inserting %d\n", node.case_number());
+      case_numbers_.insert(node.case_number());
+    }
+    // Otherwise, it is a duplicate. Report an error.
+    else {
       std::string message = "Case number already defined";
       administrator_->messenger()->AddError(filename_, node.line_number(), message);
       error_free_ = false;
-    }
-    else {
-      case_numbers_.insert(node.case_number());
     }
   }
   ++depth_;
   node.statement()->Accept(this);
   --depth_;
+
+  if (node.next_node()) {
+    node.next_node()->Accept(this);
+  }
 }
 
 void ASTNodeFullVisitor::Visit(CompoundNode &node) { 
@@ -164,7 +213,7 @@ void ASTNodeFullVisitor::Visit(CompoundNode &node) {
   node.statements()->Accept(this);
 
   --depth_;
-  SemanticAnalyzer::PrintSymbolTable(*symbol_table_);
+  administrator_->messenger()->PrintMessage(symbol_table_->ToString());
   if ((symbol_table_->identifier_table_.end() - 1)->L != 0) {
     PopStack();
   }
@@ -349,7 +398,7 @@ void ASTNodeFullVisitor::Visit(VariableNode &node) {
     // Go into the expression and resolve type
     node.array_expression()->Accept(this);
     // If it is make sure the expression resolves to an integer
-    if (node.array_expression()->type() != Token::INT) {
+    if (node.array_expression()->type() != Token::UNIVERSAL && node.array_expression()->type() != Token::INT) {
       std::string message = "Array expression must be of type INT";
       administrator_->messenger()->AddError(filename_, node.line_number(), message);
       error_free_ = false;
@@ -376,8 +425,6 @@ void ASTNodeFullVisitor::Visit(VariableNode &node) {
     node.set_declaration_pointer(dynamic_cast<DeclarationNode*>(symbol_table_->identifier_table_.at(index).DecPtr));
     node.set_type(node.declaration_pointer()->type());
   }
-  // gross
-  expression_return_type = dynamic_cast<const VariableDeclarationNode*>(symbol_table_->identifier_table_.at(symbol_table_->acces_table_.at(node.identifier())).DecPtr)->type();
 }
 
 void ASTNodeFullVisitor::PopStack() {  

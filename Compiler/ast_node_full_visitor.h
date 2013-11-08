@@ -68,11 +68,11 @@ private:
 
   Token::TokenName function_return_type_;
 
-  Token::TokenName expression_return_type;
-
   bool default_case_;
 
   std::set<int> case_numbers_;
+
+  bool variable_array_expression_;
 };
 
 #endif // COMPILER_ASTNODEFULLVISITOR_H_

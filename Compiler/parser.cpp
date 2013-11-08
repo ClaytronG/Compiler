@@ -732,6 +732,13 @@ ASTNode *Parser::LoopStmt(/*SynchSet &set*/) {
   Match(Token::LOOP/*, set*/);
   LoopNode *loop = new LoopNode(dynamic_cast<StatementNode*>(transition(
     "statement", &Parser::Statement)));
+  // There must be at least one statement in a loop node. If not report an error.
+  if (!loop->statements()) {
+    std::string message = "Missing LOOP statement";
+    administrator_->messenger()->AddError(filename_, scanner_.line_number(), message);
+    error_free_ = false;
+    return loop;
+  }
   loop->set_line_number(scanner_.line_number());
   StatementNode *node = loop->statements();
   while(lookahead_ == Token::LCRLY     || lookahead_ == Token::IF ||
@@ -906,8 +913,8 @@ ASTNode *Parser::CaseStmt(/*SynchSet &set*/) {
   //synch_.push_back(Token::DEFAULT);
   if (lookahead_ == Token::CASE) {
     Match(Token::CASE/*, set*/);
-    Match(Token::NUM/*, set*/);
     int number = lookahead_token_.value();
+    Match(Token::NUM/*, set*/);
     Match(Token::COLON/*, set*/);
     StatementNode *statement = dynamic_cast<StatementNode*>(transition(
       "statement", &Parser::Statement));

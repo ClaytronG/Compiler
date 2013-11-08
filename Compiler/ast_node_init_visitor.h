@@ -43,6 +43,8 @@ public:
 private:
   typedef SemanticAnalyzer::SymbolTable::IdentificationTableEntry IdentificationTableEntry;
 
+  bool IsValidIntOperator(const Token::TokenName op) const;
+
   SymbolTable *symbol_table_;
 
   Administrator *administrator_;

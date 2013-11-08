@@ -36,9 +36,10 @@ void ASTNodeInitVisitor::Visit(FunctionDeclarationNode &node) {
 
 void ASTNodeInitVisitor::Visit(VariableDeclarationNode &node) {
   if (symbol_table_->acces_table_.at(node.identifier()) == 0) {
-    // Check to see if the array expression is an integer and can be statically defined
+    // Check to see if the array expression is an integer and is statically defined
     // i.e. no variables in the expression
     if (node.array_expression()) {
+      static_array_expression_ = true;
       node.array_expression()->Accept(this);
       if (!static_array_expression_) {
         std::string message = "Array expression must be static";
@@ -46,6 +47,11 @@ void ASTNodeInitVisitor::Visit(VariableDeclarationNode &node) {
         error_free_ = false;
       } else {
         node.set_array_size(node.array_expression()->value());
+      }
+      if (node.array_expression()->type() != Token::INT) {
+        std::string message = "Array expression must be of type INT";
+        administrator_->messenger()->AddError(filename_, node.line_number(), message);
+        error_free_ = false;
       }
       static_array_expression_ = true;
     }
@@ -76,6 +82,67 @@ void ASTNodeInitVisitor::Visit(BinaryNode &node) {
   int left_value = node.left_expression()->value();
   node.right_expression()->Accept(this);
   int right_value = node.right_expression()->value();
+
+  // If the left are right expressions have differing types then an error may be reported
+  if (node.left_expression()->type() != node.right_expression()->type()) {
+    // If one of the expression is of UNIVERSAL type an error has already been reported
+    if (node.left_expression()->type() == Token::UNIVERSAL) {
+      node.set_type(node.right_expression()->type());
+    }
+    else if (node.right_expression()->type() == Token::UNIVERSAL) {
+      node.set_type(node.left_expression()->type());
+    }
+    // Otherwise report the error
+    else {
+      std::string message = "Operands must be of the same type";
+      administrator_->messenger()->AddError(filename_, node.line_number(), message);
+      error_free_ = false;
+      // Arbirtrarily choose the left expression
+      node.set_type(node.left_expression()->type());
+    }
+  }
+  else {
+    // Check if the expression is of type INT
+    if (node.left_expression()->type() == Token::INT) {
+      if (node.op() == Token::PLUS) {
+        node.set_value(node.left_expression()->value() + node.right_expression()->value());
+        node.set_type(Token::INT);
+      }
+      else if (node.op() == Token::MINUS) {
+        node.set_value(node.left_expression()->value() - node.right_expression()->value());
+        node.set_type(Token::INT);
+      }
+      else if (node.op() == Token::MULT) {
+        node.set_value(node.left_expression()->value() * node.right_expression()->value());
+        node.set_type(Token::INT);
+      }
+      else if (node.op() == Token::DIV) {
+        node.set_value((int)(node.left_expression()->value() / node.right_expression()->value()));
+        node.set_type(Token::INT);
+      }
+      else if (node.op() == Token::MOD) {
+        node.set_value(node.left_expression()->value() % node.right_expression()->value());
+        node.set_type(Token::INT);
+      }
+      else {
+        std::string message = "Invalid operator. Array expression must be of type INT";
+        administrator_->messenger()->AddError(filename_, node.line_number(), message);
+        error_free_ = false;
+        node.set_type(Token::INT);
+      }
+    }
+    // Otherwise the type is of BOOL
+    else {
+      std::string message = "Array expression must be of type INT";
+      administrator_->messenger()->AddError(filename_, node.line_number(), message);
+      error_free_ = false;
+      node.set_type(Token::INT);
+    }
+  }
+}
+
+bool ASTNodeInitVisitor::IsValidIntOperator(const Token::TokenName op) const {
+  return false;
 }
 
 void ASTNodeInitVisitor::Visit(CallNode &node) {

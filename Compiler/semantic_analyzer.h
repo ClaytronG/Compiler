@@ -18,7 +18,7 @@ public:
       ASTNode *DecPtr;                // Pointer to declaration node in the AST
       int Next;                       // Next closest declaration
       int LexI;                       // Spelling table entry
-    }
+    };
 
     SymbolTable();
 
@@ -30,7 +30,7 @@ public:
   private:
     //
     void InitSymbolTable();
-  }
+  };
 
   SemanticAnalyzer(ASTNode *root, const std::string &filename, Administrator *administrator);
 

@@ -297,6 +297,10 @@ public:
     return array_size_;
   }
 
+  bool array_variable() const {
+    return array_variable_;
+  }
+
 private:
   //
   ExpressionNode *array_expression_;

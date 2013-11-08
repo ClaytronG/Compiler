@@ -246,6 +246,7 @@ void ASTNodeFullVisitor::Visit(FunctionDeclarationNode &node) {
   function_return_type_ = node.type();
 
   // Add the parameter variables to the symbol table
+  nonvoid_function_ = false;
   if (node.parameters() != NULL) {
     ++depth_;
     node.parameters()->Accept(this);
@@ -368,7 +369,26 @@ void ASTNodeFullVisitor::Visit(VariableDeclarationNode &node) {
   // If we are inside of a compound, then this is a local variable declaration. InitTraversal will have taken
   // care of global variable declarations.
   if (compound_variable_) {
+    // Check to see if this identifier is already being used in this scope.
     if (symbol_table_->identifier_table_.at(symbol_table_->acces_table_.at(node.identifier())).L != depth_) {
+      // If this is an array variable
+      if (node.array_variable()) {
+        // Make sure its size is statically defined
+        variable_array_expression_ = false;
+        node.array_expression()->Accept(this);
+        if (variable_array_expression_) {
+          std::string message = "Array expression must be static";
+          administrator_->messenger()->AddError(filename_, node.line_number(), message);
+          error_free_ = false;
+          variable_array_expression_ = false;
+        }
+
+        if (node.array_expression()->type() != Token::UNIVERSAL && node.array_expression()->type() != Token::INT) {
+          std::string message = "Array expression must be of type INT";
+          administrator_->messenger()->AddError(filename_, node.line_number(), message);
+          error_free_ = false;
+        }
+      }
       IdentificationTableEntry entry;
       entry.L = depth_;
       entry.DecPtr = &node;

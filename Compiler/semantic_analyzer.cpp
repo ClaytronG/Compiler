@@ -9,7 +9,6 @@ SemanticAnalyzer::SemanticAnalyzer(ASTNode *root,
                                    Administrator *administrator) 
   : root_(root), symbol_table_(), administrator_(administrator), 
     filename_(filename) {
-  InitSymbolTable();
   error_free_ = true;
 }
 

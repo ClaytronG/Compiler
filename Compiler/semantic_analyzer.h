@@ -11,17 +11,26 @@
 class SemanticAnalyzer {
 public:
 
-  struct SymbolTable {
+  class SymbolTable {
+  public:
     struct IdentificationTableEntry {
       int L;                          // Block Level
       ASTNode *DecPtr;                // Pointer to declaration node in the AST
       int Next;                       // Next closest declaration
       int LexI;                       // Spelling table entry
-    };
+    }
+
+    SymbolTable();
+
+    std::string ToString() const;
 
     std::vector<int> acces_table_;
     std::vector<IdentificationTableEntry> identifier_table_;
-  };
+
+  private:
+    //
+    void InitSymbolTable();
+  }
 
   SemanticAnalyzer(ASTNode *root, const std::string &filename, Administrator *administrator);
 
@@ -29,11 +38,7 @@ public:
 
   void FullTraversal();
 
-  static void PrintSymbolTable(const SymbolTable &table);
-
 private:
-  //
-  void InitSymbolTable();
 
   // 
   bool error_free_;

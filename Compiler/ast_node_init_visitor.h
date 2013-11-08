@@ -50,6 +50,8 @@ private:
   std::string filename_;
 
   bool error_free_;
+
+  bool static_array_expression_;
 };
 
 #endif // COMPILER_ASTNODEINITVISITOR_H_

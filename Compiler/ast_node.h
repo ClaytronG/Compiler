@@ -205,6 +205,7 @@ class ExpressionNode : public virtual ASTNode {
 public:
   ExpressionNode() {
     type_ = Token::UNIVERSAL;
+    value_ = 0;
   }
 
   //
@@ -220,8 +221,20 @@ public:
     type_ = type;
   }
 
+  //
+  int value() const {
+    return value_;
+  }
+
+  //
+  void set_value(const int value) {
+    value_ = value;
+  }
+
 private:
   Token::TokenName type_;
+
+  int value_;
 };
 
 class VariableDeclarationNode : public DeclarationNode {
@@ -276,6 +289,14 @@ public:
     return index_;
   }
 
+  void set_array_size(const int size) {
+    array_size_ = size;
+  }
+
+  int array_size() const {
+    return array_size_;
+  }
+
 private:
   //
   ExpressionNode *array_expression_;
@@ -288,6 +309,9 @@ private:
 
   //
   int index_;
+
+  //
+  int array_size_;
 };
 
 class CompoundNode : public StatementNode {

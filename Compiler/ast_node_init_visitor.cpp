@@ -38,7 +38,7 @@ void ASTNodeInitVisitor::Visit(VariableDeclarationNode &node) {
   if (symbol_table_->acces_table_.at(node.identifier()) == 0) {
     // Check to see if the array expression is an integer and is statically defined
     // i.e. no variables in the expression
-    if (node.array_expression()) {
+    if (node.array_variable()) {
       static_array_expression_ = true;
       node.array_expression()->Accept(this);
       if (!static_array_expression_) {

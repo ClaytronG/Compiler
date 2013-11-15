@@ -41,38 +41,35 @@ void ASTNodeFullVisitor::Visit(AssignmentNode &node) {
     symbol_table_->acces_table_.at(node.identifier()) = symbol_table_->identifier_table_.size() - 1;
     // Add this variable to the identifier table
     symbol_table_->identifier_table_.push_back(entry);
-  }
-  // Otherwise it's been defined the assignment type should be checked
-  else {    
-    // If it is an array, check that expression
-    if (node.array_assignment()) {
-      node.array_expression()->Accept(this);
-      if (node.array_expression()->type() != Token::INT) {
-        std::string message = "Array expression must be of type INT";
-        administrator_->messenger()->AddError(filename_, node.line_number(), message);
-        error_free_ = false;
-      }
-    }
-    
-    node.value()->Accept(this);
-    Token::TokenName type = dynamic_cast<DeclarationNode*>(symbol_table_->identifier_table_.at(symbol_table_->acces_table_.at(node.identifier())).DecPtr)->type();
-    if (node.value()->type() != Token::UNIVERSAL && type != node.value()->type()) {
-      std::string message = "Invalid assignment type";
+  } 
+  // If it is an array, check that expression
+  if (node.array_assignment()) {
+    node.array_expression()->Accept(this);
+    if (node.array_expression()->type() != Token::INT) {
+      std::string message = "Array expression must be of type INT";
       administrator_->messenger()->AddError(filename_, node.line_number(), message);
       error_free_ = false;
     }
   }
+  
+  // Make sure the types match
+  node.value()->Accept(this);
+  Token::TokenName type = dynamic_cast<DeclarationNode*>(symbol_table_->identifier_table_.at(symbol_table_->acces_table_.at(node.identifier())).DecPtr)->type();
+  if (node.value()->type() != Token::UNIVERSAL && type != node.value()->type()) {
+    std::string message = "Invalid assignment type";
+    administrator_->messenger()->AddError(filename_, node.line_number(), message);
+    error_free_ = false;
+  }
 }
-
-void ASTNodeFullVisitor::Visit(ASTNode &node) { }
 
 void ASTNodeFullVisitor::Visit(BinaryNode &node) { 
   node.left_expression()->Accept(this);
   Token::TokenName left_type = node.left_expression()->type();
   node.right_expression()->Accept(this);
   Token::TokenName right_type = node.right_expression()->type();
-
+  
   if (left_type != right_type) {
+    // If one type is universal, an error has already been reported
     if (left_type == Token::UNIVERSAL) {
       node.set_type(right_type);
     }
@@ -83,11 +80,11 @@ void ASTNodeFullVisitor::Visit(BinaryNode &node) {
       std::string message = "Operands must be of the same type";
       administrator_->messenger()->AddError(filename_, node.line_number(), message);
       error_free_ = false;
-      // Choose the left expression for no reason
+      // Choose the left expression for reasons
       node.set_type(Token::UNIVERSAL);
     }
   }
-  // Otherwise both expression are of the same type
+  // Otherwise both expressions are of the same type
   else {
     if (left_type == Token::BOOL) {
       if (node.op() == Token::AND || node.op() == Token::ANDTHEN || node.op() == Token::OR || 
@@ -163,7 +160,35 @@ void ASTNodeFullVisitor::Visit(CallNode &node) {
   }
 
   // Make sure arguments are consistent
-
+  ParameterNode *current_param = dynamic_cast<FunctionDeclarationNode*>(symbol_table_->identifier_table_.at(symbol_table_->acces_table_.at(node.identifier())).DecPtr)->parameters();
+  ExpressionNode *current_arg = node.arguments();
+  while (current_arg != NULL) {
+    // Check if current_param exist, if not then 
+    if (current_param == NULL) {
+      std::string message = "Too many arguments";
+      administrator_->messenger()->AddError(filename_, node.line_number(), message);
+      error_free_ = false;
+      break;
+    }
+    // Check if the arguments are the correct type
+    else {
+      printf("%s %s\n", Token::kTokenStrings[current_arg->type()], Token::kTokenStrings[current_param->type()]);
+      if (current_arg->type() != current_param->type()) {
+        std::string message = "Invalid type";
+        administrator_->messenger()->AddError(filename_, node.line_number(), message);
+        error_free_ = false;
+        break;
+      }
+    }
+    current_arg = dynamic_cast<ExpressionNode*>(current_arg->next_node());
+    current_param = dynamic_cast<ParameterNode*>(current_param->next_parameter());
+  }
+  if (current_param != NULL) {
+    std::string message = "Missing arguments";
+    administrator_->messenger()->AddError(filename_, node.line_number(), message);
+    error_free_ = false;
+  }
+  
 }
 
 void ASTNodeFullVisitor::Visit(CaseNode &node) { 
@@ -227,8 +252,6 @@ void ASTNodeFullVisitor::Visit(ContinueNode &node) {
   }
 }
 
-void ASTNodeFullVisitor::Visit(DeclarationNode &node) { }
-
 void ASTNodeFullVisitor::Visit(ExitNode &node) { 
   if (!in_loop_) {
     std::string message = "EXIT statement outside of LOOP";
@@ -239,8 +262,6 @@ void ASTNodeFullVisitor::Visit(ExitNode &node) {
     exit_statement_ = true;
   }
 }
-
-void ASTNodeFullVisitor::Visit(ExpressionNode &node) { }
 
 void ASTNodeFullVisitor::Visit(FunctionDeclarationNode &node) {
   function_return_type_ = node.type();
@@ -308,8 +329,6 @@ void ASTNodeFullVisitor::Visit(LoopNode &node) {
   in_loop_ = false;
 }
 
-void ASTNodeFullVisitor::Visit(NullNode &node) { }
-
 void ASTNodeFullVisitor::Visit(ParameterNode &node) {
   if (symbol_table_->identifier_table_.at(symbol_table_->acces_table_.at(node.identifier())).L != depth_) {
     IdentificationTableEntry entry;
@@ -359,9 +378,8 @@ void ASTNodeFullVisitor::Visit(ReturnNode &node) {
   }
 }
 
-void ASTNodeFullVisitor::Visit(StatementNode &node) { }
-
 void ASTNodeFullVisitor::Visit(UnaryNode &node) {
+  node.expression()->Accept(this);
 
 }
 
@@ -466,3 +484,10 @@ void ASTNodeFullVisitor::AddNode(ASTNode *node) {
   entry.L = depth_;
   entry.DecPtr = NULL;
 }
+
+
+void ASTNodeFullVisitor::Visit(ASTNode &node) { }
+void ASTNodeFullVisitor::Visit(DeclarationNode &node) { }
+void ASTNodeFullVisitor::Visit(ExpressionNode &node) { }
+void ASTNodeFullVisitor::Visit(NullNode &node) { }
+void ASTNodeFullVisitor::Visit(StatementNode &node) { }

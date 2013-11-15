@@ -167,7 +167,14 @@ void ASTNodeInitVisitor::Visit(UnaryNode &node) {
   }
   else if (node.op() == Token::NOT) {
     node.set_type(Token::BOOL);
-    node.set_value(!(bool)(node.expression()->value()));
+    int value = node.expression()->value();
+    if (value == 1) {
+      value = 0;
+    }
+    else {
+      value = 1;
+    }
+    node.set_value(value);
   }
 }
 

@@ -28,11 +28,10 @@ int main(int argc, char* argv[]) {
     TCLAP::SwitchArg tup_switch("t", "tup", 
                                 "Process up to the Tuple phase");
     TCLAP::SwitchArg compile_switch("c", "compile", 
-                                    "Process all phases and compile (default)", 
+                                    "Process all phases and compile (default)",
                                     true);
     TCLAP::SwitchArg quiet_switch("q", "quiet", 
-                                  "Only display error messages (default)", 
-                                  true);
+                                  "Only display error messages (default)", true);
     TCLAP::SwitchArg verbose_switch("v", "verbose", 
                                     "Display all Trace messages");
     TCLAP::ValueArg< std::string > out_arg("o", "out", 
@@ -41,9 +40,7 @@ int main(int argc, char* argv[]) {
     TCLAP::ValueArg< std::string > err_arg("e", "err", 
                                            "Error file (default -err=STDOUT)", 
                                            false, "err", "string");
-    TCLAP::MultiArg< std::string > input_arg("I", "input", 
-                                             "Files to be compiled", true, 
-                                             "string");
+    TCLAP::UnlabeledMultiArg<std::string> input_args("input", "Input files", true, "string");
     
     std::vector<TCLAP::Arg*> args;
     args.push_back(&lex_switch);
@@ -52,14 +49,15 @@ int main(int argc, char* argv[]) {
     args.push_back(&tup_switch);
     args.push_back(&compile_switch);
     cmd.xorAdd(args);
-    cmd.xorAdd(quiet_switch, verbose_switch);
+    cmd.add(quiet_switch);
+    cmd.add(verbose_switch);
     cmd.add(out_arg);
     cmd.add(err_arg);
-    cmd.add(input_arg);
+    cmd.add(input_args);
     
     cmd.parse(argc, argv);
     
-    std::vector< std::string > inputFiles = input_arg.getValue();
+    std::vector< std::string > inputFiles = input_args.getValue();
     if (inputFiles.size() == 0) {
       fprintf(stderr, "No input files. Please specify 1 or more .cs13 files using -I <file>\n");
       return -1;

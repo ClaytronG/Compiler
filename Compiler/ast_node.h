@@ -113,7 +113,7 @@ private:
   DeclarationNode *declaration_node_;
 };
 
-class ParameterNode : public ASTNode {
+class ParameterNode : public DeclarationNode {
 public:
   // Creates an empty parameter node. User has to make sure to change 
   // identifier index.

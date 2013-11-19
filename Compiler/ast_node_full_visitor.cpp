@@ -13,10 +13,11 @@ ASTNodeFullVisitor::ASTNodeFullVisitor(SymbolTable *symbol_table, const std::str
   exit_statement_ = false;
   default_case_ = false;
   variable_array_expression_ = false;
+  void_function_valid = true;
   function_return_type_ = Token::ERROR;
 }
 
-void ASTNodeFullVisitor::Visit(AssignmentNode &node) { 
+void ASTNodeFullVisitor::Visit(AssignmentNode &node) {
   // Make sure the variable that's being assigned to has been defined
   if (symbol_table_->acces_table_.at(node.identifier()) == 0) {
     std::string message = "Undeclared identifier";
@@ -44,6 +45,7 @@ void ASTNodeFullVisitor::Visit(AssignmentNode &node) {
   } 
   // If it is an array, check that expression
   if (node.array_assignment()) {
+    void_function_valid = false;
     node.array_expression()->Accept(this);
     if (node.array_expression()->type() != Token::INT) {
       std::string message = "Array expression must be of type INT";
@@ -51,7 +53,8 @@ void ASTNodeFullVisitor::Visit(AssignmentNode &node) {
       error_free_ = false;
     }
   }
-  
+
+  void_function_valid = false;
   // Make sure the types match
   node.value()->Accept(this);
   Token::TokenName type = dynamic_cast<DeclarationNode*>(symbol_table_->identifier_table_.at(symbol_table_->acces_table_.at(node.identifier())).DecPtr)->type();
@@ -60,6 +63,7 @@ void ASTNodeFullVisitor::Visit(AssignmentNode &node) {
     administrator_->messenger()->AddError(filename_, node.line_number(), message);
     error_free_ = false;
   }
+  void_function_valid = true;
 }
 
 void ASTNodeFullVisitor::Visit(BinaryNode &node) { 
@@ -127,7 +131,9 @@ void ASTNodeFullVisitor::Visit(BinaryNode &node) {
 }
 
 void ASTNodeFullVisitor::Visit(BranchNode &node) {
+  void_function_valid = false;
   node.expresion()->Accept(this);
+  void_function_valid = true;
   if (node.expresion()->type() != Token::UNIVERSAL && node.expresion()->type() != Token::INT) {
     std::string message = "BRANCH expression must be of type INT";
     administrator_->messenger()->AddError(filename_, node.line_number(), message);
@@ -158,6 +164,14 @@ void ASTNodeFullVisitor::Visit(CallNode &node) {
     symbol_table_->acces_table_.at(node.identifier()) = symbol_table_->identifier_table_.size() - 1;
     return;
   }
+  else {
+    int identifier_index = symbol_table_->acces_table_.at(node.identifier());
+    node.set_type(dynamic_cast<FunctionDeclarationNode*>(symbol_table_->identifier_table_.at(identifier_index).DecPtr)->type());
+  }
+
+  if (node.arguments()) {
+    node.arguments()->Accept(this);
+  }
 
   // Make sure arguments are consistent
   ParameterNode *current_param = dynamic_cast<FunctionDeclarationNode*>(symbol_table_->identifier_table_.at(symbol_table_->acces_table_.at(node.identifier())).DecPtr)->parameters();
@@ -172,12 +186,27 @@ void ASTNodeFullVisitor::Visit(CallNode &node) {
     }
     // Check if the arguments are the correct type
     else {
-      printf("%s %s\n", Token::kTokenStrings[current_arg->type()], Token::kTokenStrings[current_param->type()]);
       if (current_arg->type() != current_param->type()) {
         std::string message = "Invalid type";
         administrator_->messenger()->AddError(filename_, node.line_number(), message);
         error_free_ = false;
         break;
+      }
+      else if (current_param->array_parameter()) {
+        VariableNode *temp = dynamic_cast<VariableNode*>(current_arg);
+        if (temp == NULL) { // The node isn't a variable
+          std::string message = "Expected array argument";
+          administrator_->messenger()->AddError(filename_, node.line_number(), message);
+          error_free_ = false;
+        }
+        else if (!temp->array_expression()) { // The node isn't an array variable
+          std::string message = "Expected array argument";
+          administrator_->messenger()->AddError(filename_, node.line_number(), message);
+          error_free_ = false;
+        }
+      }
+      else if (current_param->reference_parameter()) {
+
       }
     }
     current_arg = dynamic_cast<ExpressionNode*>(current_arg->next_node());
@@ -208,7 +237,6 @@ void ASTNodeFullVisitor::Visit(CaseNode &node) {
     auto it = case_numbers_.find(node.case_number());
     // If the iterator is at the end, this is a new case number
     if (it == case_numbers_.end()) {
-      printf("*****Inserting %d\n", node.case_number());
       case_numbers_.insert(node.case_number());
     }
     // Otherwise, it is a duplicate. Report an error.

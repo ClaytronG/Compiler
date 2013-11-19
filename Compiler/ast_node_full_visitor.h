@@ -73,6 +73,8 @@ private:
   std::set<int> case_numbers_;
 
   bool variable_array_expression_;
+
+  bool void_function_valid;
 };
 
 #endif // COMPILER_ASTNODEFULLVISITOR_H_

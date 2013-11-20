@@ -95,8 +95,7 @@ int main(int argc, char* argv[]) {
     } else if (sem_switch.getValue()) {
 		  admin->SemanticAnalysisPhase();
     } else if (tup_switch.isSet()) {
-      // TODO: tuple generation
-      return -1;
+      admin->TupleGenerationPhase();
     } else {
       // TODO: complete compilation
       return -1;

@@ -6,6 +6,7 @@
 #include "administrator.h"
 #include "ast_node.h"
 #include "ast_node_print_visitor.h"
+#include "code_generator.h"
 #include "messenger.h"
 #include "semantic_analyzer.h"
 
@@ -186,7 +187,50 @@ bool Administrator::SemanticAnalysisPhase() {
 }
 
 bool Administrator::TupleGenerationPhase() {
-  // TODO: implement tuple generation
+  auto it = input_file_list_.begin();
+  const auto end = input_file_list_.end();
+  while (it != end) {
+    std::string filename = (*it).substr((*it).find_last_of("/") + 1, (*it).length());
+    Parser parser(*it, filename, this);
+    if (!parser.good()) {
+      fprintf(stderr, "Error parsing file: %s\n", filename.c_str());
+      ++it;
+      continue;
+    }
+    // Get the AST for the built in functions
+    // disable trace
+    bool trace = show_trace_;
+    show_trace_ = false;
+    Parser p(kBuiltInFunctions, this);
+    show_trace_ = trace;
+    ASTNode *new_root = p.Parse();
+    ASTNode *root = parser.Parse();
+    if (!root) {
+      // If the root node is NULL then the parser encountered errors. Print
+      // those errors and continue on to the next source file.
+      messenger_.PrintErrors();
+      ++it;
+      continue;
+    }
+    else {
+      // Append the original root not to the end of the new_root
+      // Get to the last declaration in new_root
+      DeclarationNode *node = dynamic_cast<ProgramNode*>(new_root)->declaration_node();
+      while (node->next_node()) {
+        node = dynamic_cast<DeclarationNode*>(node->next_node());
+      }
+      DeclarationNode *next = dynamic_cast<ProgramNode*>(root)->declaration_node();
+      node->set_next_node(next);
+      // Begin semantic analysis
+      SemanticAnalyzer sem(new_root, filename, this);
+      sem.InitTraversal();
+      sem.FullTraversal();
+      // Generate the quadruples
+      CodeGenerator gen(new_root, filename, this);
+    }
+    messenger_.PrintErrors();
+    ++it;
+  }
   return false;
 }
 

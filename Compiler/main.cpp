@@ -62,13 +62,13 @@ int main(int argc, char* argv[]) {
       fprintf(stderr, "No input files. Please specify 1 or more .cs13 files using -I <file>\n");
       return -1;
     }
-    
-    std::string out = out_arg.getValue();
-    if (out.compare("out") != 0) {
-    	// TODO: Set output file
-    }
 
     Administrator *admin;
+    std::string out = out_arg.getValue();
+    if (out.compare("out") != 0) {
+      admin->set_output_file(out_arg.getValue());
+    }
+
     std::string err = err_arg.getValue();
     if (err.compare("err") != 0) {  
       // Have to create the error file to be able to write to it

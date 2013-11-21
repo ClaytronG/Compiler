@@ -208,6 +208,11 @@ public:
     value_ = 0;
   }
 
+  ExpressionNode(const int value) {
+    type_ = Token::UNIVERSAL;
+    value_ = value;
+  }
+
   //
   void Accept(ASTNodeVisitor *visitor);
 
@@ -266,18 +271,11 @@ public:
   //
   ExpressionNode *array_expression() const;
 
-  // Returns a pointer to the next variable declaration.
-  VariableDeclarationNode *next_variable_declaration() const;
-
   //
   void set_array_expression(ExpressionNode *expression);
 
   //
   void set_array_variable(const bool array_variable);
-
-  // Sets the pointer to the next variable declaration.
-  void set_next_variable_declaration(
-      VariableDeclarationNode *next_variable_declaration);
 
   //
   void set_index(const int index) {
@@ -307,9 +305,6 @@ private:
 
   //
   bool array_variable_;
-
-  // Pointer to the next variable of the same type but different identifier.
-  VariableDeclarationNode *next_variable_declaration_;
 
   //
   int index_;
@@ -347,12 +342,25 @@ public:
   //
   StatementNode *statements() const;
 
+  //
+  int num_locals() const {
+    return num_locals_;
+  }
+
+  //
+  void set_num_locals(const int num) {
+    num_locals_ = num;
+  }
+
 private:
   // Pointer to the list of variables local to this compound. Can be null.
   VariableDeclarationNode *local_variables_;
 
   // Pointer to the list of statemetnts in this compound.
   StatementNode *statements_;
+
+  //
+  int num_locals_;
 };
 
 class FunctionDeclarationNode  : public DeclarationNode {
@@ -778,13 +786,12 @@ private:
 class LiteralNode : public ExpressionNode {
 public:
   //
-  LiteralNode() : boolean_literal_(false), number_literal_(false), 
-      value_(0) { }
+  LiteralNode() : boolean_literal_(false), number_literal_(false) { }
 
   //
   LiteralNode(const int value, const bool boolean_literal, 
-              const bool number_literal) : boolean_literal_(boolean_literal), 
-      number_literal_(number_literal), value_(value) { }
+              const bool number_literal) : ExpressionNode(value), boolean_literal_(boolean_literal), 
+      number_literal_(number_literal) { }
 
   //
   ~LiteralNode() { }
@@ -808,13 +815,6 @@ public:
   //
   void set_number_literal(const bool number_literal);
 
-  //
-  void set_value(const int value);
-
-  //
-  int value() const {
-    return value_;
-  }
 
 private:
   //
@@ -822,9 +822,6 @@ private:
 
   //
   bool number_literal_;
-
-  //
-  int value_;
 };
 
 class VariableNode : public ExpressionNode {

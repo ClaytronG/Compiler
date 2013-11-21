@@ -10,12 +10,13 @@ class CodeGenerator {
 public:
   CodeGenerator(ASTNode *root, const std::string filename, Administrator *administrator);
 
+  std::string output() const;
+
+  void GenerateCode();
+
 private:
-
+  // Adds the standard preamble to the output
   void InitOutput();
-
-  // Updates the syntax tree so all declarations have scope level and displacement values
-  void InitAST();
 
   Administrator *administrator_;
 

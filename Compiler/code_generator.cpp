@@ -3,7 +3,6 @@
 CodeGenerator::CodeGenerator(ASTNode *root, const std::string filename, Administrator *administrator) 
   : root_(root), administrator_(administrator), output_() {
   error_free_ = true;
-  InitAST();
   InitOutput();
 }
 
@@ -15,17 +14,35 @@ void CodeGenerator::InitOutput() {
     VariableDeclarationNode* node = dynamic_cast<VariableDeclarationNode*>(current_node);
     if (node != NULL) {
       if (node->array_expression() != NULL) {
-        count += node->array_expression()->value();
+        count += node->array_size();
       }
       else {
         ++count;
       }
-      printf("count = %d\n", count);
+      if (node->next_node() != NULL) {
+        current_node = dynamic_cast<VariableDeclarationNode*>(node->next_node());
+      }
+      else {
+        current_node = current_node->next_node();
+      }
     }
-    current_node = current_node->next_node();
+    else {
+      current_node = current_node->next_node();
+    }
   }
+  std::string quadruple = "(start,";
+  quadruple += std::to_string(count);
+  quadruple += ",-,-)\n";
+  output_ += quadruple;
+  output_ += "(rval,-,-,t1)\n";
+  output_ += "(call,main,-,-)\n";
+  output_ += "(hlt,-,-,-)";
 }
 
-void CodeGenerator::InitAST() {
+std::string CodeGenerator::output() const {
+  return output_;
+}
+
+void CodeGenerator::GenerateCode() {
 
 }

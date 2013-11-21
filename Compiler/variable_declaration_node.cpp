@@ -7,12 +7,11 @@
 VariableDeclarationNode::VariableDeclarationNode() {
   array_expression_ = NULL;
   array_variable_ = false;
-  next_variable_declaration_ = NULL;
 }
 
 VariableDeclarationNode::VariableDeclarationNode(
     VariableDeclarationNode *next_variable_declaration) {
-  next_variable_declaration_ = next_variable_declaration;
+  set_next_node(next_variable_declaration);
 }
 
 VariableDeclarationNode::VariableDeclarationNode(const int identifier, 
@@ -20,7 +19,6 @@ VariableDeclarationNode::VariableDeclarationNode(const int identifier,
   : DeclarationNode(identifier, type) {
   array_expression_ = NULL;
   array_variable_ = false;
-  next_variable_declaration_ = NULL;
 }
 
 VariableDeclarationNode::VariableDeclarationNode(
@@ -30,13 +28,12 @@ VariableDeclarationNode::VariableDeclarationNode(
   : DeclarationNode(identifier, type) {
   array_expression_ = NULL;
   array_variable_ = false;
-  next_variable_declaration_ = next_variable_declaration;
+  set_next_node(next_variable_declaration);
 }
 
 
 VariableDeclarationNode::~VariableDeclarationNode() {
   delete array_expression_;
-  delete next_variable_declaration_;
 }
 
 void VariableDeclarationNode::Accept(ASTNodeVisitor *visitor) {
@@ -47,19 +44,10 @@ ExpressionNode *VariableDeclarationNode::array_expression() const {
   return array_expression_;
 }
 
-VariableDeclarationNode *VariableDeclarationNode::next_variable_declaration() const {
-  return next_variable_declaration_;
-}
-
 void VariableDeclarationNode::set_array_expression(ExpressionNode *expression) {
   array_expression_ = expression;
 }
 
 void VariableDeclarationNode::set_array_variable(const bool array_variable) {
   array_variable_ = array_variable;
-}
-
-void VariableDeclarationNode::set_next_variable_declaration(
-    VariableDeclarationNode *next_variable_declaration) {
-  next_variable_declaration_ = next_variable_declaration;
 }

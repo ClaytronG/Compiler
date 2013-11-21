@@ -5,17 +5,20 @@
 #include "ast_node.h"
 
 CompoundNode::CompoundNode() {
+  num_locals_ = 0;
   local_variables_ = NULL;
   statements_ = NULL;
 }
 
 CompoundNode::CompoundNode(StatementNode *statement) {
+  num_locals_ = 0;
   local_variables_ = NULL;
   statements_ = statement;
 }
 
 CompoundNode::CompoundNode(VariableDeclarationNode *variable, 
                            StatementNode *statement) {
+  num_locals_ = 0;
   local_variables_ = variable;
   statements_ = statement;
 }

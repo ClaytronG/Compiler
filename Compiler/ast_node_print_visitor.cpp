@@ -159,7 +159,7 @@ void ASTNodePrintVisitor::Visit(CompoundNode &node){
   message += "Compound\n";
   ++depth_;
   message += std::string(depth_ * 2, ' ');
-  message += "variables:\n";
+  message += "| variables:\n";
   messenger_->PrintMessage(message);
   VariableDeclarationNode *current_var = node.local_variables();
   while (current_var != NULL) {
@@ -170,7 +170,7 @@ void ASTNodePrintVisitor::Visit(CompoundNode &node){
       current_var->next_node());
   }  
   message = std::string(depth_*2, ' ');
-  message += "statements:\n";
+  message += "| statements:\n";
   messenger_->PrintMessage(message);
   StatementNode *current_node = node.statements();
   while (current_node != NULL) {
@@ -260,12 +260,12 @@ void ASTNodePrintVisitor::Visit(FunctionDeclarationNode &node){
   message += "Function Declaration\n";
   ++depth_;
   message += std::string(depth_*2, ' ');
-  message += "id: " + Administrator::spelling_table[node.identifier()] + "\n";
+  message += "| id: " + Administrator::spelling_table[node.identifier()] + "\n";
   message += std::string(depth_*2, ' ');
-  message += "return: " + Token::kTokenStrings[node.type()] + "\n";
+  message += "| return: " + Token::kTokenStrings[node.type()] + "\n";
   if (node.parameters()) { 
     message += std::string(depth_*2, ' ');
-    message += "parameters:\n";
+    message += "| parameters:\n";
     messenger_->PrintMessage(message);
     ++depth_;
     node.parameters()->Accept(this);
@@ -273,9 +273,9 @@ void ASTNodePrintVisitor::Visit(FunctionDeclarationNode &node){
   } else {
     messenger_->PrintMessage(message);
   }
-  message = std::string(depth_*2, ' ');
-  message += "compound:\n";
-  messenger_->PrintMessage(message);
+  //message = std::string(depth_*2, ' ');
+  //message += "| compound:\n";
+  //messenger_->PrintMessage(message);
   ++depth_;
   node.compound()->Accept(this);
   depth_ = depth_ - 2;
@@ -554,45 +554,32 @@ void ASTNodePrintVisitor::Visit(UnaryNode &node) {
 
 // Prints a variable declaration node and its children. Example
 //   Variable Declaration
-//     var:
-//       id: x
-//       type: int[]
-//       array expression:
-//         ...
-//     var:
-//       id: y
-//       type: int
-//     ...
+//     id: x
+//     type: int[]
+//     array expression:
+//       ...
 void ASTNodePrintVisitor::Visit(VariableDeclarationNode &node){ 
   std::string message = std::string(depth_*2, ' ');
   message += "Variable Declaration\n";
   messenger_->PrintMessage(message);
   ++depth_;
-  VariableDeclarationNode *current_var = &node;
-  while (current_var != NULL) {
     message = std::string(depth_*2, ' ');
-    message += "var:\n";
-    ++depth_;
+    message += "| id: " + 
+      Administrator::spelling_table[node.identifier()] + "\n";
     message += std::string(depth_*2, ' ');
-    message += "id: " + 
-      Administrator::spelling_table[current_var->identifier()] + "\n";
-    message += std::string(depth_*2, ' ');
-    message += "type: " + Token::kTokenStrings[current_var->type()];
-    if (current_var->array_expression()) {
+    message += "| type: " + Token::kTokenStrings[node.type()];
+    if (node.array_variable()) {
       message += "[]\n";
       message += std::string(depth_*2, ' ');
-      message += "array expression:\n";
+      message += "| array expression:\n";
       messenger_->PrintMessage(message);
       ++depth_;
-      current_var->array_expression()->Accept(this);
+        node.array_expression()->Accept(this);
       --depth_;
     } else {
       message += "\n";
       messenger_->PrintMessage(message);
     }
-    current_var = current_var->next_variable_declaration();
-    --depth_;
-  }
   --depth_;
 }
 

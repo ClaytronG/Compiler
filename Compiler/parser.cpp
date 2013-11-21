@@ -127,31 +127,29 @@ ASTNode *Parser::Parse() {
 }
 
 ASTNode *Parser::Program(/*SynchSet &set*/) {
-  ////synch_.clear();
-  ////synch_.push_back(Token::INT);
-  ////synch_.push_back(Token::BOOL);
-  ////synch_.push_back(Token::VOID);
-  ////synch_.push_back(Token::ENDFILE);
   ProgramNode *program = new ProgramNode();
   program->set_line_number(scanner_.line_number());
   program->set_declaration_node(dynamic_cast<DeclarationNode*>(transition(
     "declaration", &Parser::Declaration)));
   DeclarationNode *current_node = program->declaration_node();
-  while (lookahead_ == Token::INT || lookahead_ == Token::BOOL || 
-         lookahead_ == Token::VOID) {
+  // Get the last declaration node
+  while (current_node->next_node() != NULL) {
+    current_node = dynamic_cast<DeclarationNode*>(current_node->next_node());
+  }
+  while (lookahead_ == Token::INT || lookahead_ == Token::BOOL || lookahead_ == Token::VOID) {
     current_node->set_next_node(dynamic_cast<DeclarationNode*>(transition(
       "declaration", &Parser::Declaration)));
-    current_node = dynamic_cast<DeclarationNode*>(current_node->next_node());
+    ASTNode* temp = current_node;
+    while (temp->next_node() != NULL) {
+      temp = temp->next_node();
+    }
+    current_node = dynamic_cast<DeclarationNode*>(temp);
   }
   return program;
 }
 
 ASTNode *Parser::Declaration(/*SynchSet &set*/) {
-  ////synch_.clear();
-  ////synch_.push_back(Token::INT);
-  ////synch_.push_back(Token::BOOL);
-  ////synch_.push_back(Token::VOID);
-  ////synch_.push_back(Token::ENDFILE);
+  // Check what type the declaration is
   if (lookahead_ == Token::VOID) {
 	  Match(Token::VOID/*, set*/);
     int identifier = lookahead_token_.value();
@@ -164,26 +162,26 @@ ASTNode *Parser::Declaration(/*SynchSet &set*/) {
   } else if (lookahead_ == Token::INT || lookahead_ == Token::BOOL) {
     Token::TokenName type = NonvoidSpecifier();
     int identifier = lookahead_token_.value();
-    ////synch_.push_back(Token::LSQR);
-    ////synch_.push_back(Token::SEMI);
-    ////synch_.push_back(Token::COMMA);
-    ////synch_.push_back(Token::LPAREN);
     Match(Token::ID/*, set*/);
     ASTNode *node = transition("dec-tail", &Parser::DecTail);
     VariableDeclarationNode *var = dynamic_cast<VariableDeclarationNode*>(node);
     FunctionDeclarationNode *fun = dynamic_cast<FunctionDeclarationNode*>(node);
-    if (fun) {
+    // When converting using dynamic_cast, if the pointer cannnot be converted (i.e. it is 
+    // not the correct type) it is set to NULL. 
+    if (fun != NULL) {
       delete var;
       fun->set_type(type);
       fun->set_identifier(identifier);
       return fun;      
-    } else if (var) {
+    } else if (var != NULL) {
       delete fun;
       var->set_identifier(identifier);
-      VariableDeclarationNode *current_var = var;
+      var->set_type(type);
+      VariableDeclarationNode* current_var = dynamic_cast<VariableDeclarationNode*>(var->next_node());
+      // Update the types of all the variables in line
       while (current_var != NULL) {
         current_var->set_type(type);
-        current_var = current_var->next_variable_declaration();
+        current_var = dynamic_cast<VariableDeclarationNode*>(current_var->next_node());
       }
       return var;
     }
@@ -218,11 +216,6 @@ Token::TokenName Parser::NonvoidSpecifier(/*SynchSet &set*/) {
 }
 
 ASTNode *Parser::DecTail(/*SynchSet &set*/) {
-  ////synch_.clear();
-  ////synch_.push_back(Token::INT);
-  ////synch_.push_back(Token::BOOL);
-  ////synch_.push_back(Token::VOID);
-  ////synch_.push_back(Token::ENDFILE);
   if (lookahead_ == Token::LSQR || lookahead_ == Token::SEMI || 
       lookahead_ == Token::COMMA) {
     return transition("var-dec-tail", &Parser::VarDecTail);
@@ -235,24 +228,9 @@ ASTNode *Parser::DecTail(/*SynchSet &set*/) {
 }
 
 ASTNode *Parser::VarDecTail(/*SynchSet &set*/) {
-  ////synch_.clear();
-  ////synch_.push_back(Token::INT);
-  ////synch_.push_back(Token::BOOL);
-  ////synch_.push_back(Token::VOID);
-  ////synch_.push_back(Token::ENDFILE);
-  ////synch_.push_back(Token::LCRLY);
-  ////synch_.push_back(Token::IF);
-  ////synch_.push_back(Token::LOOP);
-  ////synch_.push_back(Token::EXIT);
-  ////synch_.push_back(Token::CONTINUE);
-  ////synch_.push_back(Token::RETURN);
-  ////synch_.push_back(Token::SEMI);
-  ////synch_.push_back(Token::ID);
-  ////synch_.push_back(Token::BRANCH);
   VariableDeclarationNode *variable = new VariableDeclarationNode();
   variable->set_line_number(scanner_.line_number());
-  //////synch_.push_back(Token::LSQR);
-  //SyntaxCheck("var-dec-tail");
+  // Check if this variable is an array
   if (lookahead_ == Token::LSQR) {
     Match(Token::LSQR/*, set*/);
     variable->set_array_variable(true);
@@ -261,37 +239,32 @@ ASTNode *Parser::VarDecTail(/*SynchSet &set*/) {
     Match(Token::RSQR/*, set*/);
   }
 
-  VariableDeclarationNode *node = variable;
-  //////synch_.push_back(Token::COMMA);
-  //SyntaxCheck("var-dec-tail");
+  // Check if other variables of the same type are being declared
+  ASTNode* current_var = variable;
   while (lookahead_ == Token::COMMA) {
     Match(Token::COMMA/*, set*/);
-    node->set_next_variable_declaration(dynamic_cast<VariableDeclarationNode*>(
-      transition("var-name", &Parser::VarName)));
-    node = node->next_variable_declaration();
+    current_var->set_next_node(transition("var-name", &Parser::VarName));
+    current_var = current_var->next_node();
   }
   Match(Token::SEMI/*, set*/);
   return variable;
 }
 
 ASTNode *Parser::VarName(/*SynchSet &set*/) {
-  ////synch_.clear();
-  ////synch_.push_back(Token::COMMA);
-  ////synch_.push_back(Token::SEMI);
   VariableDeclarationNode *variable = new VariableDeclarationNode();
   variable->set_line_number(scanner_.line_number());
   int identifier = lookahead_token_.value();
-  Match(Token::ID/*, set*/);
   variable->set_identifier(identifier);
-  //////synch_.push_back(Token::LSQR);
-  //SyntaxCheck("var-name");
+  Match(Token::ID/*, set*/);
+  
+  // Check if this variable is an array
   if (lookahead_ == Token::LSQR) {
     Match(Token::LSQR/*, set*/);
     variable->set_array_variable(true);
-    variable->set_array_expression(dynamic_cast<ExpressionNode*>(transition(
-      "add-exp", &Parser::AddExp)));
+    variable->set_array_expression(dynamic_cast<ExpressionNode*>(transition("add-exp", &Parser::AddExp)));
     Match(Token::RSQR/*, set*/);
   }
+
   return variable;
 }
 
@@ -309,6 +282,14 @@ ASTNode *Parser::FunDecTail(/*SynchSet &set*/) {
   function->set_parameter(dynamic_cast<ParameterNode*>(transition(
     "params", &Parser::Params)));
   Match(Token::RPAREN/*, set*/);
+  // Count the number of parameters this function has
+  int count = 0;
+  ParameterNode *temp = function->parameters();
+  while (temp != NULL) {
+    ++count;
+    temp = temp->next_parameter();
+  }
+  function->set_num_parameters(count);
   function->set_compound(dynamic_cast<CompoundNode*>(transition(
     "compound-stmt", &Parser::CompoundStmt)));
   //Trace("Compound-Stmt", *this, &Parser::CompoundStmt/*, set*/);
@@ -592,67 +573,63 @@ ASTNode *Parser::Arguments(/*SynchSet &set*/) {
 }
 
 ASTNode *Parser::CompoundStmt(/*SynchSet &set*/) {
-  //synch_.clear();
-  //synch_.push_back(Token::LCRLY);
-  //synch_.push_back(Token::IF);
-  //synch_.push_back(Token::LOOP);
-  //synch_.push_back(Token::EXIT);
-  //synch_.push_back(Token::CONTINUE);
-  //synch_.push_back(Token::RETURN);
-  //synch_.push_back(Token::SEMI);
-  //synch_.push_back(Token::ID);
-  //synch_.push_back(Token::RCRLY);
-  //synch_.push_back(Token::ELSE);
-  //synch_.push_back(Token::END);
-  //synch_.push_back(Token::BRANCH);
-  //synch_.push_back(Token::CASE);
-  //synch_.push_back(Token::DEFAULT);
-  //synch_.push_back(Token::INT);
-  //synch_.push_back(Token::BOOL);
-  //synch_.push_back(Token::VOID);
-  //synch_.push_back(Token::ENDFILE);
+  // Match the opening curly brace for this compound
   Match(Token::LCRLY/*, set*/);
   CompoundNode *compound = new CompoundNode();
   compound->set_line_number(scanner_.line_number());
-  Token::TokenName type;
+
   // Parse optional variable declarations
-  VariableDeclarationNode *first_variable = NULL;
-  ////synch_.push_back(Token::INT);
-  ////synch_.push_back(Token::BOOL);
   //SyntaxCheck("compound-stmt");
+  int count = 0;
   if (lookahead_ == Token::INT || lookahead_ == Token::BOOL) {
-    //first_variable = new VariableDeclarationNode();
-    //first_variable->set_line_number(scanner_.line_number());
-    type = NonvoidSpecifier();
+    VariableDeclarationNode *first_variable = NULL;
+    
+    Token::TokenName type = NonvoidSpecifier();
     int identifier = lookahead_token_.value();
     Match(Token::ID/*, set*/);
+
     first_variable = dynamic_cast<VariableDeclarationNode*>(transition(
       "var-dec-tail", &Parser::VarDecTail));
     first_variable->set_identifier(identifier);
-    VariableDeclarationNode *current_node = first_variable;
-    while (current_node != NULL) {
-      current_node->set_type(type);
-      current_node = current_node->next_variable_declaration();
+    // Update the types of the variables in the list
+    VariableDeclarationNode* current_var = dynamic_cast<VariableDeclarationNode*>(first_variable);
+    while (current_var != NULL) {
+      ++count;
+      current_var->set_type(type);
+      current_var = dynamic_cast<VariableDeclarationNode*>(current_var->next_node());
     }
-  }
-  VariableDeclarationNode *current_variable = first_variable;
-  VariableDeclarationNode *node;
-  while (lookahead_ == Token::INT || lookahead_ == Token::BOOL) {
-    type = NonvoidSpecifier();
-    int identifier = lookahead_token_.value();
-    Match(Token::ID/*, set*/);
-    node = dynamic_cast<VariableDeclarationNode*>(transition(
-      "var-dec-tail", &Parser::VarDecTail));
-    node->set_identifier(identifier);
-    VariableDeclarationNode *current_node = node;
-    while (current_node != NULL) {
-      current_node->set_type(type);
-      current_node = current_node->next_variable_declaration();
+    // Get the last variable in the list
+    current_var = first_variable;
+    while (current_var->next_node() != NULL) {\
+      current_var = dynamic_cast<VariableDeclarationNode*>(current_var->next_node());
     }
-    current_variable->set_next_node(node);
-    current_variable = dynamic_cast<VariableDeclarationNode*>(current_variable->next_node());
+
+    VariableDeclarationNode *node = NULL;
+    while (lookahead_ == Token::INT || lookahead_ == Token::BOOL) {
+      type = NonvoidSpecifier();
+      int identifier = lookahead_token_.value();
+      Match(Token::ID/*, set*/);
+
+      node = dynamic_cast<VariableDeclarationNode*>(transition(
+        "var-dec-tail", &Parser::VarDecTail));
+      node->set_identifier(identifier);
+      // Update the types of the variables in the list
+      VariableDeclarationNode *current_node = node;
+      while (current_node != NULL) {
+        ++count;
+        current_node->set_type(type);
+        current_node = dynamic_cast<VariableDeclarationNode*>(current_node->next_node());
+      }
+      // Get the last variable in the list
+      current_var->set_next_node(node);
+      while (current_var->next_node() != NULL) {
+        current_var = dynamic_cast<VariableDeclarationNode*>(current_var->next_node());
+      }
+    }
+    compound->set_local_variable(first_variable);
   }
-  compound->set_local_variable(first_variable);
+  compound->set_num_locals(count);
+  printf("locals %d\n", count);
 
   // Parse the statement list
   StatementNode *first_statement = dynamic_cast<StatementNode*>(transition(

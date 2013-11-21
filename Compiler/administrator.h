@@ -34,6 +34,9 @@ class Administrator {
   Administrator(const std::vector<std::string> file_list, 
                 const std::string &error_file);
   
+  //
+  void set_output_file(const std::string &file);
+
   // Runs all phases of the compilation process.
 	bool Compile();
   
@@ -108,6 +111,8 @@ class Administrator {
   bool show_trace_;
 
   static const std::string kBuiltInFunctions;
+
+  std::string output_filename_;
 
   //DISALLOW_COPY_AND_ASSIGN(Administrator);
 };

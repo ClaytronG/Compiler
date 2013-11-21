@@ -449,9 +449,6 @@ void ASTNodeFullVisitor::Visit(VariableDeclarationNode &node) {
       administrator_->messenger()->AddError(filename_, node.line_number(), message);
       error_free_ = false;
     }
-    if (node.next_variable_declaration()) {
-      node.next_variable_declaration()->Accept(this);
-    }
   }
   if (node.next_node()) {
     node.next_node()->Accept(this);

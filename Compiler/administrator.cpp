@@ -14,17 +14,21 @@ const std::string Administrator::kBuiltInFunctions =
   "int readint(void) {return 0;}\nvoid writeint(int outint) {;}\nbool readbool(void) {return true;}\nvoid writebool(bool outbool) {;}\n";
 
 Administrator::Administrator(const std::vector<std::string> file_list)
-  : input_file_list_(file_list), messenger_(), show_trace_(false) {
+  : input_file_list_(file_list), messenger_(), show_trace_(false), output_filename_("out.txt") {
 }
 
 Administrator::Administrator(const std::vector<std::string> file_list,
-                             const std::string &error_file)
-  : input_file_list_(file_list), messenger_(error_file), show_trace_(false) {
+  const std::string &error_file)
+  : input_file_list_(file_list), messenger_(error_file), show_trace_(false), output_filename_("out.txt") {
 }
 
 bool Administrator::Compile() {
   // TODO: Finish all compilation stages
   return false;
+}
+
+void Administrator::set_output_file(const std::string &file) {
+  output_filename_ = file;
 }
 
 Administrator::SpellingTable Administrator::CreateSpellingTable() {

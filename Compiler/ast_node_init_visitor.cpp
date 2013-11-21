@@ -69,9 +69,6 @@ void ASTNodeInitVisitor::Visit(VariableDeclarationNode &node) {
     administrator_->messenger()->AddError(filename_, node.line_number(), message);
     error_free_ = false;
   }
-  if (node.next_variable_declaration()) {
-    node.next_variable_declaration()->Accept(this);
-  }
   if (node.next_node()) {
     node.next_node()->Accept(this);
   }
@@ -106,7 +103,6 @@ void ASTNodeInitVisitor::Visit(BinaryNode &node) {
     if (node.left_expression()->type() == Token::INT) {
       if (node.op() == Token::PLUS) {
         node.set_value(node.left_expression()->value() + node.right_expression()->value());
-        printf("%d\n", node.value());
         node.set_type(Token::INT);
       }
       else if (node.op() == Token::MINUS) {

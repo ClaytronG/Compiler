@@ -21,11 +21,3 @@ void LiteralNode::set_number_literal(const bool number_literal) {
     boolean_literal_ = false;
   }
 }
-
-void LiteralNode::set_value(const int value) {
-  if (boolean_literal_ && (value == 1 || value == 0)) {
-    value_ = value;
-  } else if (number_literal_) {
-    value_ = value;
-  }
-}

@@ -1,5 +1,11 @@
 // Author: Clayton Green (kgreen1@unbc.ca)
 
+// Visual Studio complains about using fopen() because it is deprecated and 
+// suggests using fopen_s() but G++ only has fopen().
+#ifdef _MSC_VER
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include <iostream>
 #include <map>
 
@@ -14,12 +20,12 @@ const std::string Administrator::kBuiltInFunctions =
   "int readint(void) {return 0;}\nvoid writeint(int outint) {;}\nbool readbool(void) {return true;}\nvoid writebool(bool outbool) {;}\n";
 
 Administrator::Administrator(const std::vector<std::string> file_list)
-  : input_file_list_(file_list), messenger_(), show_trace_(false), output_filename_("out.txt") {
+  : input_file_list_(file_list), messenger_(), show_trace_(false), output_filename_(), output_file_(stdout) {
 }
 
 Administrator::Administrator(const std::vector<std::string> file_list,
   const std::string &error_file)
-  : input_file_list_(file_list), messenger_(error_file), show_trace_(false), output_filename_("out.txt") {
+  : input_file_list_(file_list), messenger_(error_file), show_trace_(false), output_filename_(), output_file_(stdout) {
 }
 
 bool Administrator::Compile() {
@@ -229,8 +235,24 @@ bool Administrator::TupleGenerationPhase() {
       SemanticAnalyzer sem(new_root, filename, this);
       sem.InitTraversal();
       sem.FullTraversal();
+      if (!sem.error_free()) {
+        messenger_.PrintErrors();
+        ++it;
+        continue;
+      }
+      // Remove the system calls from the AST (read/write int/bool)
+      node = dynamic_cast<ProgramNode*>(new_root)->declaration_node();
+      while (node->identifier() < 5) {
+        node = dynamic_cast<DeclarationNode*>(node->next_node());
+      }
       // Generate the quadruples
-      CodeGenerator gen(new_root, filename, this);
+      CodeGenerator gen(new ProgramNode(node), filename, this);
+      gen.GenerateCode();
+      // Create the output file
+      if (!output_filename_.empty()) {
+        output_file_ = fopen(output_filename_.c_str(), "w");
+      }
+      fprintf(output_file_, "%s", gen.output().c_str());
     }
     messenger_.PrintErrors();
     ++it;

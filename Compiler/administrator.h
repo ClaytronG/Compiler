@@ -114,6 +114,8 @@ class Administrator {
 
   std::string output_filename_;
 
+  FILE* output_file_;
+
   //DISALLOW_COPY_AND_ASSIGN(Administrator);
 };
 

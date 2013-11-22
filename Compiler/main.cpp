@@ -64,11 +64,6 @@ int main(int argc, char* argv[]) {
     }
 
     Administrator *admin;
-    std::string out = out_arg.getValue();
-    if (out.compare("out") != 0) {
-      admin->set_output_file(out_arg.getValue());
-    }
-
     std::string err = err_arg.getValue();
     if (err.compare("err") != 0) {  
       // Have to create the error file to be able to write to it
@@ -82,6 +77,10 @@ int main(int argc, char* argv[]) {
       admin = new Administrator(inputFiles, err_arg.getValue());
     } else {
       admin = new Administrator(inputFiles);
+    }
+    std::string out = out_arg.getValue();
+    if (out.compare("out") != 0) {
+      admin->set_output_file(out_arg.getValue());
     }
 
     if (verbose_switch.isSet()) {

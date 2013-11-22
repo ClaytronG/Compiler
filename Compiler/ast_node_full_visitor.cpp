@@ -467,9 +467,9 @@ void ASTNodeFullVisitor::Visit(VariableNode &node) {
       error_free_ = false;
     }
   }
-  IdentificationTableEntry entry;
   int index = symbol_table_->acces_table_.at(node.identifier());
   if (index == 0) {
+    IdentificationTableEntry entry;
     std::string message = "Undeclared identifier";
     administrator_->messenger()->AddError(filename_, node.line_number(), message);
     error_free_ = false;
@@ -484,9 +484,20 @@ void ASTNodeFullVisitor::Visit(VariableNode &node) {
     node.set_type(Token::UNIVERSAL);
   }
   else {
+    printf("%s\n", symbol_table_->ToString().c_str());
     // Link this variable with its declaration
-    node.set_declaration_pointer(dynamic_cast<DeclarationNode*>(symbol_table_->identifier_table_.at(index).DecPtr));
+    ASTNode *node1 = symbol_table_->identifier_table_.at(index).DecPtr;
+    VariableDeclarationNode *var = dynamic_cast<VariableDeclarationNode*>(node1);
+    ParameterNode *param = dynamic_cast<ParameterNode*>(node1);
+    if (var != NULL) {
+      node.set_declaration_pointer(var);
+    }
+    else if (param != NULL) {
+      node.set_declaration_pointer(param);
+    }
+    //node.set_declaration_pointer(dynamic_cast<DeclarationNode*>(symbol_table_->identifier_table_.at(index).DecPtr));
     node.set_type(node.declaration_pointer()->type());
+    int x = 3;
   }
 }
 

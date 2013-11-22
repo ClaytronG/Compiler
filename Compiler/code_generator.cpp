@@ -1,3 +1,6 @@
+// Author: Clayton Green
+
+#include "ast_node_code_visitor.h"
 #include "code_generator.h"
 
 CodeGenerator::CodeGenerator(ASTNode *root, const std::string filename, Administrator *administrator) 
@@ -36,7 +39,7 @@ void CodeGenerator::InitOutput() {
   output_ += quadruple;
   output_ += "(rval,-,-,t1)\n";
   output_ += "(call,main,-,-)\n";
-  output_ += "(hlt,-,-,-)";
+  output_ += "(hlt,-,-,-)\n";
 }
 
 std::string CodeGenerator::output() const {
@@ -44,5 +47,5 @@ std::string CodeGenerator::output() const {
 }
 
 void CodeGenerator::GenerateCode() {
-
+  root_->Accept(new ASTNodeCodeVisitor(output_));
 }

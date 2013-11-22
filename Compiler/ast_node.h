@@ -138,11 +138,6 @@ public:
     return array_parameter_;
   }
 
-  // Returns the spelling table index of the identifier.
-  int identifier() const {
-    return identifier_;
-  }
-
   // Returns a pointer to the next parameter.
   ParameterNode *next_parameter() const;
 
@@ -158,9 +153,6 @@ public:
   // Sets the spelling table index for the identifier.
   void set_identifier(const int index);
 
-  // Sets the identifier as a new string. Updates the spelling table.
-  void set_identifier(const std::string &string_identifier);
-
   // Sets the pointer to the next parameter.
   void set_next_parameter(ParameterNode *next_parameter);
 
@@ -168,31 +160,19 @@ public:
   // array parameter to false.
   void set_reference_parameter(const bool reference_paramter);
 
-  // Sets the type of this parameter. Can be INT, BOOL, or VOID.
-  void set_type(const Token::TokenName &type);
 
   // Returns the string value of the identifier from the spelling table.
   std::string StringIdentifier() const;
-  
-  // Returns the type of this paramter.
-  Token::TokenName type() const;
-
 
 private:
   // True if this parameter is an array type.
   bool array_parameter_;
-
-  // Spelling table index of the string identifier of this parameter.
-  int identifier_;
 
   // Pointer to the next parameter for this function. Can be null.
   ParameterNode *next_parameter_;
   
   // True if this parameter is a refernce.
   bool reference_parameter_;
-  
-  // Type of this paramter. Can be INT or BOOL.
-  Token::TokenName type_;
 };
 
 class StatementNode : public virtual ASTNode {

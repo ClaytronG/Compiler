@@ -24,6 +24,7 @@ void SemanticAnalyzer::InitTraversal() {
   const FunctionDeclarationNode *last_declaration = dynamic_cast<const FunctionDeclarationNode*>((symbol_table_.identifier_table_.end()-1)->DecPtr);
   if (last_declaration == NULL) {
     administrator_->messenger()->AddError(filename_, 0, "Last Declaration must be 'int main(void)'");
+    error_free_ = false;
   } else if (last_declaration->type() != Token::INT ||
       Administrator::spelling_table[last_declaration->identifier()].compare("main") != 0 ||
       last_declaration->parameters() != NULL) {

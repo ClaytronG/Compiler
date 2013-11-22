@@ -54,10 +54,6 @@ void ParameterNode::set_identifier(const int index) {
   identifier_ = index;
 }
 
-void ParameterNode::set_identifier(const std::string &string_identifier) {
-  Administrator::spelling_table[identifier_] = string_identifier;
-}
-
 void ParameterNode::set_next_parameter(ParameterNode *next_parameter) {
   next_parameter_ = next_parameter;
 }
@@ -69,14 +65,6 @@ void ParameterNode::set_reference_parameter(const bool reference_parameter) {
   }
 }
 
-void ParameterNode::set_type(const Token::TokenName &type) {
-  type_ = type;
-}
-
 std::string ParameterNode::StringIdentifier() const {
   return Administrator::spelling_table[identifier_];
-}
-
-Token::TokenName ParameterNode::type() const {
-  return type_;
 }

@@ -38,6 +38,10 @@ public:
 
   void FullTraversal();
 
+  bool error_free() const {
+    return error_free_;
+  }
+
 private:
 
   // 

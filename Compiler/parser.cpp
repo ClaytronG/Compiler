@@ -629,7 +629,6 @@ ASTNode *Parser::CompoundStmt(/*SynchSet &set*/) {
     compound->set_local_variable(first_variable);
   }
   compound->set_num_locals(count);
-  printf("locals %d\n", count);
 
   // Parse the statement list
   StatementNode *first_statement = dynamic_cast<StatementNode*>(transition(

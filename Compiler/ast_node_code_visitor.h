@@ -38,12 +38,27 @@ public:
 private:
   //
   std::string CreateQuad(const std::string &op, const std::string &arg1, const std::string &arg2, const std::string &result);
+  
   //
   std::string *output_;
 
-  bool global_scope_;
-
+  // Check to see if we are in a function's compound statement.
+  // i.e. do not need ECS and LCS quadruples
   bool function_compound_;
+
+  // 
+  int current_num_parameters_;
+
+  //
+  int current_temp_variable_;
+
+  VariableNode last_variable_;
+
+  LiteralNode last_literal_;
+
+  int current_continue_jump_;
+
+  int current_exit_jump_;
 };
 
 #endif // COMPILER_ASTNODECODEVISITOR_H_

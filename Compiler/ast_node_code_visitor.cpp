@@ -1,15 +1,15 @@
 #include "ast_node_code_visitor.h"
 
-ASTNodeCodeVisitor::ASTNodeCodeVisitor(std::string &output) : output_(&output) { 
-  global_scope_ = true;
+ASTNodeCodeVisitor::ASTNodeCodeVisitor(std::string &output) : output_(&output) {
   function_compound_ = false;
+  current_num_parameters_ = -1;
+  current_temp_variable_ = 1;
+  last_variable_ = -1;
+  current_continue_jump_ = 1;
+  current_exit_jump_ = 1;
 };
 
 void ASTNodeCodeVisitor::Visit(AssignmentNode &node) {
-
-}
-
-void ASTNodeCodeVisitor::Visit(ASTNode &node) {
 
 }
 
@@ -48,19 +48,13 @@ void ASTNodeCodeVisitor::Visit(CompoundNode &node) {
 }
 
 void ASTNodeCodeVisitor::Visit(ContinueNode &node) {
-
-}
-
-void ASTNodeCodeVisitor::Visit(DeclarationNode &node) {
-
+  std::string label = "LS" + Administrator::IntToString(current_continue_jump_);
+  *output_ += CreateQuad("goto", "-", "-", label);
 }
 
 void ASTNodeCodeVisitor::Visit(ExitNode &node) {
-
-}
-
-void ASTNodeCodeVisitor::Visit(ExpressionNode &node) {
-
+  std::string label = "LE" + Administrator::IntToString(current_exit_jump_);
+  *output_ += CreateQuad("goto", "-", "-", label);
 }
 
 void ASTNodeCodeVisitor::Visit(FunctionDeclarationNode &node) {
@@ -68,7 +62,9 @@ void ASTNodeCodeVisitor::Visit(FunctionDeclarationNode &node) {
   *output_ += CreateQuad("fun", Administrator::spelling_table[node.identifier()], std::to_string(node.compound()->num_locals()), "-");
   // Move onto the body of the function
   function_compound_ = true;
+  current_num_parameters_ = node.num_parameters();
   node.compound()->Accept(this);
+  current_num_parameters_ = -1;
   // Move onto the next declaration
   if (node.next_node() != NULL) {
     node.next_node()->Accept(this);
@@ -79,46 +75,86 @@ void ASTNodeCodeVisitor::Visit(IfNode &node) {
 
 }
 
-void ASTNodeCodeVisitor::Visit(LiteralNode &node) {
-
+void ASTNodeCodeVisitor::Visit(LiteralNode &node) { 
+  last_literal_ = node;
 }
 
 void ASTNodeCodeVisitor::Visit(LoopNode &node) {
+  // Create the label to jump back to the start of the loop
+  std::string label = "LS" + Administrator::IntToString(current_continue_jump_);
+  *output_ += CreateQuad("lab", "-", "-", label);
 
+  node.statements()->Accept(this);
+  ++current_continue_jump_;
+
+  label = "LE" + Administrator::IntToString(current_exit_jump_++);
+  *output_ += CreateQuad("lab", "-", "-", label);
 }
 
-void ASTNodeCodeVisitor::Visit(NullNode &node) { }
-
-void ASTNodeCodeVisitor::Visit(ParameterNode &node) { }
-
 void ASTNodeCodeVisitor::Visit(ProgramNode &node) {
-  // Move onto the declaration nodes
+  // Start with the first declaration of the program
   node.declaration_node()->Accept(this);
-  // Move onto the next declaration
+}
+
+void ASTNodeCodeVisitor::Visit(ReturnNode &node) {
+  // This returns a value
+  if (node.expression() != NULL) {
+    // TODO: Figure out return value temporaries
+    LiteralNode* literal = dynamic_cast<LiteralNode*>(node.expression());
+    VariableNode* variable = dynamic_cast<VariableNode*>(node.expression());
+    std::string parameters = Administrator::IntToString(current_num_parameters_);
+    if (literal != NULL) {
+      *output_ += CreateQuad("retv", parameters, Administrator::IntToString(literal->value()), "-");
+    }
+    else if (variable != NULL) {
+      *output_ += CreateQuad("retv", parameters, Administrator::spelling_table[variable->identifier()], "-");
+    }
+    // Otherwise it is a binary, unary or call node, in which case a temporary 
+    // variable has been used
+    else {
+      // Visit the expression the create its quadruples
+      node.expression()->Accept(this);
+      std::string temp = "t" + Administrator::IntToString(current_temp_variable_++);
+      *output_ += CreateQuad("retv", parameters, temp, "-");
+    }
+  }
+  // Or not
+  else {
+    *output_ += CreateQuad("ret", Administrator::IntToString(current_num_parameters_), "-", "-");
+  }
+
   if (node.next_node() != NULL) {
     node.next_node()->Accept(this);
   }
 }
 
-void ASTNodeCodeVisitor::Visit(ReturnNode &node) {
-  node.expression()->Accept(this);
-  // This returns a value
-  if (node.expression() != NULL) {
-
-  }
-  // Or not
-  else {
-
-  }
-}
-
-void ASTNodeCodeVisitor::Visit(StatementNode &node) {
-
-}
 
 void ASTNodeCodeVisitor::Visit(UnaryNode &node) {
-
+  // Create the quadruples for the expression first
+  node.expression()->Accept(this);
+  // Get the current temp variable in string form
+  std::string current_temp = "t" + Administrator::IntToString(current_temp_variable_);
+  // Get the next temp variable in string form
+  std::string next_temp = "t" + Administrator::IntToString(++current_temp_variable_);
+  switch (node.op()) {
+  case Token::NOT:
+    *output_ += CreateQuad("not", current_temp, "-", next_temp);
+    break;
+  case Token::MINUS:
+    *output_ += CreateQuad("uminus", current_temp, "-", next_temp);
+    break;
+  default:
+    printf("%s\n", "Something went wrong");
+    break;
+  }
 }
+
+void ASTNodeCodeVisitor::Visit(ASTNode &node) { }
+void ASTNodeCodeVisitor::Visit(DeclarationNode &node) { }
+void ASTNodeCodeVisitor::Visit(NullNode &node) { }
+void ASTNodeCodeVisitor::Visit(ParameterNode &node) { }
+void ASTNodeCodeVisitor::Visit(StatementNode &node) { }
+void ASTNodeCodeVisitor::Visit(ExpressionNode &node) { }
 
 void ASTNodeCodeVisitor::Visit(VariableDeclarationNode &node) {
   // Variable declarations do not produce quadruples
@@ -128,7 +164,7 @@ void ASTNodeCodeVisitor::Visit(VariableDeclarationNode &node) {
 }
 
 void ASTNodeCodeVisitor::Visit(VariableNode &node) {
-
+  last_variable_ = node;
 }
 
 std::string ASTNodeCodeVisitor::CreateQuad(const std::string &op, const std::string &arg1, const std::string &arg2, const std::string &result) {

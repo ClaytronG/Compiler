@@ -19,7 +19,9 @@ SemanticAnalyzer::SemanticAnalyzer(ASTNode *root,
 }
 
 void SemanticAnalyzer::InitTraversal() {
-  root_->Accept(new ASTNodeInitVisitor(&symbol_table_, filename_, administrator_));
+  ASTNodeInitVisitor *visitor = new ASTNodeInitVisitor(&symbol_table_, filename_, administrator_);
+  root_->Accept(visitor);
+  error_free_ = visitor->error_free();
   // Make sure "int main(void)" is the last declaration
   const FunctionDeclarationNode *last_declaration = dynamic_cast<const FunctionDeclarationNode*>((symbol_table_.identifier_table_.end()-1)->DecPtr);
   if (last_declaration == NULL) {
@@ -35,7 +37,9 @@ void SemanticAnalyzer::InitTraversal() {
 }
 
 void SemanticAnalyzer::FullTraversal() {
-  root_->Accept(new ASTNodeFullVisitor(&symbol_table_, filename_, administrator_));
+  ASTNodeFullVisitor *visitor = new ASTNodeFullVisitor(&symbol_table_, filename_, administrator_);
+  root_->Accept(visitor);
+  error_free_ = visitor->error_free();
 }
 
 SemanticAnalyzer::SymbolTable::SymbolTable() : acces_table_(), identifier_table_() {

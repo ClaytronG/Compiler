@@ -40,6 +40,10 @@ public:
   void Visit(VariableDeclarationNode &node);
   void Visit(VariableNode &node);
 
+  bool error_free() const {
+    return error_free_;
+  }
+
 private:
   typedef SemanticAnalyzer::SymbolTable::IdentificationTableEntry IdentificationTableEntry;
 

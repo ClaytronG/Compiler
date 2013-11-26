@@ -6,7 +6,7 @@ ASTNodeFullVisitor::ASTNodeFullVisitor(SymbolTable *symbol_table, const std::str
   : symbol_table_(symbol_table), filename_(filename), administrator_(administrator), case_numbers_() {
   depth_ = 0;
   compound_variable_ = false;
-  error_free_ = false;
+  error_free_ = true;
   in_loop_ = false;
   nonvoid_function_ = false;
   return_statement_ = false;
@@ -64,6 +64,10 @@ void ASTNodeFullVisitor::Visit(AssignmentNode &node) {
     error_free_ = false;
   }
   void_function_valid = true;
+
+  if (node.next_node() != NULL) {
+    node.next_node()->Accept(this);
+  }
 }
 
 void ASTNodeFullVisitor::Visit(BinaryNode &node) { 
@@ -166,7 +170,9 @@ void ASTNodeFullVisitor::Visit(CallNode &node) {
   }
   else {
     int identifier_index = symbol_table_->acces_table_.at(node.identifier());
-    node.set_type(dynamic_cast<FunctionDeclarationNode*>(symbol_table_->identifier_table_.at(identifier_index).DecPtr)->type());
+    FunctionDeclarationNode *declaration = dynamic_cast<FunctionDeclarationNode*>(symbol_table_->identifier_table_.at(identifier_index).DecPtr);
+    node.set_type(declaration->type());
+    node.set_declaration(declaration);
   }
 
   if (node.arguments()) {
@@ -177,6 +183,7 @@ void ASTNodeFullVisitor::Visit(CallNode &node) {
   ParameterNode *current_param = dynamic_cast<FunctionDeclarationNode*>(symbol_table_->identifier_table_.at(symbol_table_->acces_table_.at(node.identifier())).DecPtr)->parameters();
   ExpressionNode *current_arg = node.arguments();
   while (current_arg != NULL) {
+    current_arg->Accept(this);
     // Check if current_param exist, if not then 
     if (current_param == NULL) {
       std::string message = "Too many arguments";
@@ -266,7 +273,6 @@ void ASTNodeFullVisitor::Visit(CompoundNode &node) {
   node.statements()->Accept(this);
 
   --depth_;
-  administrator_->messenger()->PrintMessage(symbol_table_->ToString());
   if ((symbol_table_->identifier_table_.end() - 1)->L != 0) {
     PopStack();
   }
@@ -409,6 +415,24 @@ void ASTNodeFullVisitor::Visit(ReturnNode &node) {
 void ASTNodeFullVisitor::Visit(UnaryNode &node) {
   node.expression()->Accept(this);
 
+  if (node.op() == Token::MINUS) {
+    if (node.expression()->type() != Token::UNIVERSAL &&
+        node.expression()->type() != Token::INT) {
+      std::string message = "Invalid type on operator, expected INT";
+      administrator_->messenger()->AddError(filename_, node.line_number(), message);
+      error_free_ = false;
+    }
+    node.set_type(Token::INT);
+  }
+  else if (node.op() == Token::NOT) {
+    if (node.expression()->type() != Token::UNIVERSAL && 
+        node.expression()->type() != Token::BOOL) {
+      std::string message = "Invalid type on operator, expected BOOL";
+      administrator_->messenger()->AddError(filename_, node.line_number(), message);
+    }
+    node.set_type(Token::BOOL);
+  }
+
 }
 
 void ASTNodeFullVisitor::Visit(VariableDeclarationNode &node) { 
@@ -484,7 +508,6 @@ void ASTNodeFullVisitor::Visit(VariableNode &node) {
     node.set_type(Token::UNIVERSAL);
   }
   else {
-    printf("%s\n", symbol_table_->ToString().c_str());
     // Link this variable with its declaration
     ASTNode *node1 = symbol_table_->identifier_table_.at(index).DecPtr;
     VariableDeclarationNode *var = dynamic_cast<VariableDeclarationNode*>(node1);

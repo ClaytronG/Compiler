@@ -32,6 +32,15 @@ public:
     return line_number_;
   }
 
+  Token::TokenName type() const {
+    return type_;
+  }
+
+  //
+  void set_type(const Token::TokenName type) {
+    type_ = type;
+  }
+
 protected:
   //
   ASTNode();
@@ -41,6 +50,9 @@ protected:
 
   //
   int line_number_;
+
+  //
+  Token::TokenName type_;
 };
 
 class DeclarationNode : public ASTNode {
@@ -62,15 +74,8 @@ public:
   // Sets the string ID of this declaration.
   void set_identifier(const std::string &string_identifier);
 
-  // Sets the type of token. Can be INT, BOOL, or VOID.
-  void set_type(const Token::TokenName &type);
-
   // Returns the string of this declaration's ID.
   std::string StringIdentifier() const;
-  
-  // Returns the type of this declaration. 
-  Token::TokenName type() const;
-
 protected:
   // Protected to hide declaration node base class constructor to force user
   // to use subclass constructors.
@@ -82,9 +87,6 @@ protected:
 
   // Spelling table's index of this declaration's identifier.
   int identifier_;
-
-  // Type of the declaration (INT, BOOL, or VOID).
-  Token::TokenName type_;
 };
 
 class ProgramNode : public ASTNode {
@@ -184,27 +186,15 @@ public:
 class ExpressionNode : public virtual ASTNode {
 public:
   ExpressionNode() {
-    type_ = Token::UNIVERSAL;
     value_ = 0;
   }
 
   ExpressionNode(const int value) {
-    type_ = Token::UNIVERSAL;
     value_ = value;
   }
 
   //
   void Accept(ASTNodeVisitor *visitor);
-
-  //
-  Token::TokenName type() const {
-    return type_;
-  }
-
-  //
-  void set_type(const Token::TokenName type) {
-    type_ = type;
-  }
 
   //
   int value() const {
@@ -217,8 +207,6 @@ public:
   }
 
 private:
-  Token::TokenName type_;
-
   int value_;
 };
 
@@ -918,12 +906,21 @@ public:
   //
   std::string StringIdentifier() const;
 
+  //
+  FunctionDeclarationNode *declaration() const;
+
+  //
+  void set_declaration(FunctionDeclarationNode *declaration);
+
 private:
   //
   ExpressionNode *arguments_;
 
   //
   int identifier_;
+
+  //
+  FunctionDeclarationNode *declaration_;
 };
 
 #endif // COMPILER_ASTNODE_H

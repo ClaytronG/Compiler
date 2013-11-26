@@ -24,16 +24,8 @@ void DeclarationNode::set_identifier(const std::string &string_identifier) {
   Administrator::spelling_table[identifier_] = string_identifier;
 }
 
-void DeclarationNode::set_type(const Token::TokenName &type) {
-  type_ = type;
-}
-
 std::string DeclarationNode::StringIdentifier() const {
   return Administrator::spelling_table[identifier_];
-}
-
-Token::TokenName DeclarationNode::type() const {
-  return type_;
 }
 
 DeclarationNode::DeclarationNode() {

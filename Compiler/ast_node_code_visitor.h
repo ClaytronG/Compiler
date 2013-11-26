@@ -35,6 +35,8 @@ public:
   void Visit(VariableDeclarationNode &node);
   void Visit(VariableNode &node);
 
+  void PushArguments(const CallNode &node);
+
 private:
   //
   std::string CreateQuad(const std::string &op, const std::string &arg1, const std::string &arg2, const std::string &result);
@@ -59,6 +61,10 @@ private:
   int current_continue_jump_;
 
   int current_exit_jump_;
+
+  int current_label_;
+
+  int current_branch_;
 };
 
 #endif // COMPILER_ASTNODECODEVISITOR_H_

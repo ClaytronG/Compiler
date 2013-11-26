@@ -1,0 +1,11 @@
+/* @author Ashton Fedler
+ * @email fedler@unbc.ca
+ * @data September 24 2013
+ *
+ * Description:
+ * This file tests that the cs13 Scanner can properly
+ * tokenize all types that are not numerials or identifiers.
+ */
+-- Test all recognized types
+and bool branch case continue default else end exit if int loop mod or ref return void not true false
++ - * / && || < <= > >= = /= := ; , ( ) [ ] { }

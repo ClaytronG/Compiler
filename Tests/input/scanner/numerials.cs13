@@ -1,0 +1,22 @@
+/* @author Ashton Fedler
+ * @email fedler@unbc.ca
+ * @data September 24 2013
+ *
+ * Description:
+ * This file tests that the cs13 Scanner can properly
+ * tokenize all types of numerials.
+ *
+ * ENDFILE should Occur on line 22.
+ */
+ 
+ -- Accept all digits
+0 1 2 3 4 5 6 7 8 9
+
+-- Start and end with all digits
+01 12 23 34 45 56 67 78 89 90
+
+-- Should give NUM[1], ID[a], NUM[1], ID[a1]
+1a 1a1 -- [0, 1]
+
+-- Ensure the token table is at index 2
+b -- [2]

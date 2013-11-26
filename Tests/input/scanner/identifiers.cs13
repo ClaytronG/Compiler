@@ -1,0 +1,40 @@
+/* @author Ashton Fedler
+ * @email fedler@unbc.ca
+ * @data September 24 2013
+ *
+ * Description:
+ * This file tests that the cs13 Scanner can properly
+ * tokenize all types of identifiers. Each test is 
+ * prefixed with a description and each line in the 
+ * test states in the start and end index's expected
+ * for the token table.
+ *
+ * @edited Clayton
+ * @date September 25 2013
+ * - Added dollar sign test in identifier beginning test case
+ * - Commented out identifiers starting with underscore/dollar/number.
+ *   The scanner will give ERROR then ID, then the parser will complain
+ * - Added dollar sign and underscore outside of ID test
+ */
+ 
+ -- Accept the entire alphabet upper and lower
+ a b c d e f g h i j k l m n o p q r s t u v w x y z -- [0, 25]
+ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z -- [26, 51]
+ 
+ -- Ensure you can start and end with all letters
+ ab bc cd de ef fg gh hi ij jk kl lm mn no op pq qr rs st tu uv vw wx xy yz za -- [52, 77]
+ AB BC CD DE EF FG GH HI IJ JK KL LM MN NO OP PQ QR RS ST TU UV VW WX XY YZ ZA -- [78, 103]
+ 
+ -- WRONG Cannot begin with an underscore or a dollar sign or a number
+ -- _a $a 0a 1a 2a 3a 4a 5a 6a 7a 8a 9a -- [NA]
+ -- Underscores and dollar signs shouldn't work outside of identifiers
+ _ $ -- [NA]
+ 
+ -- Can have underscore or number after first character
+ a_ a$ a0 a1 a2 a3 a4 a5 a6 a7 a8 a9 -- [104, 115]
+ a_a a0a a1a a2a a3a a4a a5a a6a a7a a8a a9a -- [116, 126]
+ 
+ -- Should reuse index's
+ a b c a_a -- [0, 2],[116]
+ 
+ -- List of errors should be invalid tokens '_' and '$'

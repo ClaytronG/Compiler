@@ -1,0 +1,25 @@
+int x;
+
+int f(int x) {
+  int z;
+  
+  if(z)
+    return 1;
+    
+  -- Can't define variable halfway through compound 
+  bool y;
+  
+  branch(x)
+    case 1: return;
+    case 2: return;
+    default: exit;
+  end;
+  
+  z := 21 -- No semicolon
+  
+}
+
+void main()
+{
+	; -- Should recover here then fail because missing closing f
+}

@@ -1,0 +1,24 @@
+filename 1> int x;
+ Entering program
+  1> (INT, )
+  Loading INT
+  Entering declaration
+   Entering nonvoid-specifier
+   Matching INT
+   1> (ID, 0) => x
+   Loading ID
+   Leaving nonvoid-specifier
+  Matching ID
+  1> (SEMI, )
+  Loading SEMI
+   Entering dec-tail
+    Entering var-dec-tail
+    Matching SEMI
+filename 2> 
+filename 3> loop
+    3> (LOOP, )
+    Loading LOOP
+    Leaving var-dec-tail
+   Leaving dec-tail
+  Leaving declaration
+ Leaving program

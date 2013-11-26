@@ -1,0 +1,24 @@
+int x;
+
+int f(int x) {
+  int z;
+  
+  if(z)
+    return 1;
+    
+  bool y;
+  
+  branch(x)
+    case 1: return;
+    case 2: return;
+    default: exit;
+  end;
+  
+  z := 21 -- No semicolon
+  
+}
+
+void main()
+{
+	;
+}

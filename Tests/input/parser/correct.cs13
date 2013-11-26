@@ -1,0 +1,51 @@
+/** @author Clayton Green
+  *
+  * Test all of the productions in the given LL1 grammar.
+  */
+-- Begins with program
+int temp[5], temp1[temp[3+1*5]];
+bool temp3;
+int x;
+
+void foo(ref int x, int y[])
+{
+  int z;
+  y[bar(-1,(temp3 <= 25) = true)] := 5;
+  bar(1,false);
+  {
+    if(1>2)
+      if(true)
+        return;
+      else
+        exit;
+  }
+  loop
+  	if (true /= temp3) continue;
+  	else exit;
+  end;
+  
+  branch(x)
+  	case 1 : return;
+  	default : return;
+  end;
+}
+
+int bar(int x, bool y)
+{
+  ;
+  return 1;
+}
+
+int main(void)
+{
+	bool x, y;
+	x := 3 > 3;  
+	y := 3 >= 9;
+  z := 9 / 3;
+  y := 1 < 2;
+  z := 9 mod 3;
+  x := x and y;
+  y := y && x;
+  x := x or y;
+  y := y || x;
+}

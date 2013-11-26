@@ -1,0 +1,1509 @@
+filename 1> /** @author Clayton Green
+filename 2> *
+filename 3> * Test all of the productions in the given LL1 grammar.
+filename 4> */
+filename 5> -- Begins with program
+filename 6> int temp[5], temp1[temp[3+1*5]];
+ 6> (INT, )
+ Loading INT
+ Entering program
+  Entering declaration
+   Entering non-void-specifier
+   Matching INT
+   6> (ID, 0) => temp
+   Loading ID
+   Leaving non-void-specifier
+   Matching ID
+   6> (LSQR, )
+   Loading LSQR
+   Entering dec-tail
+    Entering var-dec-tail
+     Matching LSQR
+     6> (NUM, 5)
+     Loading NUM
+     Entering add-exp
+      Entering term
+       Entering factor
+        Entering nid-factor
+         Matching NUM
+         6> (RSQR, )
+         Loading RSQR
+        Exiting nid-factor
+       Exiting factor
+      Exiting term
+     Exiting add-exp
+     Matching RSQR
+     6> (COMMA, )
+     Loading COMMA
+     Matching COMMA
+     6> (ID, 1) => temp1
+     Loading ID
+     Entering var-name
+      Matching ID
+      6> (LSQR, )
+      Loading LSQR
+      Matching LSQR
+      6> (ID, 0) => temp
+      Loading ID
+      Entering add-exp
+       Entering term
+        Entering factor
+         Entering id-factor
+          Matching ID
+          6> (LSQR, )
+          Loading LSQR
+          Entering id-tail
+           Entering var-tail
+            Matching LSQR
+            6> (NUM, 3)
+            Loading NUM
+            Entering add-exp
+             Entering term
+              Entering factor
+               Entering nid-factor
+                Matching NUM
+                6> (PLUS, )
+                Loading PLUS
+               Exiting nid-factor
+              Exiting factor
+             Exiting term
+             Entering add-op
+              Matching PLUS
+              6> (NUM, 1)
+              Loading NUM
+             Exiting add-op
+             Entering term
+              Entering factor
+               Entering nid-factor
+                Matching NUM
+                6> (MULT, )
+                Loading MULT
+               Exiting nid-factor
+              Exiting factor
+              Entering multop
+               Matching MULT
+               6> (NUM, 5)
+               Loading NUM
+              Exiting multop
+              Entering factor
+               Entering nid-factor
+                Matching NUM
+                6> (RSQR, )
+                Loading RSQR
+               Exiting nid-factor
+              Exiting factor
+             Exiting term
+            Exiting add-exp
+            Matching RSQR
+            6> (RSQR, )
+            Loading RSQR
+           Exiting var-tail
+          Exiting id-tail
+         Exiting id-factor
+        Exiting factor
+       Exiting term
+      Exiting add-exp
+      Matching RSQR
+      6> (SEMI, )
+      Loading SEMI
+     Exiting var-name
+     Matching SEMI
+filename 7> bool temp3;
+     7> (BOOL, )
+     Loading BOOL
+    Exiting var-dec-tail
+   Exiting dec-tail
+  Exiting declaration
+  Entering declaration
+   Entering non-void-specifier
+   Matching BOOL
+   7> (ID, 2) => temp3
+   Loading ID
+   Leaving non-void-specifier
+   Matching ID
+   7> (SEMI, )
+   Loading SEMI
+   Entering dec-tail
+    Entering var-dec-tail
+     Matching SEMI
+filename 8> int x;
+     8> (INT, )
+     Loading INT
+    Exiting var-dec-tail
+   Exiting dec-tail
+  Exiting declaration
+  Entering declaration
+   Entering non-void-specifier
+   Matching INT
+   8> (ID, 3) => x
+   Loading ID
+   Leaving non-void-specifier
+   Matching ID
+   8> (SEMI, )
+   Loading SEMI
+   Entering dec-tail
+    Entering var-dec-tail
+     Matching SEMI
+filename 9> 
+filename 10> void foo(ref int x, int y[])
+     10> (VOID, )
+     Loading VOID
+    Exiting var-dec-tail
+   Exiting dec-tail
+  Exiting declaration
+  Entering declaration
+   Matching VOID
+   10> (ID, 4) => foo
+   Loading ID
+   Matching ID
+   10> (LPAREN, )
+   Loading LPAREN
+   Entering fun-dec-tail
+    Matching LPAREN
+    10> (REF, )
+    Loading REF
+    Entering params
+     Entering param
+      Matching REF
+      10> (INT, )
+      Loading INT
+      Entering non-void-specifier
+      Matching INT
+      10> (ID, 3) => x
+      Loading ID
+      Leaving non-void-specifier
+      Matching ID
+      10> (COMMA, )
+      Loading COMMA
+     Exiting param
+     Matching COMMA
+     10> (INT, )
+     Loading INT
+     Entering param
+      Entering non-void-specifier
+      Matching INT
+      10> (ID, 5) => y
+      Loading ID
+      Leaving non-void-specifier
+      Matching ID
+      10> (LSQR, )
+      Loading LSQR
+      Matching LSQR
+      10> (RSQR, )
+      Loading RSQR
+      Matching RSQR
+      10> (RPAREN, )
+      Loading RPAREN
+     Exiting param
+    Exiting params
+    Matching RPAREN
+filename 11> {
+    11> (LCRLY, )
+    Loading LCRLY
+    Entering compound-stmt
+     Matching LCRLY
+filename 12> int z;
+     12> (INT, )
+     Loading INT
+     Entering non-void-specifier
+     Matching INT
+     12> (ID, 6) => z
+     Loading ID
+     Leaving non-void-specifier
+     Matching ID
+     12> (SEMI, )
+     Loading SEMI
+     Entering var-dec-tail
+      Matching SEMI
+filename 13> y[bar(-1,(temp3 <= 25) = true)] := 5;
+      13> (ID, 5) => y
+      Loading ID
+     Exiting var-dec-tail
+     Entering statement
+      Entering id-stmt
+       Matching ID
+       13> (LSQR, )
+       Loading LSQR
+       Entering id-stmt-tail
+        Entering assign-stmt-tail
+         Matching LSQR
+         13> (ID, 7) => bar
+         Loading ID
+         Entering add-exp
+          Entering term
+           Entering factor
+            Entering id-factor
+             Matching ID
+             13> (LPAREN, )
+             Loading LPAREN
+             Entering id-tail
+              Entering call-tail
+               Matching LPAREN
+               13> (MINUS, )
+               Loading MINUS
+               Entering arguments
+                Entering expression
+                 Entering add-exp
+                  Entering uminus
+                   Matching MINUS
+                   13> (NUM, 1)
+                   Loading NUM
+                  Exiting uminus
+                  Entering term
+                   Entering factor
+                    Entering nid-factor
+                     Matching NUM
+                     13> (COMMA, )
+                     Loading COMMA
+                    Exiting nid-factor
+                   Exiting factor
+                  Exiting term
+                 Exiting add-exp
+                Exiting expression
+                Matching COMMA
+                13> (LPAREN, )
+                Loading LPAREN
+                Entering expression
+                 Entering add-exp
+                  Entering term
+                   Entering factor
+                    Entering nid-factor
+                     Matching LPAREN
+                     13> (ID, 2) => temp3
+                     Loading ID
+                     Entering expression
+                      Entering add-exp
+                       Entering term
+                        Entering factor
+                         Entering id-factor
+                          Matching ID
+                          13> (LTEQ, )
+                          Loading LTEQ
+                          Entering id-tail
+                          Exiting id-tail
+                         Exiting id-factor
+                        Exiting factor
+                       Exiting term
+                      Exiting add-exp
+                      Entering relop
+                       Matching LTEQ
+                       13> (NUM, 25)
+                       Loading NUM
+                      Exiting relop
+                      Entering add-exp
+                       Entering term
+                        Entering factor
+                         Entering nid-factor
+                          Matching NUM
+                          13> (RPAREN, )
+                          Loading RPAREN
+                         Exiting nid-factor
+                        Exiting factor
+                       Exiting term
+                      Exiting add-exp
+                     Exiting expression
+                     Matching RPAREN
+                     13> (EQ, )
+                     Loading EQ
+                    Exiting nid-factor
+                   Exiting factor
+                  Exiting term
+                 Exiting add-exp
+                 Entering relop
+                  Matching EQ
+                  13> (BLIT, true)
+                  Loading BLIT
+                 Exiting relop
+                 Entering add-exp
+                  Entering term
+                   Entering factor
+                    Entering nid-factor
+                     Matching BLIT
+                     13> (RPAREN, )
+                     Loading RPAREN
+                    Exiting nid-factor
+                   Exiting factor
+                  Exiting term
+                 Exiting add-exp
+                Exiting expression
+               Exiting arguments
+               Matching RPAREN
+               13> (RSQR, )
+               Loading RSQR
+              Exiting call-tail
+             Exiting id-tail
+            Exiting id-factor
+           Exiting factor
+          Exiting term
+         Exiting add-exp
+         Matching RSQR
+         13> (ASSIGN, )
+         Loading ASSIGN
+         Matching ASSIGN
+         13> (NUM, 5)
+         Loading NUM
+         Entering expression
+          Entering add-exp
+           Entering term
+            Entering factor
+             Entering nid-factor
+              Matching NUM
+              13> (SEMI, )
+              Loading SEMI
+             Exiting nid-factor
+            Exiting factor
+           Exiting term
+          Exiting add-exp
+         Exiting expression
+         Matching SEMI
+filename 14> bar(1,false);
+         14> (ID, 7) => bar
+         Loading ID
+        Exiting assign-stmt-tail
+       Exiting id-stmt-tail
+      Exiting id-stmt
+     Exiting statement
+     Entering statement
+      Entering id-stmt
+       Matching ID
+       14> (LPAREN, )
+       Loading LPAREN
+       Entering id-stmt-tail
+        Entering call-stmt-tail
+         Entering call-tail
+          Matching LPAREN
+          14> (NUM, 1)
+          Loading NUM
+          Entering arguments
+           Entering expression
+            Entering add-exp
+             Entering term
+              Entering factor
+               Entering nid-factor
+                Matching NUM
+                14> (COMMA, )
+                Loading COMMA
+               Exiting nid-factor
+              Exiting factor
+             Exiting term
+            Exiting add-exp
+           Exiting expression
+           Matching COMMA
+           14> (BLIT, false)
+           Loading BLIT
+           Entering expression
+            Entering add-exp
+             Entering term
+              Entering factor
+               Entering nid-factor
+                Matching BLIT
+                14> (RPAREN, )
+                Loading RPAREN
+               Exiting nid-factor
+              Exiting factor
+             Exiting term
+            Exiting add-exp
+           Exiting expression
+          Exiting arguments
+          Matching RPAREN
+          14> (SEMI, )
+          Loading SEMI
+         Exiting call-tail
+         Matching SEMI
+filename 15> {
+         15> (LCRLY, )
+         Loading LCRLY
+        Exiting call-stmt-tail
+       Exiting id-stmt-tail
+      Exiting id-stmt
+     Exiting statement
+     Entering statement
+      Entering compound-stmt
+       Matching LCRLY
+filename 16> if(1>2)
+       16> (IF, )
+       Loading IF
+       Entering statement
+        Entering if-stmt
+         Matching IF
+         16> (LPAREN, )
+         Loading LPAREN
+         Matching LPAREN
+         16> (NUM, 1)
+         Loading NUM
+         Entering expression
+          Entering add-exp
+           Entering term
+            Entering factor
+             Entering nid-factor
+              Matching NUM
+              16> (GT, )
+              Loading GT
+             Exiting nid-factor
+            Exiting factor
+           Exiting term
+          Exiting add-exp
+          Entering relop
+           Matching GT
+           16> (NUM, 2)
+           Loading NUM
+          Exiting relop
+          Entering add-exp
+           Entering term
+            Entering factor
+             Entering nid-factor
+              Matching NUM
+              16> (RPAREN, )
+              Loading RPAREN
+             Exiting nid-factor
+            Exiting factor
+           Exiting term
+          Exiting add-exp
+         Exiting expression
+         Matching RPAREN
+filename 17> if(true)
+         17> (IF, )
+         Loading IF
+         Entering statement
+          Entering if-stmt
+           Matching IF
+           17> (LPAREN, )
+           Loading LPAREN
+           Matching LPAREN
+           17> (BLIT, true)
+           Loading BLIT
+           Entering expression
+            Entering add-exp
+             Entering term
+              Entering factor
+               Entering nid-factor
+                Matching BLIT
+                17> (RPAREN, )
+                Loading RPAREN
+               Exiting nid-factor
+              Exiting factor
+             Exiting term
+            Exiting add-exp
+           Exiting expression
+           Matching RPAREN
+filename 18> return;
+           18> (RETURN, )
+           Loading RETURN
+           Entering statement
+            Entering return-stmt
+             Matching RETURN
+             18> (SEMI, )
+             Loading SEMI
+             Matching SEMI
+filename 19> else
+             19> (ELSE, )
+             Loading ELSE
+            Exiting return-stmt
+           Exiting statement
+           Matching ELSE
+filename 20> exit;
+           20> (EXIT, )
+           Loading EXIT
+           Entering statement
+            Entering exit-stmt
+             Matching EXIT
+             20> (SEMI, )
+             Loading SEMI
+             Matching SEMI
+filename 21> }
+             21> (RCRLY, )
+             Loading RCRLY
+            Exiting exit-stmt
+           Exiting statement
+          Exiting if-stmt
+         Exiting statement
+        Exiting if-stmt
+       Exiting statement
+       Matching RCRLY
+filename 22> loop
+       22> (LOOP, )
+       Loading LOOP
+      Exiting compound-stmt
+     Exiting statement
+     Entering statement
+      Entering loop-stmt
+       Matching LOOP
+filename 23> if (true /= temp3) continue;
+       23> (IF, )
+       Loading IF
+       Entering statement
+        Entering if-stmt
+         Matching IF
+         23> (LPAREN, )
+         Loading LPAREN
+         Matching LPAREN
+         23> (BLIT, true)
+         Loading BLIT
+         Entering expression
+          Entering add-exp
+           Entering term
+            Entering factor
+             Entering nid-factor
+              Matching BLIT
+              23> (NEQ, )
+              Loading NEQ
+             Exiting nid-factor
+            Exiting factor
+           Exiting term
+          Exiting add-exp
+          Entering relop
+           Matching NEQ
+           23> (ID, 2) => temp3
+           Loading ID
+          Exiting relop
+          Entering add-exp
+           Entering term
+            Entering factor
+             Entering id-factor
+              Matching ID
+              23> (RPAREN, )
+              Loading RPAREN
+              Entering id-tail
+              Exiting id-tail
+             Exiting id-factor
+            Exiting factor
+           Exiting term
+          Exiting add-exp
+         Exiting expression
+         Matching RPAREN
+         23> (CONTINUE, )
+         Loading CONTINUE
+         Entering statement
+          Entering continue-stmt
+           Matching CONTINUE
+           23> (SEMI, )
+           Loading SEMI
+           Matching SEMI
+filename 24> else exit;
+           24> (ELSE, )
+           Loading ELSE
+          Exiting continue-stmt
+         Exiting statement
+         Matching ELSE
+         24> (EXIT, )
+         Loading EXIT
+         Entering statement
+          Entering exit-stmt
+           Matching EXIT
+           24> (SEMI, )
+           Loading SEMI
+           Matching SEMI
+filename 25> end;
+           25> (END, )
+           Loading END
+          Exiting exit-stmt
+         Exiting statement
+        Exiting if-stmt
+       Exiting statement
+       Matching END
+       25> (SEMI, )
+       Loading SEMI
+       Matching SEMI
+filename 26> 
+filename 27> branch(x)
+       27> (BRANCH, )
+       Loading BRANCH
+      Exiting loop-stmt
+     Exiting statement
+     Entering statement
+      Entering branch-stmt
+       Matching BRANCH
+       27> (LPAREN, )
+       Loading LPAREN
+       Matching LPAREN
+       27> (ID, 3) => x
+       Loading ID
+       Entering add-exp
+        Entering term
+         Entering factor
+          Entering id-factor
+           Matching ID
+           27> (RPAREN, )
+           Loading RPAREN
+           Entering id-tail
+           Exiting id-tail
+          Exiting id-factor
+         Exiting factor
+        Exiting term
+       Exiting add-exp
+       Matching RPAREN
+filename 28> case 1 : return;
+       28> (CASE, )
+       Loading CASE
+       Entering case-stmt
+        Matching CASE
+        28> (NUM, 1)
+        Loading NUM
+        Matching NUM
+        28> (COLON, )
+        Loading COLON
+        Matching COLON
+        28> (RETURN, )
+        Loading RETURN
+        Entering statement
+         Entering return-stmt
+          Matching RETURN
+          28> (SEMI, )
+          Loading SEMI
+          Matching SEMI
+filename 29> default : return;
+          29> (DEFAULT, )
+          Loading DEFAULT
+         Exiting return-stmt
+        Exiting statement
+       Exiting case-stmt
+       Entering case-stmt
+        Matching DEFAULT
+        29> (COLON, )
+        Loading COLON
+        Matching COLON
+        29> (RETURN, )
+        Loading RETURN
+        Entering statement
+         Entering return-stmt
+          Matching RETURN
+          29> (SEMI, )
+          Loading SEMI
+          Matching SEMI
+filename 30> end;
+          30> (END, )
+          Loading END
+         Exiting return-stmt
+        Exiting statement
+       Exiting case-stmt
+       Matching END
+       30> (SEMI, )
+       Loading SEMI
+       Matching SEMI
+filename 31> }
+       31> (RCRLY, )
+       Loading RCRLY
+      Exiting branch-stmt
+     Exiting statement
+     Matching RCRLY
+filename 32> 
+filename 33> int bar(int x, bool y)
+     33> (INT, )
+     Loading INT
+    Exiting compound-stmt
+   Exiting fun-dec-tail
+  Exiting declaration
+  Entering declaration
+   Entering non-void-specifier
+   Matching INT
+   33> (ID, 7) => bar
+   Loading ID
+   Leaving non-void-specifier
+   Matching ID
+   33> (LPAREN, )
+   Loading LPAREN
+   Entering dec-tail
+    Entering fun-dec-tail
+     Matching LPAREN
+     33> (INT, )
+     Loading INT
+     Entering params
+      Entering param
+       Entering non-void-specifier
+       Matching INT
+       33> (ID, 3) => x
+       Loading ID
+       Leaving non-void-specifier
+       Matching ID
+       33> (COMMA, )
+       Loading COMMA
+      Exiting param
+      Matching COMMA
+      33> (BOOL, )
+      Loading BOOL
+      Entering param
+       Entering non-void-specifier
+       Matching BOOL
+       33> (ID, 5) => y
+       Loading ID
+       Leaving non-void-specifier
+       Matching ID
+       33> (RPAREN, )
+       Loading RPAREN
+      Exiting param
+     Exiting params
+     Matching RPAREN
+filename 34> {
+     34> (LCRLY, )
+     Loading LCRLY
+     Entering compound-stmt
+      Matching LCRLY
+filename 35> ;
+      35> (SEMI, )
+      Loading SEMI
+      Entering statement
+       Entering null-stmt
+        Matching SEMI
+filename 36> return 1;
+        36> (RETURN, )
+        Loading RETURN
+       Exiting null-stmt
+      Exiting statement
+      Entering statement
+       Entering return-stmt
+        Matching RETURN
+        36> (NUM, 1)
+        Loading NUM
+        Entering expression
+         Entering add-exp
+          Entering term
+           Entering factor
+            Entering nid-factor
+             Matching NUM
+             36> (SEMI, )
+             Loading SEMI
+            Exiting nid-factor
+           Exiting factor
+          Exiting term
+         Exiting add-exp
+        Exiting expression
+        Matching SEMI
+filename 37> }
+        37> (RCRLY, )
+        Loading RCRLY
+       Exiting return-stmt
+      Exiting statement
+      Matching RCRLY
+filename 38> 
+filename 39> int main(void)
+      39> (INT, )
+      Loading INT
+     Exiting compound-stmt
+    Exiting fun-dec-tail
+   Exiting dec-tail
+  Exiting declaration
+  Entering declaration
+   Entering non-void-specifier
+   Matching INT
+   39> (ID, 8) => main
+   Loading ID
+   Leaving non-void-specifier
+   Matching ID
+   39> (LPAREN, )
+   Loading LPAREN
+   Entering dec-tail
+    Entering fun-dec-tail
+     Matching LPAREN
+     39> (VOID, )
+     Loading VOID
+     Entering params
+      Matching VOID
+      39> (RPAREN, )
+      Loading RPAREN
+     Exiting params
+     Matching RPAREN
+filename 40> {
+     40> (LCRLY, )
+     Loading LCRLY
+     Entering compound-stmt
+      Matching LCRLY
+filename 41> bool x, y;
+      41> (BOOL, )
+      Loading BOOL
+      Entering non-void-specifier
+      Matching BOOL
+      41> (ID, 3) => x
+      Loading ID
+      Leaving non-void-specifier
+      Matching ID
+      41> (COMMA, )
+      Loading COMMA
+      Entering var-dec-tail
+       Matching COMMA
+       41> (ID, 5) => y
+       Loading ID
+       Entering var-name
+        Matching ID
+        41> (SEMI, )
+        Loading SEMI
+       Exiting var-name
+       Matching SEMI
+filename 42> x := 3 > 3;  
+       42> (ID, 3) => x
+       Loading ID
+      Exiting var-dec-tail
+      Entering statement
+       Entering id-stmt
+        Matching ID
+        42> (ASSIGN, )
+        Loading ASSIGN
+        Entering id-stmt-tail
+         Entering assign-stmt-tail
+          Matching ASSIGN
+          42> (NUM, 3)
+          Loading NUM
+          Entering expression
+           Entering add-exp
+            Entering term
+             Entering factor
+              Entering nid-factor
+               Matching NUM
+               42> (GT, )
+               Loading GT
+              Exiting nid-factor
+             Exiting factor
+            Exiting term
+           Exiting add-exp
+           Entering relop
+            Matching GT
+            42> (NUM, 3)
+            Loading NUM
+           Exiting relop
+           Entering add-exp
+            Entering term
+             Entering factor
+              Entering nid-factor
+               Matching NUM
+               42> (SEMI, )
+               Loading SEMI
+              Exiting nid-factor
+             Exiting factor
+            Exiting term
+           Exiting add-exp
+          Exiting expression
+          Matching SEMI
+filename 43> y := 3 >= 9;
+          43> (ID, 5) => y
+          Loading ID
+         Exiting assign-stmt-tail
+        Exiting id-stmt-tail
+       Exiting id-stmt
+      Exiting statement
+      Entering statement
+       Entering id-stmt
+        Matching ID
+        43> (ASSIGN, )
+        Loading ASSIGN
+        Entering id-stmt-tail
+         Entering assign-stmt-tail
+          Matching ASSIGN
+          43> (NUM, 3)
+          Loading NUM
+          Entering expression
+           Entering add-exp
+            Entering term
+             Entering factor
+              Entering nid-factor
+               Matching NUM
+               43> (GTEQ, )
+               Loading GTEQ
+              Exiting nid-factor
+             Exiting factor
+            Exiting term
+           Exiting add-exp
+           Entering relop
+            Matching GTEQ
+            43> (NUM, 9)
+            Loading NUM
+           Exiting relop
+           Entering add-exp
+            Entering term
+             Entering factor
+              Entering nid-factor
+               Matching NUM
+               43> (SEMI, )
+               Loading SEMI
+              Exiting nid-factor
+             Exiting factor
+            Exiting term
+           Exiting add-exp
+          Exiting expression
+          Matching SEMI
+filename 44> z := 9 / 3;
+          44> (ID, 6) => z
+          Loading ID
+         Exiting assign-stmt-tail
+        Exiting id-stmt-tail
+       Exiting id-stmt
+      Exiting statement
+      Entering statement
+       Entering id-stmt
+        Matching ID
+        44> (ASSIGN, )
+        Loading ASSIGN
+        Entering id-stmt-tail
+         Entering assign-stmt-tail
+          Matching ASSIGN
+          44> (NUM, 9)
+          Loading NUM
+          Entering expression
+           Entering add-exp
+            Entering term
+             Entering factor
+              Entering nid-factor
+               Matching NUM
+               44> (DIV, )
+               Loading DIV
+              Exiting nid-factor
+             Exiting factor
+             Entering multop
+              Matching DIV
+              44> (NUM, 3)
+              Loading NUM
+             Exiting multop
+             Entering factor
+              Entering nid-factor
+               Matching NUM
+               44> (SEMI, )
+               Loading SEMI
+              Exiting nid-factor
+             Exiting factor
+            Exiting term
+           Exiting add-exp
+          Exiting expression
+          Matching SEMI
+filename 45> y := 1 < 2;
+          45> (ID, 5) => y
+          Loading ID
+         Exiting assign-stmt-tail
+        Exiting id-stmt-tail
+       Exiting id-stmt
+      Exiting statement
+      Entering statement
+       Entering id-stmt
+        Matching ID
+        45> (ASSIGN, )
+        Loading ASSIGN
+        Entering id-stmt-tail
+         Entering assign-stmt-tail
+          Matching ASSIGN
+          45> (NUM, 1)
+          Loading NUM
+          Entering expression
+           Entering add-exp
+            Entering term
+             Entering factor
+              Entering nid-factor
+               Matching NUM
+               45> (LT, )
+               Loading LT
+              Exiting nid-factor
+             Exiting factor
+            Exiting term
+           Exiting add-exp
+           Entering relop
+            Matching LT
+            45> (NUM, 2)
+            Loading NUM
+           Exiting relop
+           Entering add-exp
+            Entering term
+             Entering factor
+              Entering nid-factor
+               Matching NUM
+               45> (SEMI, )
+               Loading SEMI
+              Exiting nid-factor
+             Exiting factor
+            Exiting term
+           Exiting add-exp
+          Exiting expression
+          Matching SEMI
+filename 46> z := 9 mod 3;
+          46> (ID, 6) => z
+          Loading ID
+         Exiting assign-stmt-tail
+        Exiting id-stmt-tail
+       Exiting id-stmt
+      Exiting statement
+      Entering statement
+       Entering id-stmt
+        Matching ID
+        46> (ASSIGN, )
+        Loading ASSIGN
+        Entering id-stmt-tail
+         Entering assign-stmt-tail
+          Matching ASSIGN
+          46> (NUM, 9)
+          Loading NUM
+          Entering expression
+           Entering add-exp
+            Entering term
+             Entering factor
+              Entering nid-factor
+               Matching NUM
+               46> (MOD, )
+               Loading MOD
+              Exiting nid-factor
+             Exiting factor
+             Entering multop
+              Matching MOD
+              46> (NUM, 3)
+              Loading NUM
+             Exiting multop
+             Entering factor
+              Entering nid-factor
+               Matching NUM
+               46> (SEMI, )
+               Loading SEMI
+              Exiting nid-factor
+             Exiting factor
+            Exiting term
+           Exiting add-exp
+          Exiting expression
+          Matching SEMI
+filename 47> x := x and y;
+          47> (ID, 3) => x
+          Loading ID
+         Exiting assign-stmt-tail
+        Exiting id-stmt-tail
+       Exiting id-stmt
+      Exiting statement
+      Entering statement
+       Entering id-stmt
+        Matching ID
+        47> (ASSIGN, )
+        Loading ASSIGN
+        Entering id-stmt-tail
+         Entering assign-stmt-tail
+          Matching ASSIGN
+          47> (ID, 3) => x
+          Loading ID
+          Entering expression
+           Entering add-exp
+            Entering term
+             Entering factor
+              Entering id-factor
+               Matching ID
+               47> (AND, )
+               Loading AND
+               Entering id-tail
+               Exiting id-tail
+              Exiting id-factor
+             Exiting factor
+             Entering multop
+              Matching AND
+              47> (ID, 5) => y
+              Loading ID
+             Exiting multop
+             Entering factor
+              Entering id-factor
+               Matching ID
+               47> (SEMI, )
+               Loading SEMI
+               Entering id-tail
+               Exiting id-tail
+              Exiting id-factor
+             Exiting factor
+            Exiting term
+           Exiting add-exp
+          Exiting expression
+          Matching SEMI
+filename 48> y := y && x;
+          48> (ID, 5) => y
+          Loading ID
+         Exiting assign-stmt-tail
+        Exiting id-stmt-tail
+       Exiting id-stmt
+      Exiting statement
+      Entering statement
+       Entering id-stmt
+        Matching ID
+        48> (ASSIGN, )
+        Loading ASSIGN
+        Entering id-stmt-tail
+         Entering assign-stmt-tail
+          Matching ASSIGN
+          48> (ID, 5) => y
+          Loading ID
+          Entering expression
+           Entering add-exp
+            Entering term
+             Entering factor
+              Entering id-factor
+               Matching ID
+               48> (ANDTHEN, )
+               Loading ANDTHEN
+               Entering id-tail
+               Exiting id-tail
+              Exiting id-factor
+             Exiting factor
+             Entering multop
+              Matching ANDTHEN
+              48> (ID, 3) => x
+              Loading ID
+             Exiting multop
+             Entering factor
+              Entering id-factor
+               Matching ID
+               48> (SEMI, )
+               Loading SEMI
+               Entering id-tail
+               Exiting id-tail
+              Exiting id-factor
+             Exiting factor
+            Exiting term
+           Exiting add-exp
+          Exiting expression
+          Matching SEMI
+filename 49> x := x or y;
+          49> (ID, 3) => x
+          Loading ID
+         Exiting assign-stmt-tail
+        Exiting id-stmt-tail
+       Exiting id-stmt
+      Exiting statement
+      Entering statement
+       Entering id-stmt
+        Matching ID
+        49> (ASSIGN, )
+        Loading ASSIGN
+        Entering id-stmt-tail
+         Entering assign-stmt-tail
+          Matching ASSIGN
+          49> (ID, 3) => x
+          Loading ID
+          Entering expression
+           Entering add-exp
+            Entering term
+             Entering factor
+              Entering id-factor
+               Matching ID
+               49> (OR, )
+               Loading OR
+               Entering id-tail
+               Exiting id-tail
+              Exiting id-factor
+             Exiting factor
+            Exiting term
+            Entering add-op
+             Matching OR
+             49> (ID, 5) => y
+             Loading ID
+            Exiting add-op
+            Entering term
+             Entering factor
+              Entering id-factor
+               Matching ID
+               49> (SEMI, )
+               Loading SEMI
+               Entering id-tail
+               Exiting id-tail
+              Exiting id-factor
+             Exiting factor
+            Exiting term
+           Exiting add-exp
+          Exiting expression
+          Matching SEMI
+filename 50> y := y || x;
+          50> (ID, 5) => y
+          Loading ID
+         Exiting assign-stmt-tail
+        Exiting id-stmt-tail
+       Exiting id-stmt
+      Exiting statement
+      Entering statement
+       Entering id-stmt
+        Matching ID
+        50> (ASSIGN, )
+        Loading ASSIGN
+        Entering id-stmt-tail
+         Entering assign-stmt-tail
+          Matching ASSIGN
+          50> (ID, 5) => y
+          Loading ID
+          Entering expression
+           Entering add-exp
+            Entering term
+             Entering factor
+              Entering id-factor
+               Matching ID
+               50> (ORELSE, )
+               Loading ORELSE
+               Entering id-tail
+               Exiting id-tail
+              Exiting id-factor
+             Exiting factor
+            Exiting term
+            Entering add-op
+             Matching ORELSE
+             50> (ID, 3) => x
+             Loading ID
+            Exiting add-op
+            Entering term
+             Entering factor
+              Entering id-factor
+               Matching ID
+               50> (SEMI, )
+               Loading SEMI
+               Entering id-tail
+               Exiting id-tail
+              Exiting id-factor
+             Exiting factor
+            Exiting term
+           Exiting add-exp
+          Exiting expression
+          Matching SEMI
+filename 51> }
+          51> (RCRLY, )
+          Loading RCRLY
+         Exiting assign-stmt-tail
+        Exiting id-stmt-tail
+       Exiting id-stmt
+      Exiting statement
+      Matching RCRLY
+filename 52> 
+      52> (ENDFILE, )
+      Loading ENDFILE
+     Exiting compound-stmt
+    Exiting fun-dec-tail
+   Exiting dec-tail
+  Exiting declaration
+ Exiting program
+
+Abstract Syntax Tree
+Program
+  Variable Declaration
+    var:
+      id: temp
+      type: INT[]
+      array expression:
+        5
+    var:
+      id: temp1
+      type: INT[]
+      array expression:
+        Variable
+          id: temp
+          array expression:
+            Binary Node
+              op: PLUS
+              left:
+                3
+              right:
+                Binary Node
+                  op: MULT
+                  left:
+                    1
+                  right:
+                    5
+  Variable Declaration
+    var:
+      id: temp3
+      type: BOOL
+  Variable Declaration
+    var:
+      id: x
+      type: INT
+  Function Declaration
+    id: foo
+    return: VOID
+    parameters:
+      Param
+        id: x
+        type: ref INT
+      Param
+        id: y
+        type: INT[]
+    compound:
+      Compound
+        variables:
+          Variable Declaration
+            var:
+              id: z
+              type: INT
+        statements:
+          Assignment
+            id: y
+            array expression:
+              Call
+                id: bar
+                arguments:
+                  Unary Node
+                    op: MINUS
+                    expression:
+                      1
+                  1
+                  Binary Node
+                    op: EQ
+                    left:
+                      Binary Node
+                        op: LTEQ
+                        left:
+                          Variable
+                            id: temp3
+                        right:
+                          25
+                    right:
+                      true
+            equals:
+              5
+          Call
+            id: bar
+            arguments:
+              1
+              false
+            statements:
+              If Node
+                expression:
+                  Binary Node
+                    op: GT
+                    left:
+                      1
+                    right:
+                      2
+                then statement:
+                  If Node
+                    expression:
+                      true
+                    then statement:
+                      Return
+                    else statement:
+                      EXIT
+          Loop
+            statement:
+              If Node
+                expression:
+                  Binary Node
+                    op: NEQ
+                    left:
+                      true
+                    right:
+                      Variable
+                        id: temp3
+                then statement:
+                  Continue
+                else statement:
+                  EXIT
+          Branch
+            expression:
+              Variable
+                id: x
+            cases:
+              Case
+                number: 1
+                statement:
+                  Return
+              Case
+                number: default
+                statement:
+                  Return
+  Function Declaration
+    id: bar
+    return: INT
+    parameters:
+      Param
+        id: x
+        type: INT
+      Param
+        id: y
+        type: BOOL
+    compound:
+        statements:
+          NULL
+          Return
+            expression:
+              1
+  Function Declaration
+    id: main
+    return: INT
+    compound:
+      Compound
+        variables:
+          Variable Declaration
+            var:
+              id: x
+              type: BOOL
+            var:
+              id: y
+              type: BOOL
+        statements:
+          Assignment
+            id: x
+            equals:
+              Binary Node
+                op: GT
+                left:
+                  3
+                right:
+                  3
+          Assignment
+            id: y
+            equals:
+              Binary Node
+                op: GTEQ
+                left:
+                  3
+                right:
+                  9
+          Assignment
+            id: z
+            equals:
+              Binary Node
+                op: DIV
+                left:
+                  9
+                right:
+                  3
+          Assignment
+            id: y
+            equals:
+              Binary Node
+                op: LT
+                left:
+                  1
+                right:
+                  2
+          Assignment
+            id: z
+            equals:
+              Binary Node
+                op: MOD
+                left:
+                  9
+                right:
+                  3
+          Assignment
+            id: x
+            equals:
+              Binary Node
+                op: AND
+                left:
+                  Variable
+                    id: x
+                right:
+                  Variable
+                    id: y
+          Assignment
+            id: y
+            equals:
+              Binary Node
+                op: ANDTHEN
+                left:
+                  Variable
+                    id: y
+                right:
+                  Variable
+                    id: x
+          Assignment
+            id: x
+            equals:
+              Binary Node
+                op: OR
+                left:
+                  Variable
+                    id: x
+                right:
+                  Variable
+                    id: y
+          Assignment
+            id: y
+            equals:
+              Binary Node
+                op: ORELSE
+                left:
+                  Variable
+                    id: y
+                right:
+                  Variable
+                    id: x

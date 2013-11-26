@@ -15,49 +15,43 @@ void ASTNodeCodeVisitor::Visit(AssignmentNode &node) {
   CallNode *call =dynamic_cast<CallNode*>(node.value());
   LiteralNode *lit = dynamic_cast<LiteralNode*>(node.value());
   VariableNode *var = dynamic_cast<VariableNode*>(node.value());
+  std::string op = "asg", arg1 = "-";
   std::string result = Administrator::spelling_table[node.identifier()];
+
+  // If the assignment is a call...
   if (call != NULL) {
+    // check if it is a system call (readint/readbool)
     if (Administrator::spelling_table[call->identifier()].compare("readint") == 0) {
-      *output_ += CreateQuad("rdi", "-", "-", result);
+      op = "rdi";
     }
     else if (Administrator::spelling_table[call->identifier()].compare("readbool") == 0) {
-      *output_ += CreateQuad("rdb", "-", "-", result);
+      op = "rdb";
     }
     // Otherwise it is not a call to the compiler functions
     else {
-      std::string temp = "t" + Administrator::IntToString(++current_temp_variable_);
+      // Create the quadruples for this call
+      arg1 = "t" + Administrator::IntToString(current_temp_variable_++);
       call->Accept(this);
-      *output_ += CreateQuad("asg", temp, "-", result);
     }
   }
   else if (lit != NULL) {
-    if (lit->number_literal()) {
-      *output_ += CreateQuad("asg", Administrator::IntToString(lit->value()), "-", result);
-    }
-    else if (lit->boolean_literal()) {
-      std::string value;
-      if (lit->value() == 1) {
-        value = "true";
-      }
-      else if (lit->value() == 0) {
-        value = "false";
-      }
-      *output_ += CreateQuad("asg", value, "-", result);
-    }
-    else {
-      printf("Something Went Wrong :(\n");
-    }
+    arg1 = GetLiteral(lit);
   }
   else if (var != NULL) {
-    *output_ += CreateQuad("asg", Administrator::spelling_table[var->identifier()], "-", result);
+    arg1 = GetVariable(var);
   }
   else {
     // Create the quadruples for the assignment
+    arg1 = "t" + Administrator::IntToString(current_temp_variable_++);
     node.value()->Accept(this);
-    // Assign the value
-    std::string temp = "t" + Administrator::IntToString(current_temp_variable_);
-    *output_ += CreateQuad("asg", temp, "-", result);
   }
+
+  *output_ += CreateQuad(op, arg1, "-", result);
+
+  // Clean up the pointers
+  //delete call;
+  //delete lit;
+  //delete var;
 
   if (node.next_node() != NULL) {
     node.next_node()->Accept(this);
@@ -69,7 +63,7 @@ void ASTNodeCodeVisitor::Visit(BinaryNode &node) {
   LiteralNode *right_lit = dynamic_cast<LiteralNode*>(node.right_expression());
   VariableNode *left_var = dynamic_cast<VariableNode*>(node.left_expression());
   VariableNode *right_var = dynamic_cast<VariableNode*>(node.right_expression());
-  std::string left, right, result = "t" + Administrator::IntToString(++current_temp_variable_);
+  std::string op, left, right, result = "t" + Administrator::IntToString(++current_temp_variable_);
 
   // Have to do special short circuit things with ANDTHEN
   if (node.op() == Token::ANDTHEN) {
@@ -80,7 +74,6 @@ void ASTNodeCodeVisitor::Visit(BinaryNode &node) {
 
   }
   else {
-    std::string op;
     switch (node.op()) {
     case Token::LTEQ:
       op = "lte";
@@ -123,59 +116,40 @@ void ASTNodeCodeVisitor::Visit(BinaryNode &node) {
       break;
     }
 
+    // Check the left expression
     if (left_var != NULL) {
-      if (left_var->array_variable()) {
-
-      }
-      else {
-        left = Administrator::spelling_table[left_var->identifier()];
-      }
+      left = GetVariable(left_var);
     }
     else if (left_lit != NULL) {
-      if (left_lit->boolean_literal()) {
-        if (left_lit->value() == 0) {
-          left = "false";
-        }
-        else if (left_lit->value() == 1) {
-          left = "true";
-        }
-      }
-      else if (left_lit->number_literal()) {
-        left = Administrator::IntToString(left_lit->value());
-      }
+      left = GetLiteral(left_lit);
     }
     else {
       left = "t" + Administrator::IntToString(current_temp_variable_++);
       node.left_expression()->Accept(this);
     }
 
-
+    // Check the right expression
     if (right_var != NULL) {
-      if (right_var->array_variable()) {
-
-      }
-      else {
-        right = Administrator::spelling_table[right_var->identifier()];
-      }
+      right = GetVariable(right_var);
     }
     else if (right_lit != NULL) {
-      if (right_lit->boolean_literal()) {
-        if (right_lit->value() == 0) {
-          right = "false";
-        }
-        else if (right_lit->value() == 1) {
-          right = "true";
-        }
-      }
-      else if (right_lit->number_literal()) {
-        right = Administrator::IntToString(right_lit->value());
-      }
+      right = GetLiteral(right_lit);
     }
     else {
       right = "t" + Administrator::IntToString(current_temp_variable_++);
       node.right_expression()->Accept(this);
     }
-    *output_ += CreateQuad(op, left, right, result);
+  }
+
+  *output_ += CreateQuad(op, left, right, result);
+
+  //delete left_lit;
+  //delete right_lit;
+  //delete left_var;
+  //delete right_var;
+
+  if (node.next_node() != NULL) {
+    node.next_node()->Accept(this);
   }
 }
 
@@ -184,32 +158,26 @@ void ASTNodeCodeVisitor::Visit(BranchNode &node) {
   LiteralNode *lit = dynamic_cast<LiteralNode*>(node.expresion());
   VariableNode *var = dynamic_cast<VariableNode*>(node.expresion());
   std::string exp;
+
+  // Get the add-exp in the branch
   if (lit != NULL) {
-    if (lit->boolean_literal()) {
-      if (lit->value() == 0) {
-        exp = "false";
-      }
-      else if (lit->value() == 1) {
-        exp = "true";
-      }
-    }
-    else if (lit->number_literal()) {
-      exp = Administrator::IntToString(lit->value());
-    }
+    exp = GetLiteral(lit);
   }
   else if (var != NULL) {
-    exp = Administrator::spelling_table[var->identifier()];
+    exp = GetVariable(var);
   }
   else {
     exp = "t" + Administrator::IntToString(current_temp_variable_++);
     node.expresion()->Accept(this);
   }
+
   std::string end_branch = "L" + Administrator::IntToString(current_label_++);
   std::string lab = "L" + Administrator::IntToString(current_label_++);
   std::string temp = "t" + Administrator::IntToString(current_temp_variable_++);
   std::string num;
   CaseNode *case_node = node.cases();
   CaseNode *default_case = NULL;
+
   while (case_node != NULL) {
     // Ignore the default case for now, handle it at the end
     if (case_node->default_case()) {
@@ -231,7 +199,13 @@ void ASTNodeCodeVisitor::Visit(BranchNode &node) {
   if (default_case != NULL) {
     default_case->statement()->Accept(this);
   }
+
   *output_ += CreateQuad("lab", "-", "-", end_branch);
+
+  //delete lit;
+  //delete var;
+  //delete case_node;
+  //delete default_case;
 
   if (node.next_node() != NULL) {
     node.next_node()->Accept(this);
@@ -239,6 +213,8 @@ void ASTNodeCodeVisitor::Visit(BranchNode &node) {
 }
 
 void ASTNodeCodeVisitor::Visit(CallNode &node) {
+  std::string op = "call", arg1 = Administrator::spelling_table[node.identifier()];
+
   // Check if this function call returns a value
   if (node.type() == Token::BOOL || node.type() == Token::INT) {
     std::string temp = "t" + Administrator::IntToString(current_temp_variable_++);
@@ -247,58 +223,67 @@ void ASTNodeCodeVisitor::Visit(CallNode &node) {
     if (node.arguments() != NULL) {
       PushArguments(node);
     }
-    *output_ += CreateQuad("call", Administrator::spelling_table[node.identifier()], "-", "-");
   }
   // Otherwise it does not return a value and we do not need an RVAL quadruple.
   else {
     if (Administrator::spelling_table[node.identifier()].compare("writeint") == 0) {
-      std::string value;
       VariableNode *var = dynamic_cast<VariableNode*>(node.arguments());
       LiteralNode *lit = dynamic_cast<LiteralNode*>(node.arguments());
+
       if (var != NULL) {
-        value = Administrator::spelling_table[var->identifier()];
+        arg1 = GetVariable(var);
       }
       else if (lit != NULL) {
-        value = Administrator::IntToString(lit->value());
+        arg1 = GetLiteral(lit);
       }
       // Otherwise this is an expression using temporaries
       else {
-        value = "t" + Administrator::IntToString(current_temp_variable_++);
+        arg1 = "t" + Administrator::IntToString(current_temp_variable_++);
         node.arguments()->Accept(this);
       }
-      *output_ += CreateQuad("wri", value, "-", "-");
+
+      op = "wri";
+
+      //delete var;
+      //delete lit;
     }
     else if (Administrator::spelling_table[node.identifier()].compare("writebool") == 0) {
-      std::string value;
       VariableNode *var = dynamic_cast<VariableNode*>(node.arguments());
       LiteralNode *lit = dynamic_cast<LiteralNode*>(node.arguments());
+
       if (var != NULL) {
-        value = Administrator::spelling_table[var->identifier()];
+        arg1 = GetVariable(var);
       }
       else if (lit != NULL) {
-        value = Administrator::IntToString(lit->value());
+        arg1 = GetLiteral(lit);
       }
       // Otherwise this is an expression using temporaries
       else {
-        value = "t" + Administrator::IntToString(current_temp_variable_++);
+        arg1 = "t" + Administrator::IntToString(current_temp_variable_++);
         node.arguments()->Accept(this);
       }
-      *output_ += CreateQuad("wrb", value, "-", "-");
+
+      op = "wrb";
+
+      //delete var;
+      //delete lit;
     }
     else {
       // If there are arguments push them in reverse order
       if (node.arguments() != NULL) {
         PushArguments(node);
       }
-      *output_ += CreateQuad("call", Administrator::spelling_table[node.identifier()], "-", "-");
     }
   }
+
+  *output_ += CreateQuad(op, arg1, "-", "-");
 
   if (node.next_node() != NULL) {
     node.next_node()->Accept(this);
   }
 }
 
+// TODO arga quad for arrays and refs
 void ASTNodeCodeVisitor::PushArguments(const CallNode &node) {
   int args = node.declaration()->num_parameters();
   for (int i = args; i > 0; --i) {
@@ -310,17 +295,10 @@ void ASTNodeCodeVisitor::PushArguments(const CallNode &node) {
     VariableNode *var = dynamic_cast<VariableNode*>(arg);
     std::string value;
     if (lit != NULL) {
-      if (lit->boolean_literal()) {
-        if (lit->value() == 0) {
-          value = "false";
-        }
-        else if (lit->value() == 1) {
-          value = "true";
-        }
-      }
+      value = GetLiteral(lit);
     }
     else if (var != NULL) {
-      value = Administrator::spelling_table[var->identifier()];
+      value = GetVariable(var);
     }
     // Otherwise it is an expression that uses temporaries
     else {
@@ -379,8 +357,8 @@ void ASTNodeCodeVisitor::Visit(FunctionDeclarationNode &node) {
 void ASTNodeCodeVisitor::Visit(IfNode &node) {
   VariableNode *var = dynamic_cast<VariableNode*>(node.expression());
   LiteralNode *lit = dynamic_cast<LiteralNode*>(node.expression());
-  std::string else_label;
-  std::string end_label;
+  std::string else_label, end_label;
+
   if (node.else_statement() != NULL) {
     else_label = "L" + Administrator::IntToString(current_label_++);
     end_label = "L" + Administrator::IntToString(current_label_++);
@@ -390,23 +368,18 @@ void ASTNodeCodeVisitor::Visit(IfNode &node) {
   }
   // Check if the expression is just a variable
   if (var != NULL) {
+    std::string value = GetVariable(var);
     // If there is an else statment jump to it if not true
     if (node.else_statement() != NULL) {
-      *output_ += CreateQuad("iff", Administrator::spelling_table[var->identifier()], "-", else_label);
+      *output_ += CreateQuad("iff", value, "-", else_label);
     }
     else {
-      *output_ += CreateQuad("iff", Administrator::spelling_table[var->identifier()], "-", end_label);
+      *output_ += CreateQuad("iff", value, "-", end_label);
     }
   }
   else if (lit != NULL) {
     if (lit->boolean_literal()) {
-      std::string value;
-      if (lit->value() == 0) {
-        value = "false";
-      }
-      else if (lit->value() == 1) {
-        value = "true";
-      }
+      std::string value = GetLiteral(lit);
       // If there is an else statment jump to it if not true
       if (node.else_statement() != NULL) {
         *output_ += CreateQuad("iff", value, "-", else_label);
@@ -415,12 +388,10 @@ void ASTNodeCodeVisitor::Visit(IfNode &node) {
         *output_ += CreateQuad("iff", value, "-", end_label);
       }
     }
-    else {
-      printf("Something Went Wrong :(\n");
-    }
   }
   // Otherwise the if expression is a longer expression involving temporary variables.
   else {
+    // TODO this
 
   }
 
@@ -432,6 +403,12 @@ void ASTNodeCodeVisitor::Visit(IfNode &node) {
   }
   *output_ += CreateQuad("lab", "-", "-", end_label);
   
+  //delete lit;
+  //delete var;
+
+  if (node.next_node() != NULL) {
+    node.next_node()->Accept(this);
+  }
 }
 
 void ASTNodeCodeVisitor::Visit(LoopNode &node) {
@@ -452,31 +429,39 @@ void ASTNodeCodeVisitor::Visit(ProgramNode &node) {
 }
 
 void ASTNodeCodeVisitor::Visit(ReturnNode &node) {
-  // This returns a value
+  std::string op, arg1 = "-", arg2 = "-";
+
+  // Check to see if this returns a value
   if (node.expression() != NULL) {
-    // TODO: Figure out return value temporaries
-    LiteralNode* literal = dynamic_cast<LiteralNode*>(node.expression());
-    VariableNode* variable = dynamic_cast<VariableNode*>(node.expression());
-    std::string parameters = Administrator::IntToString(current_num_parameters_);
-    if (literal != NULL) {
-      *output_ += CreateQuad("retv", parameters, Administrator::IntToString(literal->value()), "-");
+    LiteralNode *lit = dynamic_cast<LiteralNode*>(node.expression());
+    VariableNode *var = dynamic_cast<VariableNode*>(node.expression());
+    arg1 = Administrator::IntToString(current_num_parameters_);
+    if (lit != NULL) {
+      arg2 = GetLiteral(lit);
     }
-    else if (variable != NULL) {
-      *output_ += CreateQuad("retv", parameters, Administrator::spelling_table[variable->identifier()], "-");
+    else if (var!= NULL) {
+      arg2 = GetVariable(var);
     }
     // Otherwise it is a binary, unary or call node, in which case a temporary 
     // variable has been used
     else {
       // Visit the expression then create its quadruples
+      arg2 = "t" + Administrator::IntToString(current_temp_variable_++);
       node.expression()->Accept(this);
-      std::string temp = "t" + Administrator::IntToString(current_temp_variable_++);
-      *output_ += CreateQuad("retv", parameters, temp, "-");
     }
+
+    op = "retv";
+
+    //delete lit;
+    //delete var;
   }
   // Or not
   else {
-    *output_ += CreateQuad("ret", Administrator::IntToString(current_num_parameters_), "-", "-");
+    op = "ret";
+    arg1 = Administrator::IntToString(current_num_parameters_);
   }
+
+  *output_ += CreateQuad(op, arg1, arg2, "-");
 
   if (node.next_node() != NULL) {
     node.next_node()->Accept(this);
@@ -487,7 +472,6 @@ void ASTNodeCodeVisitor::Visit(ReturnNode &node) {
 void ASTNodeCodeVisitor::Visit(UnaryNode &node) {
   LiteralNode *lit = dynamic_cast<LiteralNode*>(node.expression());
   VariableNode *var = dynamic_cast<VariableNode*>(node.expression());
-  // TODO
   std::string temp = "t" + Administrator::IntToString(current_temp_variable_++);
   std::string value;
 
@@ -502,31 +486,32 @@ void ASTNodeCodeVisitor::Visit(UnaryNode &node) {
   }
 
   if (lit != NULL) {
-    if (lit->boolean_literal()) {
-      if (lit->value() == 0) {
-        value = "false";
-      }
-      else if (lit->value() == 1) {
-        value = "true";
-      }
-    }
-    else if (lit->number_literal()) {
-      value = Administrator::IntToString(lit->value());
-    }
+    value = GetLiteral(lit);
   }
   else if (var != NULL) {
-    value = Administrator::spelling_table[var->identifier()];
+    value = GetVariable(var);
   }
   // Otherwise it is a longer expression with temporaries
   else {
     value = "t" + Administrator::IntToString(current_temp_variable_);
     node.expression()->Accept(this);
   }
+
   *output_ += CreateQuad(op, value, "-", temp);
+
+  //delete lit;
+  //delete var;
 }
 
 void ASTNodeCodeVisitor::Visit(VariableDeclarationNode &node) {
   // Variable declarations do not produce quadruples
+  if (node.next_node() != NULL) {
+    node.next_node()->Accept(this);
+  }
+}
+
+void ASTNodeCodeVisitor::Visit(NullNode &node) { 
+  // Null nodes do not produce quadruples
   if (node.next_node() != NULL) {
     node.next_node()->Accept(this);
   }
@@ -537,7 +522,6 @@ void ASTNodeCodeVisitor::Visit(CaseNode &node) { }
 void ASTNodeCodeVisitor::Visit(DeclarationNode &node) { }
 void ASTNodeCodeVisitor::Visit(ExpressionNode &node) { }
 void ASTNodeCodeVisitor::Visit(LiteralNode &node) { }
-void ASTNodeCodeVisitor::Visit(NullNode &node) { }
 void ASTNodeCodeVisitor::Visit(ParameterNode &node) { }
 void ASTNodeCodeVisitor::Visit(StatementNode &node) { }
 void ASTNodeCodeVisitor::Visit(VariableNode &node) { }
@@ -553,4 +537,61 @@ std::string ASTNodeCodeVisitor::CreateQuad(const std::string &op, const std::str
   quad += result;
   quad += ")\n";
   return quad;
+}
+
+std::string ASTNodeCodeVisitor::GetLiteral(const LiteralNode *node) {
+  std::string value;
+
+  if (node->boolean_literal()) {
+    if (node->value() == 0) {
+      value = "false";
+    }
+    else if (node->value() == 1) {
+      value = "true";
+    }
+  }
+  else if (node->number_literal()) {
+    value = Administrator::IntToString(node->value());
+  }
+
+  return value;
+}
+
+std::string ASTNodeCodeVisitor::GetVariable(const VariableNode *node) {
+  std::string value;
+
+  // Have to do more work for an array variable
+  if (node->array_variable()) {
+    LiteralNode *lit = dynamic_cast<LiteralNode*>(node->array_expression());
+    VariableNode *var = dynamic_cast<VariableNode*>(node->array_expression());
+    CallNode *call = dynamic_cast<CallNode*>(node->array_expression());
+
+    std::string arg1 = Administrator::spelling_table[node->identifier()];
+
+    if (lit != NULL) {
+      std::string arg2 = GetLiteral(lit);
+      value = "t" + Administrator::IntToString(current_temp_variable_++);
+      *output_ += CreateQuad("fae", arg1, arg2, value);
+    }
+    else if (var != NULL) {
+      value = GetVariable(var);
+      std::string temp = "t" + Administrator::IntToString(current_temp_variable_++);
+      *output_ += CreateQuad("asg", value, "-", temp);
+      value = "t" + Administrator::IntToString(current_temp_variable_++);
+      *output_ += CreateQuad("fae", arg1, temp, value);
+    }
+    else if (call != NULL) {
+      value = "t" + Administrator::IntToString(current_temp_variable_);
+      call->Accept(this);
+    }
+
+    //delete lit;
+    //delete var;
+    //delete call;
+  }
+  else {
+    value = Administrator::spelling_table[node->identifier()];
+  }
+
+  return value;
 }

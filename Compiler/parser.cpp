@@ -90,8 +90,8 @@ void Parser::SyntaxError(const std::string &message/*, SynchSet &synch*/) {
   error_free_ = false;
   administrator_->messenger()->AddError(filename_, scanner_.line_number(), 
                                         message);
-  auto it = std::find(synch_.begin(), synch_.end(), lookahead_);
-  const auto end = synch_.end();
+  //auto it = std::find(synch_.begin(), synch_.end(), lookahead_);
+  //const auto end = synch_.end();
   // While the lookahead isn't in the synch set, get the next token and check
   // again.
   //while (it == end) {
@@ -99,8 +99,11 @@ void Parser::SyntaxError(const std::string &message/*, SynchSet &synch*/) {
   //  lookahead_ = lookahead_token_.name();
   //  it = std::find(synch_.begin(), synch_.end(), lookahead_);
   //}
-  lookahead_token_ = scanner_.GetToken();
-  lookahead_ = lookahead_token_.name();
+  // Skip input until a semicolon is reached
+  while (lookahead_ != Token::SEMI) {
+    lookahead_token_ = scanner_.GetToken();
+    lookahead_ = lookahead_token_.name();
+  }
 }
 
 ASTNode *Parser::Parse() {

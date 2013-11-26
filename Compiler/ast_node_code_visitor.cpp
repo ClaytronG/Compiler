@@ -63,7 +63,7 @@ void ASTNodeCodeVisitor::Visit(BinaryNode &node) {
   LiteralNode *right_lit = dynamic_cast<LiteralNode*>(node.right_expression());
   VariableNode *left_var = dynamic_cast<VariableNode*>(node.left_expression());
   VariableNode *right_var = dynamic_cast<VariableNode*>(node.right_expression());
-  std::string op, left, right, result = "t" + Administrator::IntToString(++current_temp_variable_);
+  std::string op, left, right, result;
 
   // Have to do special short circuit things with ANDTHEN
   if (node.op() == Token::ANDTHEN) {
@@ -116,18 +116,6 @@ void ASTNodeCodeVisitor::Visit(BinaryNode &node) {
       break;
     }
 
-    // Check the left expression
-    if (left_var != NULL) {
-      left = GetVariable(left_var);
-    }
-    else if (left_lit != NULL) {
-      left = GetLiteral(left_lit);
-    }
-    else {
-      left = "t" + Administrator::IntToString(current_temp_variable_++);
-      node.left_expression()->Accept(this);
-    }
-
     // Check the right expression
     if (right_var != NULL) {
       right = GetVariable(right_var);
@@ -136,10 +124,24 @@ void ASTNodeCodeVisitor::Visit(BinaryNode &node) {
       right = GetLiteral(right_lit);
     }
     else {
-      right = "t" + Administrator::IntToString(current_temp_variable_++);
       node.right_expression()->Accept(this);
+      right = "t" + Administrator::IntToString(current_temp_variable_++);
+    }
+
+    // Check the left expression
+    if (left_var != NULL) {
+      left = GetVariable(left_var);
+    }
+    else if (left_lit != NULL) {
+      left = GetLiteral(left_lit);
+    }
+    else {
+      left = "t" + Administrator::IntToString(current_temp_variable_);
+      node.left_expression()->Accept(this);
     }
   }
+
+  result = "t" + Administrator::IntToString(current_temp_variable_);
 
   *output_ += CreateQuad(op, left, right, result);
 
@@ -302,8 +304,8 @@ void ASTNodeCodeVisitor::PushArguments(const CallNode &node) {
     }
     // Otherwise it is an expression that uses temporaries
     else {
-      value = "t" + Administrator::IntToString(++current_temp_variable_);
       arg->Accept(this);
+      value = "t" + Administrator::IntToString(current_temp_variable_);
     }
     *output_ += CreateQuad("arg", value, "-", "-");
   }

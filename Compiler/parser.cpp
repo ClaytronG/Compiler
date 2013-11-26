@@ -944,46 +944,29 @@ ASTNode *Parser::Expression(/*SynchSet &set*/) {
 
 
 ASTNode *Parser::AddExp(/*SynchSet &set*/) {
-  //synch_.clear();
-  //synch_.push_back(Token::LTEQ);
-  //synch_.push_back(Token::LT);
-  //synch_.push_back(Token::GT);
-  //synch_.push_back(Token::GTEQ);
-  //synch_.push_back(Token::EQ);
-  //synch_.push_back(Token::NEQ);
-  //synch_.push_back(Token::RPAREN);
-  //synch_.push_back(Token::RSQR);
-  //synch_.push_back(Token::SEMI);
-  //synch_.push_back(Token::COMMA);
   ExpressionNode *expression = NULL;
   UnaryNode *unary = NULL;
-  ////synch_.push_back(Token::MINUS);
-  //SyntaxCheck("add-exp");
   if (lookahead_ == Token::MINUS) {
     unary = dynamic_cast<UnaryNode*>(transition("uminus", &Parser::Uminus));
   }
-  ExpressionNode *term = dynamic_cast<ExpressionNode*>(transition(
-    "term", &Parser::Term));
-  if (unary) {
+
+  ExpressionNode *term = dynamic_cast<ExpressionNode*>(transition("term", &Parser::Term));
+  if (unary != NULL) {
     unary->set_expression(term);
     expression = unary;
   } else {
     delete unary;
     expression = term;
   }
+
   ExpressionNode *node = expression;
   ASTNode *return_node = NULL;
-  ////synch_.push_back(Token::PLUS);
-  ////synch_.push_back(Token::OR);
-  ////synch_.push_back(Token::ORELSE);
-  //SyntaxCheck("add-exp");
-  while(lookahead_ == Token::PLUS || lookahead_ == Token::MINUS ||
-         lookahead_ == Token::OR  || lookahead_ == Token::ORELSE) {
-    BinaryNode *add_op = dynamic_cast<BinaryNode*>(transition(
-      "add-op", &Parser::Addop));
-    if(!add_op) {
+  while(lookahead_ == Token::PLUS || lookahead_ == Token::MINUS || 
+        lookahead_ == Token::OR  || lookahead_ == Token::ORELSE) {
+    BinaryNode *add_op = dynamic_cast<BinaryNode*>(transition("add-op", &Parser::Addop));
+    if(add_op == NULL) {
       return NULL;
-    } else if(!return_node) {
+    } else if(return_node == NULL) {
       return_node = add_op;
     }
     add_op->set_left_expression(node);

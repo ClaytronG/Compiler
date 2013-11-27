@@ -1,11 +1,11 @@
 // Author: Clayton Green (kgreen1@unbc.ca)
-// Last Updated: September 19, 2013
+// Last Updated: November 27, 2013
 //
 // The Administrator runs the compiler and holds the global data structures
 // like the word map and the spelling table.
 
-#ifndef	KOMPILER_ADMINISTRATOR_H_
-#define KOMPILER_ADMINISTRATOR_H_
+#ifndef	COMPILER_ADMINISTRATOR_H_
+#define COMPILER_ADMINISTRATOR_H_
 
 #ifdef __GNUC__
 #include <tr1/unordered_map>
@@ -119,4 +119,4 @@ class Administrator {
   //DISALLOW_COPY_AND_ASSIGN(Administrator);
 };
 
-#endif	// KOMPILER_ADMINISTRATOR_H_
+#endif	// COMPILER_ADMINISTRATOR_H_

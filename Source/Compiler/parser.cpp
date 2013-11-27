@@ -7,7 +7,7 @@
 #include "administrator.h"
 #include "parser.h"
 
-Parser::Parser(const std::string built_in_function_source,
+Parser::Parser(const std::string built_in_function_source, 
                Administrator *administrator) 
   : scanner_(built_in_function_source, administrator),
     filename_("built-in"),
@@ -983,35 +983,14 @@ ASTNode *Parser::AddExp(/*SynchSet &set*/) {
 }
 
 ASTNode *Parser::Term(/*SynchSet &set*/) {
-  //synch_.clear();
-  //synch_.push_back(Token::LTEQ);
-  //synch_.push_back(Token::LT);
-  //synch_.push_back(Token::GT);
-  //synch_.push_back(Token::GTEQ);
-  //synch_.push_back(Token::EQ);
-  //synch_.push_back(Token::NEQ);
-  //synch_.push_back(Token::PLUS);
-  //synch_.push_back(Token::MINUS);
-  //synch_.push_back(Token::OR);
-  //synch_.push_back(Token::ORELSE);
-  //synch_.push_back(Token::RPAREN);
-  //synch_.push_back(Token::RSQR);
-  //synch_.push_back(Token::SEMI);
-  //synch_.push_back(Token::COMMA);
   ASTNode *expression = transition("factor", &Parser::Factor);
   ExpressionNode *node = dynamic_cast<ExpressionNode*>(expression);
   ASTNode *return_node = NULL;
-  ////synch_.push_back(Token::MULT);
-  ////synch_.push_back(Token::DIV);
-  ////synch_.push_back(Token::MOD);
-  ////synch_.push_back(Token::AND);
-  ////synch_.push_back(Token::ANDTHEN);
-  //SyntaxCheck("term");
   while(lookahead_ == Token::MULT || lookahead_ == Token::DIV ||
          lookahead_ == Token::MOD || lookahead_ == Token::AND ||
          lookahead_ == Token::ANDTHEN) {
-    BinaryNode *bin_op = dynamic_cast<BinaryNode*>(transition(
-      "multop", &Parser::Multop));
+    BinaryNode *bin_op = 
+      dynamic_cast<BinaryNode*>(transition("multop", &Parser::Multop));
     if(!bin_op) {
       break;
     }
@@ -1032,58 +1011,20 @@ ASTNode *Parser::Term(/*SynchSet &set*/) {
 }
 
 ASTNode *Parser::Factor(/*SynchSet &set*/) {
-  //synch_.clear();
-  //synch_.push_back(Token::LTEQ);
-  //synch_.push_back(Token::LT);
-  //synch_.push_back(Token::GT);
-  //synch_.push_back(Token::GTEQ);
-  //synch_.push_back(Token::EQ);
-  //synch_.push_back(Token::NEQ);
-  //synch_.push_back(Token::PLUS);
-  //synch_.push_back(Token::MINUS);
-  //synch_.push_back(Token::OR);
-  //synch_.push_back(Token::ORELSE);
-  //synch_.push_back(Token::MULT);
-  //synch_.push_back(Token::DIV);
-  //synch_.push_back(Token::MOD);
-  //synch_.push_back(Token::AND);
-  //synch_.push_back(Token::ANDTHEN);
-  //synch_.push_back(Token::RPAREN);
-  //synch_.push_back(Token::RSQR);
-  //synch_.push_back(Token::SEMI);
-  //synch_.push_back(Token::COMMA);
   if (lookahead_ == Token::NOT || lookahead_ == Token::LPAREN ||
       lookahead_ == Token::NUM || lookahead_ == Token::BLIT) {
     return transition("nid-factor", &Parser::NidFactor);
-  } else if (lookahead_ == Token::ID) {
+  } 
+  else if (lookahead_ == Token::ID) {
     return transition("id-factor", &Parser::IdFactor);
-  } else {
+  } 
+  else {
     SyntaxError("factor");
     return NULL;
   }
 }
 
 ASTNode *Parser::NidFactor(/*SynchSet &set*/) {
-  //synch_.clear();
-  //synch_.push_back(Token::LTEQ);
-  //synch_.push_back(Token::LT);
-  //synch_.push_back(Token::GT);
-  //synch_.push_back(Token::GTEQ);
-  //synch_.push_back(Token::EQ);
-  //synch_.push_back(Token::NEQ);
-  //synch_.push_back(Token::PLUS);
-  //synch_.push_back(Token::MINUS);
-  //synch_.push_back(Token::OR);
-  //synch_.push_back(Token::ORELSE);
-  //synch_.push_back(Token::MULT);
-  //synch_.push_back(Token::DIV);
-  //synch_.push_back(Token::MOD);
-  //synch_.push_back(Token::AND);
-  //synch_.push_back(Token::ANDTHEN);
-  //synch_.push_back(Token::RPAREN);
-  //synch_.push_back(Token::RSQR);
-  //synch_.push_back(Token::SEMI);
-  //synch_.push_back(Token::COMMA);
   if (lookahead_ == Token::NOT) {
     Match(Token::NOT/*, set*/);
     ExpressionNode *node = dynamic_cast<ExpressionNode*>(
@@ -1091,18 +1032,21 @@ ASTNode *Parser::NidFactor(/*SynchSet &set*/) {
     UnaryNode *unary = new UnaryNode(Token::NOT, node);
     unary->set_line_number(scanner_.line_number());
     return unary;
-  } else if (lookahead_ == Token::LPAREN) {
+  } 
+  else if (lookahead_ == Token::LPAREN) {
     Match(Token::LPAREN/*, set*/);
     ASTNode *node = transition("expression", &Parser::Expression);
     Match(Token::RPAREN/*, set*/);
     return node;
-  } else if (lookahead_ == Token::NUM) {
+  } 
+  else if (lookahead_ == Token::NUM) {
     int value = lookahead_token_.value();
     Match(Token::NUM/*, set*/);
     LiteralNode *lit = new LiteralNode(value, false, true);
     lit->set_line_number(scanner_.line_number());
     return lit;
-  } else if (lookahead_ == Token::BLIT) {
+  } 
+  else if (lookahead_ == Token::BLIT) {
     int value = lookahead_token_.value();
     Match(Token::BLIT/*, set*/);
     LiteralNode *lit = new LiteralNode(value, true, false);
@@ -1115,36 +1059,17 @@ ASTNode *Parser::NidFactor(/*SynchSet &set*/) {
 }
 
 ASTNode *Parser::IdFactor(/*SynchSet &set*/) {
-  //synch_.clear();
-  //synch_.push_back(Token::LTEQ);
-  //synch_.push_back(Token::LT);
-  //synch_.push_back(Token::GT);
-  //synch_.push_back(Token::GTEQ);
-  //synch_.push_back(Token::EQ);
-  //synch_.push_back(Token::NEQ);
-  //synch_.push_back(Token::PLUS);
-  //synch_.push_back(Token::MINUS);
-  //synch_.push_back(Token::OR);
-  //synch_.push_back(Token::ORELSE);
-  //synch_.push_back(Token::MULT);
-  //synch_.push_back(Token::DIV);
-  //synch_.push_back(Token::MOD);
-  //synch_.push_back(Token::AND);
-  //synch_.push_back(Token::ANDTHEN);
-  //synch_.push_back(Token::RPAREN);
-  //synch_.push_back(Token::RSQR);
-  //synch_.push_back(Token::SEMI);
-  //synch_.push_back(Token::COMMA);
   int identifier = lookahead_token_.value();
   Match(Token::ID/*, set*/);
   ASTNode *base_node = transition("id-tail", &Parser::IdTail);
   VariableNode *var_node = dynamic_cast<VariableNode*>(base_node);
   CallNode *call_node = dynamic_cast<CallNode*>(base_node);
-  if (call_node) {
+  if (call_node != NULL) {
     delete var_node;
     call_node->set_identifier(identifier);
     return call_node;
-  } else if (var_node) {
+  } 
+  else if (var_node != NULL) {
     delete call_node;
     var_node->set_identifier(identifier);
     return var_node;
@@ -1153,37 +1078,16 @@ ASTNode *Parser::IdFactor(/*SynchSet &set*/) {
 }
 
 ASTNode *Parser::IdTail(/*SynchSet &set*/) {
-  //synch_.clear();
-  //synch_.push_back(Token::LTEQ);
-  //synch_.push_back(Token::LT);
-  //synch_.push_back(Token::GT);
-  //synch_.push_back(Token::GTEQ);
-  //synch_.push_back(Token::EQ);
-  //synch_.push_back(Token::NEQ);
-  //synch_.push_back(Token::PLUS);
-  //synch_.push_back(Token::MINUS);
-  //synch_.push_back(Token::OR);
-  //synch_.push_back(Token::ORELSE);
-  //synch_.push_back(Token::MULT);
-  //synch_.push_back(Token::DIV);
-  //synch_.push_back(Token::MOD);
-  //synch_.push_back(Token::AND);
-  //synch_.push_back(Token::ANDTHEN);
-  //synch_.push_back(Token::RPAREN);
-  //synch_.push_back(Token::RSQR);
-  //synch_.push_back(Token::SEMI);
-  //synch_.push_back(Token::COMMA);
   if (lookahead_ == Token::LSQR) {
     return transition("var-tail", &Parser::VarTail);
-  } else if (lookahead_ == Token::LPAREN) {
+  } 
+  else if (lookahead_ == Token::LPAREN) {
     CallNode *node = new CallNode();
     node->set_line_number(scanner_.line_number());
-    ExpressionNode *arguments = dynamic_cast<ExpressionNode*>(
-      transition("call-tail", &Parser::CallTail));
+    ExpressionNode *arguments = 
+      dynamic_cast<ExpressionNode*>(transition("call-tail", &Parser::CallTail));
     node->set_argurments(arguments);
     return node;
-  } else {
-    //SyntaxCheck("id-tail");
   }
   VariableNode *var_node = new VariableNode();
   var_node->set_line_number(scanner_.line_number());
@@ -1191,39 +1095,12 @@ ASTNode *Parser::IdTail(/*SynchSet &set*/) {
 }
 
 ASTNode *Parser::VarTail(/*SynchSet &set*/) {
-  //synch_.clear();
-  //synch_.push_back(Token::LTEQ);
-  //synch_.push_back(Token::LT);
-  //synch_.push_back(Token::GT);
-  //synch_.push_back(Token::GTEQ);
-  //synch_.push_back(Token::EQ);
-  //synch_.push_back(Token::NEQ);
-  //synch_.push_back(Token::PLUS);
-  //synch_.push_back(Token::MINUS);
-  //synch_.push_back(Token::OR);
-  //synch_.push_back(Token::ORELSE);
-  //synch_.push_back(Token::MULT);
-  //synch_.push_back(Token::DIV);
-  //synch_.push_back(Token::MOD);
-  //synch_.push_back(Token::AND);
-  //synch_.push_back(Token::ANDTHEN);
-  //synch_.push_back(Token::RPAREN);
-  //synch_.push_back(Token::RSQR);
-  //synch_.push_back(Token::SEMI);
-  //synch_.push_back(Token::COMMA);
   VariableNode *variable = new VariableNode();
   variable->set_line_number(scanner_.line_number());
-  ////synch_.push_back(Token::MINUS);
-  ////synch_.push_back(Token::NOT);
-  ////synch_.push_back(Token::LPAREN);
-  ////synch_.push_back(Token::NUM);
-  ////synch_.push_back(Token::BLIT);
-  ////synch_.push_back(Token::ID);
-  //SyntaxCheck("var-tail");
   if (lookahead_ == Token::LSQR) {
     Match(Token::LSQR/*, set*/);
-    ExpressionNode *expression = dynamic_cast<ExpressionNode*>(
-      transition("add-exp", &Parser::AddExp));
+    ExpressionNode *expression = 
+      dynamic_cast<ExpressionNode*>(transition("add-exp", &Parser::AddExp));
     Match(Token::RSQR/*, set*/);
     variable->set_array_expression(expression);
     variable->set_array_variable(true);

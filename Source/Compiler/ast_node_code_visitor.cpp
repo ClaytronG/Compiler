@@ -15,8 +15,8 @@ void ASTNodeCodeVisitor::Visit(AssignmentNode &node) {
   CallNode *call =dynamic_cast<CallNode*>(node.value());
   LiteralNode *lit = dynamic_cast<LiteralNode*>(node.value());
   VariableNode *var = dynamic_cast<VariableNode*>(node.value());
-  std::string op = "asg", arg1 = "-";
-  std::string result = Administrator::spelling_table[node.identifier()];
+  std::string op = "asg", arg1 = "-", arg2 = "-", 
+    result = Administrator::spelling_table[node.identifier()];
 
   // If the assignment is a call...
   if (call != NULL) {
@@ -46,7 +46,25 @@ void ASTNodeCodeVisitor::Visit(AssignmentNode &node) {
     node.value()->Accept(this);
   }
 
-  *output_ += CreateQuad(op, arg1, "-", result);
+  if (node.array_assignment()) {
+    op = "tae";
+    call = dynamic_cast<CallNode*>(node.array_expression());
+    lit = dynamic_cast<LiteralNode*>(node.array_expression());
+    var = dynamic_cast<VariableNode*>(node.array_expression());
+
+    if (call != NULL) {
+      arg2 = "t" + Administrator::IntToString(current_temp_variable_);
+      call->Accept(this);
+    }
+    else if (lit != NULL) {
+      arg2 = GetLiteral(lit);
+    }
+    else if (var != NULL) {
+      arg2 = GetVariable(var);
+    }    
+  }
+
+  *output_ += CreateQuad(op, arg1, arg2, result);
 
   // Clean up the pointers
   //delete call;

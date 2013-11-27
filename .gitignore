@@ -11,3 +11,15 @@
 *.lai
 *.la
 *.a
+
+# VS Garbage
+Compiler/
+Debug/
+*.sdf
+*.sln
+*.vcxproj
+*.filters
+*.opensdf
+
+# Others
+test.cs13

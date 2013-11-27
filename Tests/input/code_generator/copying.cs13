@@ -1,0 +1,48 @@
+/** Author: Clayton Green
+  * Test file focused on assignment quadruples including arrays.
+ **/
+
+int f(void)
+{
+  return 1;
+}
+
+bool g(void)
+{
+  return true;
+}
+
+int main(void)
+{
+  int a, b, c[10];
+  bool x, y, z[10];
+  -- Test variable assignment of literal
+  a := 1;
+  a := -1;
+  x := true;
+  x := not true;
+  -- Test variable assignment of another variable
+  b := a;
+  y := x;
+  -- Test array variable assignment of literal
+  c[0] := 1;
+  c[0] := -1;
+  z[0] := false;
+  z[0] := not false;
+  -- Test array variable assignment of another variable
+  c[0] := a;
+  z[0] := x;
+  -- Test variable assignment of array variable
+  a := c[0];
+  x := z[0];
+  a := c[a];
+  x := z[a[1]];
+  -- Test variable assignment of function call
+  a := f();
+  x := g();
+  -- Test array variable assignment of function call
+  c[0] := f();
+  z[0] := g();
+  
+  return 1;
+}

@@ -1,0 +1,38 @@
+/** Author: Clayton Green
+  * Test file focused on flow control quadruples.
+ **/
+
+int main(void)
+{
+  int a;
+  
+  if (true)
+  {
+    a := 1;
+  }
+  
+  if (false)
+  {
+    a := 1;
+  }
+  else
+  {
+    a := 2;
+  }
+  
+  loop
+    if (false) continue;
+    if (true) exit;
+  end;
+  
+  branch(a)
+    case 1: 
+      a := 2;
+    case 2: 
+      a := 4;
+    default: 
+      a := 0;
+  end;
+  
+  return 0;
+}

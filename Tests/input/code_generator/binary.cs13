@@ -1,0 +1,35 @@
+/** Author: Clayton Green
+  * Test binary expressions.
+ **/
+
+int main(void)
+{
+  int a;
+  bool b;
+  
+  b := 1 <= 2;
+  b := 1 < 2;
+  b := 1 > 2;
+  b := 1 >= 2;
+  b := 1 = 2;
+  b := 1 /= 2;
+  b := true or false;
+  b := true and false;
+  
+  a := 1 + 2;
+  a := 1 - 2;
+  a := 1 * 2;
+  a := 1 / 2;
+  a := 1 mod 2;
+  
+  a := 1 * 2 + 3 / 4;
+  
+  /*
+  b := true && false;
+  b := false && true;
+  b := true || false;
+  b := false || true;
+  */
+  
+  return 0;
+}

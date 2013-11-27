@@ -29,8 +29,70 @@ Administrator::Administrator(const std::vector<std::string> file_list,
 }
 
 bool Administrator::Compile() {
-  // TODO: Finish all compilation stages
-  return false;
+  auto it = input_file_list_.begin();
+  const auto end = input_file_list_.end();
+  while (it != end) {
+    // Get the AST for the built in functions
+    // disable trace
+    bool trace = show_trace_;
+    std::string filename = (*it).substr((*it).find_last_of("/") + 1, (*it).length());
+    Parser parser(*it, filename, this);
+    if (!parser.good()) {
+      fprintf(stderr, "Error parsing file: %s\n", filename.c_str());
+      ++it;
+      continue;
+    }
+    messenger_.set_show_trace(false);
+    Parser p(kBuiltInFunctions, this);
+    messenger_.set_show_trace(trace);
+    ASTNode *new_root = p.Parse();
+    ASTNode *root = parser.Parse();
+    if (!root) {
+      // If the root node is NULL then the parser encountered errors. Print
+      // those errors and continue on to the next source file.
+      messenger_.PrintErrors();
+      ++it;
+      continue;
+    }
+    else {
+      // Append the original root not to the end of the new_root
+      // Get to the last declaration in new_root
+      DeclarationNode *node = dynamic_cast<ProgramNode*>(new_root)->declaration_node();
+      while (node->next_node()) {
+        node = dynamic_cast<DeclarationNode*>(node->next_node());
+      }
+      DeclarationNode *next = dynamic_cast<ProgramNode*>(root)->declaration_node();
+      node->set_next_node(next);
+      // Begin semantic analysis
+      SemanticAnalyzer sem(new_root, filename, this);
+      sem.InitTraversal();
+      sem.FullTraversal();
+      if (!sem.error_free()) {
+        messenger_.PrintErrors();
+        ++it;
+        continue;
+      }
+      // Remove the system calls from the AST (read/write int/bool)
+      node = dynamic_cast<ProgramNode*>(new_root)->declaration_node();
+      while (node->identifier() < 5) {
+        node = dynamic_cast<DeclarationNode*>(node->next_node());
+      }
+      // Generate the quadruples
+      CodeGenerator gen(new ProgramNode(node), filename, this);
+      gen.GenerateCode();
+      // Create the output file
+      if (!output_filename_.empty()) {
+        output_file_ = fopen(output_filename_.c_str(), "w");
+        fprintf(output_file_, gen.output().c_str());
+      }
+      std::string message = "\n" + gen.output();
+      messenger_.PrintMessage(message);
+    }
+    messenger_.PrintErrors();
+    ++it;
+  }
+
+  return true;
 }
 
 void Administrator::set_output_file(const std::string &file) {
@@ -251,17 +313,12 @@ bool Administrator::TupleGenerationPhase() {
       messenger_.set_show_trace(trace);
       CodeGenerator gen(new ProgramNode(node), filename, this);
       gen.GenerateCode();
-      // Create the output file
-      if (!output_filename_.empty()) {
-        output_file_ = fopen(output_filename_.c_str(), "w");
-        fprintf(output_file_, gen.output().c_str());
-      }
       messenger_.PrintMessage(gen.output());
     }
     messenger_.PrintErrors();
     ++it;
   }
-  return false;
+  return true;
 }
 
 int Administrator::last_spelling_table_entry = 0;

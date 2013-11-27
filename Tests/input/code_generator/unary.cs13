@@ -1,0 +1,16 @@
+/** Author: Clayton Green
+  * Test unary expressions.
+ **/
+
+int main(void)
+{
+  int a;
+  bool b;
+  
+  a := -1;
+  a := -a;
+  b := not false;
+  b := not b;
+  
+  return 0;
+}

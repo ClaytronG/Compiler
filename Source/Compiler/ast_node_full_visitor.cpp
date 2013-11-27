@@ -57,7 +57,8 @@ void ASTNodeFullVisitor::Visit(AssignmentNode &node) {
   void_function_valid = false;
   // Make sure the types match
   node.value()->Accept(this);
-  Token::TokenName type = dynamic_cast<DeclarationNode*>(symbol_table_->identifier_table_.at(symbol_table_->acces_table_.at(node.identifier())).DecPtr)->type();
+  int index = symbol_table_->acces_table_.at(node.identifier());
+  Token::TokenName type = dynamic_cast<DeclarationNode*>(symbol_table_->identifier_table_.at(index).DecPtr)->type();
   if (node.value()->type() != Token::UNIVERSAL && type != node.value()->type()) {
     std::string message = "Invalid assignment type";
     administrator_->messenger()->AddError(filename_, node.line_number(), message);
@@ -132,6 +133,10 @@ void ASTNodeFullVisitor::Visit(BinaryNode &node) {
       node.set_type(Token::UNIVERSAL);
     }
   }
+
+  if (node.next_node() != NULL) {
+    node.next_node()->Accept(this);
+  }
 }
 
 void ASTNodeFullVisitor::Visit(BranchNode &node) {
@@ -144,10 +149,16 @@ void ASTNodeFullVisitor::Visit(BranchNode &node) {
     error_free_ = false;
   }
 
+  ++depth_;
   // Check the cases
   node.cases()->Accept(this);
   default_case_ = false;
   case_numbers_.clear();
+  --depth_;
+
+  if (node.next_node() != NULL) {
+    node.next_node()->Accept(this);
+  }
 }
 
 void ASTNodeFullVisitor::Visit(CallNode &node) { 
@@ -169,6 +180,7 @@ void ASTNodeFullVisitor::Visit(CallNode &node) {
     return;
   }
   else {
+    std::string name = Administrator::spelling_table[node.identifier()];
     int identifier_index = symbol_table_->acces_table_.at(node.identifier());
     FunctionDeclarationNode *declaration = dynamic_cast<FunctionDeclarationNode*>(symbol_table_->identifier_table_.at(identifier_index).DecPtr);
     node.set_type(declaration->type());
@@ -206,7 +218,7 @@ void ASTNodeFullVisitor::Visit(CallNode &node) {
           administrator_->messenger()->AddError(filename_, node.line_number(), message);
           error_free_ = false;
         }
-        else if (!temp->array_expression()) { // The node isn't an array variable
+        else if (!dynamic_cast<VariableDeclarationNode*>(temp->declaration_pointer())->array_variable()) { // The node isn't an array variable
           std::string message = "Expected array argument";
           administrator_->messenger()->AddError(filename_, node.line_number(), message);
           error_free_ = false;
@@ -219,10 +231,15 @@ void ASTNodeFullVisitor::Visit(CallNode &node) {
     current_arg = dynamic_cast<ExpressionNode*>(current_arg->next_node());
     current_param = dynamic_cast<ParameterNode*>(current_param->next_parameter());
   }
+
   if (current_param != NULL) {
     std::string message = "Missing arguments";
     administrator_->messenger()->AddError(filename_, node.line_number(), message);
     error_free_ = false;
+  }
+
+  if (node.next_node() != NULL) {
+    node.next_node()->Accept(this);
   }
   
 }
@@ -253,11 +270,9 @@ void ASTNodeFullVisitor::Visit(CaseNode &node) {
       error_free_ = false;
     }
   }
-  ++depth_;
   node.statement()->Accept(this);
-  --depth_;
 
-  if (node.next_node()) {
+  if (node.next_node() != NULL) {
     node.next_node()->Accept(this);
   }
 }
@@ -272,9 +287,15 @@ void ASTNodeFullVisitor::Visit(CompoundNode &node) {
   compound_variable_ = false;
   node.statements()->Accept(this);
 
+  administrator_->messenger()->PrintMessage(symbol_table_->ToString());
+
   --depth_;
-  if ((symbol_table_->identifier_table_.end() - 1)->L != 0) {
+  if ((symbol_table_->identifier_table_.end() - 1)->L > depth_) {
     PopStack();
+  }
+
+  if (node.next_node() != NULL) {
+    node.next_node()->Accept(this);
   }
 }
 
@@ -283,6 +304,10 @@ void ASTNodeFullVisitor::Visit(ContinueNode &node) {
     std::string message = "CONTINUE statement outside of LOOP";
     administrator_->messenger()->AddError(filename_, node.line_number(), message);
     error_free_ = false;
+  }
+
+  if (node.next_node() != NULL) {
+    node.next_node()->Accept(this);
   }
 }
 
@@ -295,6 +320,10 @@ void ASTNodeFullVisitor::Visit(ExitNode &node) {
   else {
     exit_statement_ = true;
   }
+
+  if (node.next_node() != NULL) {
+    node.next_node()->Accept(this);
+  }
 }
 
 void ASTNodeFullVisitor::Visit(FunctionDeclarationNode &node) {
@@ -305,16 +334,22 @@ void ASTNodeFullVisitor::Visit(FunctionDeclarationNode &node) {
   if (node.parameters() != NULL) {
     ++depth_;
     node.parameters()->Accept(this);
-    nonvoid_function_ = true;
     --depth_;
   }
+
+  if (node.type() != Token::VOID) {
+    nonvoid_function_ = true;
+  }
+
   // Continue onto the compound
   node.compound()->Accept(this);
+
+  administrator_->messenger()->PrintMessage(symbol_table_->ToString());
 
   // Move onto the next declaration node
   nonvoid_function_ = false;
   function_return_type_ = Token::ERROR;
-  if (node.next_node()) {
+  if (node.next_node() != NULL) {
     node.next_node()->Accept(this);
   }
 }
@@ -330,10 +365,13 @@ void ASTNodeFullVisitor::Visit(IfNode &node) {
 
   // Move on to the if statement
   node.then_statement()->Accept(this);
-
   // If there is an else statement visit it
   if (node.else_statement()) {
     node.else_statement()->Accept(this);
+  }
+
+  if (node.next_node() != NULL) {
+    node.next_node()->Accept(this);
   }
 }
 
@@ -343,6 +381,10 @@ void ASTNodeFullVisitor::Visit(LiteralNode &node) {
   }
   else if (node.number_literal()) {
     node.set_type(Token::INT);
+  }
+
+  if (node.next_node() != NULL) {
+    node.next_node()->Accept(this);
   }
 }
 
@@ -361,6 +403,10 @@ void ASTNodeFullVisitor::Visit(LoopNode &node) {
   --depth_;
   exit_statement_ = false;
   in_loop_ = false;
+
+  if (node.next_node() != NULL) {
+    node.next_node()->Accept(this);
+  }
 }
 
 void ASTNodeFullVisitor::Visit(ParameterNode &node) {
@@ -410,6 +456,10 @@ void ASTNodeFullVisitor::Visit(ReturnNode &node) {
       }
     }
   }
+
+  if (node.next_node() != NULL) {
+    node.next_node()->Accept(this);
+  }
 }
 
 void ASTNodeFullVisitor::Visit(UnaryNode &node) {
@@ -433,6 +483,9 @@ void ASTNodeFullVisitor::Visit(UnaryNode &node) {
     node.set_type(Token::BOOL);
   }
 
+  if (node.next_node() != NULL) {
+    node.next_node()->Accept(this);
+  }
 }
 
 void ASTNodeFullVisitor::Visit(VariableDeclarationNode &node) { 
@@ -474,23 +527,13 @@ void ASTNodeFullVisitor::Visit(VariableDeclarationNode &node) {
       error_free_ = false;
     }
   }
-  if (node.next_node()) {
+
+  if (node.next_node() != NULL) {
     node.next_node()->Accept(this);
   }
 }
 
 void ASTNodeFullVisitor::Visit(VariableNode &node) {
-  // Check to see if this is an array variable
-  if (node.array_variable()) {
-    // Go into the expression and resolve type
-    node.array_expression()->Accept(this);
-    // If it is make sure the expression resolves to an integer
-    if (node.array_expression()->type() != Token::UNIVERSAL && node.array_expression()->type() != Token::INT) {
-      std::string message = "Array expression must be of type INT";
-      administrator_->messenger()->AddError(filename_, node.line_number(), message);
-      error_free_ = false;
-    }
-  }
   int index = symbol_table_->acces_table_.at(node.identifier());
   if (index == 0) {
     IdentificationTableEntry entry;
@@ -520,7 +563,22 @@ void ASTNodeFullVisitor::Visit(VariableNode &node) {
     }
     //node.set_declaration_pointer(dynamic_cast<DeclarationNode*>(symbol_table_->identifier_table_.at(index).DecPtr));
     node.set_type(node.declaration_pointer()->type());
-    int x = 3;
+  }
+
+  // Check to see if this is an array variable
+  if (node.array_variable()) {
+    // Go into the expression and resolve type
+    node.array_expression()->Accept(this);
+    // If it is make sure the expression resolves to an integer
+    if (node.array_expression()->type() != Token::UNIVERSAL && node.array_expression()->type() != Token::INT) {
+      std::string message = "Array expression must be of type INT";
+      administrator_->messenger()->AddError(filename_, node.line_number(), message);
+      error_free_ = false;
+    }
+  }
+
+  if (node.next_node() != NULL) {
+    node.next_node()->Accept(this);
   }
 }
 

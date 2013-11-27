@@ -297,6 +297,8 @@ class Arg
 		 */
 		void forceRequired();
 
+    void setRequired(bool required);
+
 		/**
 		 * Sets the _alreadySet value to true.  This is used by the XorHandler.
 		 * You really have no reason to ever use it.
@@ -313,6 +315,11 @@ class Arg
 		 * if the arg has been matched on the command line.
 		 */
 		bool isSet() const;
+
+    /**
+     * 
+     */
+    void set(bool set);
 
 		/**
 		 * Indicates whether the argument can be ignored, if desired.
@@ -580,6 +587,10 @@ inline bool Arg::isSet() const
 		return false;
 }
 
+inline void Arg::set(bool set) {
+  _alreadySet = set;
+}
+
 inline bool Arg::isIgnoreable() const { return _ignoreable; }
 
 inline void Arg::setRequireLabel( const std::string& s)
@@ -650,6 +661,10 @@ inline bool Arg::_hasBlanks( const std::string& s ) const
 inline void Arg::forceRequired()
 {
 	_required = true;
+}
+
+inline void Arg::setRequired(bool required) {
+  _required = required;
 }
 
 inline void Arg::xorSet()

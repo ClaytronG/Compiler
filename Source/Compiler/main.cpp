@@ -54,9 +54,9 @@ int main(int argc, char* argv[]) {
     cmd.add(out_arg);
     cmd.add(err_arg);
     cmd.add(input_args);
-    
+
     cmd.parse(argc, argv);
-    
+
     std::vector< std::string > inputFiles = input_args.getValue();
     if (inputFiles.size() == 0) {
       fprintf(stderr, "No input files. Please specify 1 or more .cs13 files using -I <file>\n");
@@ -96,8 +96,7 @@ int main(int argc, char* argv[]) {
     } else if (tup_switch.isSet()) {
       admin->TupleGenerationPhase();
     } else {
-      // TODO: complete compilation
-      return -1;
+      admin->Compile();
     }    
 	} catch(TCLAP::ArgException &e) {
     fprintf(stderr, "error: %s for arg %s\n", e.error().c_str(), e.argId().c_str());

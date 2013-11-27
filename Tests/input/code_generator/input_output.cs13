@@ -1,0 +1,20 @@
+/** Author: Clayton Green
+  * Test input and output quadruples.
+ **/
+ 
+int main(void)
+{
+ int a;
+ bool b;
+ 
+ a := readint();
+ b := readbool();
+ 
+ writeint(a);
+ writebool(b);
+ 
+ writeint(1+2);
+ writebool(true and false);
+ 
+ return 0; 
+}

@@ -1,12 +1,3 @@
-﻿Shit that NEEDS to get done
-	+ More sophisticated error recovery (i.e. not SEMICOLON synchset)
-
-It can wait
-	+ Fix outputting to error file appending rather than creating new file.
-	+ Add functionality for output file (This can be done last)
-	+ Strip file name from file path
-	+ Update comments in all files
-	+ Create makefile to compile and run tests instead of .sh file
-	+ Remove needed -I for input files and assume last list of paths are input
-	  files
-	+ Update all phases' reports
+﻿+ Add more sophisticated error recovery to parser
++ Remove usage of TCLAP, use getopt instead
++ Update comments in all files

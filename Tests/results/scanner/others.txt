@@ -1,0 +1,53 @@
+others.cs13(1): /* @author Ashton Fedler
+others.cs13(2): * @email fedler@unbc.ca
+others.cs13(3): * @data September 24 2013
+others.cs13(4): *
+others.cs13(5): * Description:
+others.cs13(6): * This file tests that the cs13 Scanner can properly
+others.cs13(7): * tokenize all types that are not numerials or identifiers.
+others.cs13(8): */
+others.cs13(9): -- Test all recognized types
+others.cs13(10): and bool branch case continue default else end exit if int loop mod or ref return void not true false
+               10> (and, )
+               10> (bool, )
+               10> (branch, )
+               10> (case, )
+               10> (continue, )
+               10> (default, )
+               10> (else, )
+               10> (end, )
+               10> (exit, )
+               10> (if, )
+               10> (int, )
+               10> (loop, )
+               10> (mod, )
+               10> (or, )
+               10> (ref, )
+               10> (return, )
+               10> (void, )
+               10> (not, )
+               10> (BLIT, true)
+               10> (BLIT, false)
+others.cs13(11): + - * / && || < <= > >= = /= := ; , ( ) [ ] { }
+               11> (PLUS, )
+               11> (MINUS, )
+               11> (MULT, )
+               11> (DIV, )
+               11> (ANDTHEN, )
+               11> (ORELSE, )
+               11> (LT, )
+               11> (LTEQ, )
+               11> (GT, )
+               11> (GTEQ, )
+               11> (EQ, )
+               11> (NEQ, )
+               11> (ASSIGN, )
+               11> (SEMI, )
+               11> (COMMA, )
+               11> (LPAREN, )
+               11> (RPAREN, )
+               11> (LSQR, )
+               11> (RSQR, )
+               11> (LCRLY, )
+               11> (RCRLY, )
+               11> (ENDFILE, )

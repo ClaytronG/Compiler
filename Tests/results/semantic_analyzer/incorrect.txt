@@ -1,0 +1,793 @@
+incorrect.cs13(1): /** Author: Clayton Green
+Symbol Table
+Identifier Table:
+IdI: L  DecPtr Next LexI Identifier:
+0    0    -    0    -1   NULL        
+1    0    -    0    0    readint     
+2    0    -    0    1    writeint    
+3    0    -    0    3    readbool    
+4    0    -    0    4    writebool   
+5    0    -    0    6    z           
+6    0    -    0    7    f           
+7    0    -    0    9    g           
+8    0    -    0    10   h           
+9    0    -    0    11   i           
+10   0    -    0    12   main        
+
+Access Table:
+Identifier: LexI: IdI
+readint     0     1   
+writeint    1     2   
+outint      2     0   
+readbool    3     3   
+writebool   4     4   
+outbool     5     0   
+z           6     5   
+f           7     6   
+x           8     0   
+g           9     7   
+h           10    8   
+i           11    9   
+main        12    10  
+b           13    0   
+c           14    0   
+d           15    0   
+y           16    0   
+a           17    0   
+notDeclared 18    0   
+m           19    0   
+Symbol Table
+Identifier Table:
+IdI: L  DecPtr Next LexI Identifier:
+0    0    -    0    -1   NULL        
+1    0    -    0    0    readint     
+2    0    -    0    1    writeint    
+3    0    -    0    3    readbool    
+4    0    -    0    4    writebool   
+5    0    -    0    6    z           
+6    0    -    0    7    f           
+7    0    -    0    9    g           
+8    0    -    0    10   h           
+9    0    -    0    11   i           
+10   0    -    0    12   main        
+
+Access Table:
+Identifier: LexI: IdI
+readint     0     1   
+writeint    1     2   
+outint      2     0   
+readbool    3     3   
+writebool   4     4   
+outbool     5     0   
+z           6     5   
+f           7     6   
+x           8     0   
+g           9     7   
+h           10    8   
+i           11    9   
+main        12    10  
+b           13    0   
+c           14    0   
+d           15    0   
+y           16    0   
+a           17    0   
+notDeclared 18    0   
+m           19    0   
+Symbol Table
+Identifier Table:
+IdI: L  DecPtr Next LexI Identifier:
+0    0    -    0    -1   NULL        
+1    0    -    0    0    readint     
+2    0    -    0    1    writeint    
+3    0    -    0    3    readbool    
+4    0    -    0    4    writebool   
+5    0    -    0    6    z           
+6    0    -    0    7    f           
+7    0    -    0    9    g           
+8    0    -    0    10   h           
+9    0    -    0    11   i           
+10   0    -    0    12   main        
+
+Access Table:
+Identifier: LexI: IdI
+readint     0     1   
+writeint    1     2   
+outint      2     0   
+readbool    3     3   
+writebool   4     4   
+outbool     5     0   
+z           6     5   
+f           7     6   
+x           8     0   
+g           9     7   
+h           10    8   
+i           11    9   
+main        12    10  
+b           13    0   
+c           14    0   
+d           15    0   
+y           16    0   
+a           17    0   
+notDeclared 18    0   
+m           19    0   
+Symbol Table
+Identifier Table:
+IdI: L  DecPtr Next LexI Identifier:
+0    0    -    0    -1   NULL        
+1    0    -    0    0    readint     
+2    0    -    0    1    writeint    
+3    0    -    0    3    readbool    
+4    0    -    0    4    writebool   
+5    0    -    0    6    z           
+6    0    -    0    7    f           
+7    0    -    0    9    g           
+8    0    -    0    10   h           
+9    0    -    0    11   i           
+10   0    -    0    12   main        
+11   1    -    0    2    outint      
+
+Access Table:
+Identifier: LexI: IdI
+readint     0     1   
+writeint    1     2   
+outint      2     11  
+readbool    3     3   
+writebool   4     4   
+outbool     5     0   
+z           6     5   
+f           7     6   
+x           8     0   
+g           9     7   
+h           10    8   
+i           11    9   
+main        12    10  
+b           13    0   
+c           14    0   
+d           15    0   
+y           16    0   
+a           17    0   
+notDeclared 18    0   
+m           19    0   
+Symbol Table
+Identifier Table:
+IdI: L  DecPtr Next LexI Identifier:
+0    0    -    0    -1   NULL        
+1    0    -    0    0    readint     
+2    0    -    0    1    writeint    
+3    0    -    0    3    readbool    
+4    0    -    0    4    writebool   
+5    0    -    0    6    z           
+6    0    -    0    7    f           
+7    0    -    0    9    g           
+8    0    -    0    10   h           
+9    0    -    0    11   i           
+10   0    -    0    12   main        
+
+Access Table:
+Identifier: LexI: IdI
+readint     0     1   
+writeint    1     2   
+outint      2     0   
+readbool    3     3   
+writebool   4     4   
+outbool     5     0   
+z           6     5   
+f           7     6   
+x           8     0   
+g           9     7   
+h           10    8   
+i           11    9   
+main        12    10  
+b           13    0   
+c           14    0   
+d           15    0   
+y           16    0   
+a           17    0   
+notDeclared 18    0   
+m           19    0   
+Symbol Table
+Identifier Table:
+IdI: L  DecPtr Next LexI Identifier:
+0    0    -    0    -1   NULL        
+1    0    -    0    0    readint     
+2    0    -    0    1    writeint    
+3    0    -    0    3    readbool    
+4    0    -    0    4    writebool   
+5    0    -    0    6    z           
+6    0    -    0    7    f           
+7    0    -    0    9    g           
+8    0    -    0    10   h           
+9    0    -    0    11   i           
+10   0    -    0    12   main        
+
+Access Table:
+Identifier: LexI: IdI
+readint     0     1   
+writeint    1     2   
+outint      2     0   
+readbool    3     3   
+writebool   4     4   
+outbool     5     0   
+z           6     5   
+f           7     6   
+x           8     0   
+g           9     7   
+h           10    8   
+i           11    9   
+main        12    10  
+b           13    0   
+c           14    0   
+d           15    0   
+y           16    0   
+a           17    0   
+notDeclared 18    0   
+m           19    0   
+Symbol Table
+Identifier Table:
+IdI: L  DecPtr Next LexI Identifier:
+0    0    -    0    -1   NULL        
+1    0    -    0    0    readint     
+2    0    -    0    1    writeint    
+3    0    -    0    3    readbool    
+4    0    -    0    4    writebool   
+5    0    -    0    6    z           
+6    0    -    0    7    f           
+7    0    -    0    9    g           
+8    0    -    0    10   h           
+9    0    -    0    11   i           
+10   0    -    0    12   main        
+
+Access Table:
+Identifier: LexI: IdI
+readint     0     1   
+writeint    1     2   
+outint      2     0   
+readbool    3     3   
+writebool   4     4   
+outbool     5     0   
+z           6     5   
+f           7     6   
+x           8     0   
+g           9     7   
+h           10    8   
+i           11    9   
+main        12    10  
+b           13    0   
+c           14    0   
+d           15    0   
+y           16    0   
+a           17    0   
+notDeclared 18    0   
+m           19    0   
+Symbol Table
+Identifier Table:
+IdI: L  DecPtr Next LexI Identifier:
+0    0    -    0    -1   NULL        
+1    0    -    0    0    readint     
+2    0    -    0    1    writeint    
+3    0    -    0    3    readbool    
+4    0    -    0    4    writebool   
+5    0    -    0    6    z           
+6    0    -    0    7    f           
+7    0    -    0    9    g           
+8    0    -    0    10   h           
+9    0    -    0    11   i           
+10   0    -    0    12   main        
+11   1    -    0    5    outbool     
+
+Access Table:
+Identifier: LexI: IdI
+readint     0     1   
+writeint    1     2   
+outint      2     0   
+readbool    3     3   
+writebool   4     4   
+outbool     5     11  
+z           6     5   
+f           7     6   
+x           8     0   
+g           9     7   
+h           10    8   
+i           11    9   
+main        12    10  
+b           13    0   
+c           14    0   
+d           15    0   
+y           16    0   
+a           17    0   
+notDeclared 18    0   
+m           19    0   
+Symbol Table
+Identifier Table:
+IdI: L  DecPtr Next LexI Identifier:
+0    0    -    0    -1   NULL        
+1    0    -    0    0    readint     
+2    0    -    0    1    writeint    
+3    0    -    0    3    readbool    
+4    0    -    0    4    writebool   
+5    0    -    0    6    z           
+6    0    -    0    7    f           
+7    0    -    0    9    g           
+8    0    -    0    10   h           
+9    0    -    0    11   i           
+10   0    -    0    12   main        
+
+Access Table:
+Identifier: LexI: IdI
+readint     0     1   
+writeint    1     2   
+outint      2     0   
+readbool    3     3   
+writebool   4     4   
+outbool     5     0   
+z           6     5   
+f           7     6   
+x           8     0   
+g           9     7   
+h           10    8   
+i           11    9   
+main        12    10  
+b           13    0   
+c           14    0   
+d           15    0   
+y           16    0   
+a           17    0   
+notDeclared 18    0   
+m           19    0   
+Symbol Table
+Identifier Table:
+IdI: L  DecPtr Next LexI Identifier:
+0    0    -    0    -1   NULL        
+1    0    -    0    0    readint     
+2    0    -    0    1    writeint    
+3    0    -    0    3    readbool    
+4    0    -    0    4    writebool   
+5    0    -    0    6    z           
+6    0    -    0    7    f           
+7    0    -    0    9    g           
+8    0    -    0    10   h           
+9    0    -    0    11   i           
+10   0    -    0    12   main        
+11   1    -    0    8    x           
+
+Access Table:
+Identifier: LexI: IdI
+readint     0     1   
+writeint    1     2   
+outint      2     0   
+readbool    3     3   
+writebool   4     4   
+outbool     5     0   
+z           6     5   
+f           7     6   
+x           8     11  
+g           9     7   
+h           10    8   
+i           11    9   
+main        12    10  
+b           13    0   
+c           14    0   
+d           15    0   
+y           16    0   
+a           17    0   
+notDeclared 18    0   
+m           19    0   
+Symbol Table
+Identifier Table:
+IdI: L  DecPtr Next LexI Identifier:
+0    0    -    0    -1   NULL        
+1    0    -    0    0    readint     
+2    0    -    0    1    writeint    
+3    0    -    0    3    readbool    
+4    0    -    0    4    writebool   
+5    0    -    0    6    z           
+6    0    -    0    7    f           
+7    0    -    0    9    g           
+8    0    -    0    10   h           
+9    0    -    0    11   i           
+10   0    -    0    12   main        
+
+Access Table:
+Identifier: LexI: IdI
+readint     0     1   
+writeint    1     2   
+outint      2     0   
+readbool    3     3   
+writebool   4     4   
+outbool     5     0   
+z           6     5   
+f           7     6   
+x           8     0   
+g           9     7   
+h           10    8   
+i           11    9   
+main        12    10  
+b           13    0   
+c           14    0   
+d           15    0   
+y           16    0   
+a           17    0   
+notDeclared 18    0   
+m           19    0   
+Symbol Table
+Identifier Table:
+IdI: L  DecPtr Next LexI Identifier:
+0    0    -    0    -1   NULL        
+1    0    -    0    0    readint     
+2    0    -    0    1    writeint    
+3    0    -    0    3    readbool    
+4    0    -    0    4    writebool   
+5    0    -    0    6    z           
+6    0    -    0    7    f           
+7    0    -    0    9    g           
+8    0    -    0    10   h           
+9    0    -    0    11   i           
+10   0    -    0    12   main        
+11   1    -    0    8    x           
+
+Access Table:
+Identifier: LexI: IdI
+readint     0     1   
+writeint    1     2   
+outint      2     0   
+readbool    3     3   
+writebool   4     4   
+outbool     5     0   
+z           6     5   
+f           7     6   
+x           8     11  
+g           9     7   
+h           10    8   
+i           11    9   
+main        12    10  
+b           13    0   
+c           14    0   
+d           15    0   
+y           16    0   
+a           17    0   
+notDeclared 18    0   
+m           19    0   
+Symbol Table
+Identifier Table:
+IdI: L  DecPtr Next LexI Identifier:
+0    0    -    0    -1   NULL        
+1    0    -    0    0    readint     
+2    0    -    0    1    writeint    
+3    0    -    0    3    readbool    
+4    0    -    0    4    writebool   
+5    0    -    0    6    z           
+6    0    -    0    7    f           
+7    0    -    0    9    g           
+8    0    -    0    10   h           
+9    0    -    0    11   i           
+10   0    -    0    12   main        
+
+Access Table:
+Identifier: LexI: IdI
+readint     0     1   
+writeint    1     2   
+outint      2     0   
+readbool    3     3   
+writebool   4     4   
+outbool     5     0   
+z           6     5   
+f           7     6   
+x           8     0   
+g           9     7   
+h           10    8   
+i           11    9   
+main        12    10  
+b           13    0   
+c           14    0   
+d           15    0   
+y           16    0   
+a           17    0   
+notDeclared 18    0   
+m           19    0   
+Symbol Table
+Identifier Table:
+IdI: L  DecPtr Next LexI Identifier:
+0    0    -    0    -1   NULL        
+1    0    -    0    0    readint     
+2    0    -    0    1    writeint    
+3    0    -    0    3    readbool    
+4    0    -    0    4    writebool   
+5    0    -    0    6    z           
+6    0    -    0    7    f           
+7    0    -    0    9    g           
+8    0    -    0    10   h           
+9    0    -    0    11   i           
+10   0    -    0    12   main        
+11   1    -    0    8    x           
+
+Access Table:
+Identifier: LexI: IdI
+readint     0     1   
+writeint    1     2   
+outint      2     0   
+readbool    3     3   
+writebool   4     4   
+outbool     5     0   
+z           6     5   
+f           7     6   
+x           8     11  
+g           9     7   
+h           10    8   
+i           11    9   
+main        12    10  
+b           13    0   
+c           14    0   
+d           15    0   
+y           16    0   
+a           17    0   
+notDeclared 18    0   
+m           19    0   
+Symbol Table
+Identifier Table:
+IdI: L  DecPtr Next LexI Identifier:
+0    0    -    0    -1   NULL        
+1    0    -    0    0    readint     
+2    0    -    0    1    writeint    
+3    0    -    0    3    readbool    
+4    0    -    0    4    writebool   
+5    0    -    0    6    z           
+6    0    -    0    7    f           
+7    0    -    0    9    g           
+8    0    -    0    10   h           
+9    0    -    0    11   i           
+10   0    -    0    12   main        
+
+Access Table:
+Identifier: LexI: IdI
+readint     0     1   
+writeint    1     2   
+outint      2     0   
+readbool    3     3   
+writebool   4     4   
+outbool     5     0   
+z           6     5   
+f           7     6   
+x           8     0   
+g           9     7   
+h           10    8   
+i           11    9   
+main        12    10  
+b           13    0   
+c           14    0   
+d           15    0   
+y           16    0   
+a           17    0   
+notDeclared 18    0   
+m           19    0   
+Symbol Table
+Identifier Table:
+IdI: L  DecPtr Next LexI Identifier:
+0    0    -    0    -1   NULL        
+1    0    -    0    0    readint     
+2    0    -    0    1    writeint    
+3    0    -    0    3    readbool    
+4    0    -    0    4    writebool   
+5    0    -    0    6    z           
+6    0    -    0    7    f           
+7    0    -    0    9    g           
+8    0    -    0    10   h           
+9    0    -    0    11   i           
+10   0    -    0    12   main        
+
+Access Table:
+Identifier: LexI: IdI
+readint     0     1   
+writeint    1     2   
+outint      2     0   
+readbool    3     3   
+writebool   4     4   
+outbool     5     0   
+z           6     5   
+f           7     6   
+x           8     0   
+g           9     7   
+h           10    8   
+i           11    9   
+main        12    10  
+b           13    0   
+c           14    0   
+d           15    0   
+y           16    0   
+a           17    0   
+notDeclared 18    0   
+m           19    0   
+Symbol Table
+Identifier Table:
+IdI: L  DecPtr Next LexI Identifier:
+0    0    -    0    -1   NULL        
+1    0    -    0    0    readint     
+2    0    -    0    1    writeint    
+3    0    -    0    3    readbool    
+4    0    -    0    4    writebool   
+5    0    -    0    6    z           
+6    0    -    0    7    f           
+7    0    -    0    9    g           
+8    0    -    0    10   h           
+9    0    -    0    11   i           
+10   0    -    0    12   main        
+
+Access Table:
+Identifier: LexI: IdI
+readint     0     1   
+writeint    1     2   
+outint      2     0   
+readbool    3     3   
+writebool   4     4   
+outbool     5     0   
+z           6     5   
+f           7     6   
+x           8     0   
+g           9     7   
+h           10    8   
+i           11    9   
+main        12    10  
+b           13    0   
+c           14    0   
+d           15    0   
+y           16    0   
+a           17    0   
+notDeclared 18    0   
+m           19    0   
+Symbol Table
+Identifier Table:
+IdI: L  DecPtr Next LexI Identifier:
+0    0    -    0    -1   NULL        
+1    0    -    0    0    readint     
+2    0    -    0    1    writeint    
+3    0    -    0    3    readbool    
+4    0    -    0    4    writebool   
+5    0    -    0    6    z           
+6    0    -    0    7    f           
+7    0    -    0    9    g           
+8    0    -    0    10   h           
+9    0    -    0    11   i           
+10   0    -    0    12   main        
+11   1    -    0    13   b           
+12   1    -    0    14   c           
+13   1    -    0    15   d           
+14   1    -    0    8    x           
+15   1    -    0    16   y           
+16   1    -    0    17   a           
+17   1    -    0    18   notDeclared 
+
+Access Table:
+Identifier: LexI: IdI
+readint     0     1   
+writeint    1     2   
+outint      2     0   
+readbool    3     3   
+writebool   4     4   
+outbool     5     0   
+z           6     5   
+f           7     6   
+x           8     14  
+g           9     7   
+h           10    8   
+i           11    9   
+main        12    10  
+b           13    11  
+c           14    12  
+d           15    13  
+y           16    15  
+a           17    15  
+notDeclared 18    17  
+m           19    0   
+Symbol Table
+Identifier Table:
+IdI: L  DecPtr Next LexI Identifier:
+0    0    -    0    -1   NULL        
+1    0    -    0    0    readint     
+2    0    -    0    1    writeint    
+3    0    -    0    3    readbool    
+4    0    -    0    4    writebool   
+5    0    -    0    6    z           
+6    0    -    0    7    f           
+7    0    -    0    9    g           
+8    0    -    0    10   h           
+9    0    -    0    11   i           
+10   0    -    0    12   main        
+11   1    -    0    13   b           
+12   1    -    0    14   c           
+13   1    -    0    15   d           
+14   1    -    0    8    x           
+15   1    -    0    16   y           
+16   1    -    0    17   a           
+17   1    -    0    18   notDeclared 
+18   1    -    0    19   m           
+
+Access Table:
+Identifier: LexI: IdI
+readint     0     1   
+writeint    1     2   
+outint      2     0   
+readbool    3     3   
+writebool   4     4   
+outbool     5     0   
+z           6     5   
+f           7     6   
+x           8     14  
+g           9     7   
+h           10    8   
+i           11    9   
+main        12    10  
+b           13    11  
+c           14    12  
+d           15    13  
+y           16    15  
+a           17    15  
+notDeclared 18    17  
+m           19    18  
+Symbol Table
+Identifier Table:
+IdI: L  DecPtr Next LexI Identifier:
+0    0    -    0    -1   NULL        
+1    0    -    0    0    readint     
+2    0    -    0    1    writeint    
+3    0    -    0    3    readbool    
+4    0    -    0    4    writebool   
+5    0    -    0    6    z           
+6    0    -    0    7    f           
+7    0    -    0    9    g           
+8    0    -    0    10   h           
+9    0    -    0    11   i           
+10   0    -    0    12   main        
+
+Access Table:
+Identifier: LexI: IdI
+readint     0     1   
+writeint    1     2   
+outint      2     0   
+readbool    3     3   
+writebool   4     4   
+outbool     5     0   
+z           6     5   
+f           7     6   
+x           8     0   
+g           9     7   
+h           10    8   
+i           11    9   
+main        12    10  
+b           13    0   
+c           14    0   
+d           15    0   
+y           16    0   
+a           17    0   
+notDeclared 18    0   
+m           19    0   
+
+Errors:
+incorrect.cs13(18): Double Definition: int x
+incorrect.cs13(26): RETURN statement missing expression
+incorrect.cs13(27): Invalid return type
+incorrect.cs13(36): Array expression must be static
+incorrect.cs13(37): Array expression must be of type INT
+incorrect.cs13(38): Double Definiton: int y
+incorrect.cs13(41): Undeclared identifier
+incorrect.cs13(42): Array expression must be of type INT
+incorrect.cs13(43): Array expression must be of type INT
+incorrect.cs13(44): Invalid assignment type
+incorrect.cs13(47): Operands must be of the same type
+incorrect.cs13(48): Invalid operator
+incorrect.cs13(49): Invalid operator
+incorrect.cs13(52): BRANCH expression must be of type INT
+incorrect.cs13(56): Default case already defined
+incorrect.cs13(58): Case 1 already defined
+incorrect.cs13(61): Function not declarared
+incorrect.cs13(62): Too many arguments
+incorrect.cs13(63): Invalid argument type
+incorrect.cs13(63): Missing arguments
+incorrect.cs13(64): Expected array argument
+incorrect.cs13(65): Missing arguments
+incorrect.cs13(71): CONTINUE statement outside of LOOP
+incorrect.cs13(74): EXIT statement outside of LOOP
+incorrect.cs13(80): IF expression must be of type BOOL
+incorrect.cs13(82): LOOP body missing EXIT statement
+incorrect.cs13(85): Invalid type on operator, expected INT
+incorrect.cs13(86): Invalid type on operator, expected BOOL
+incorrect.cs13(89): Undeclared identifier
+incorrect.cs13(90): Array expression must be of type INT

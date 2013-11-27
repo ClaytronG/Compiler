@@ -1,0 +1,7 @@
+int a;
+
+void f(ref int x, int y, int z[])
+{
+  
+  return;
+}

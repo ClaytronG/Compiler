@@ -1,0 +1,48 @@
+numerials.cs13(1): /* @author Ashton Fedler
+numerials.cs13(2): * @email fedler@unbc.ca
+numerials.cs13(3): * @data September 24 2013
+numerials.cs13(4): *
+numerials.cs13(5): * Description:
+numerials.cs13(6): * This file tests that the cs13 Scanner can properly
+numerials.cs13(7): * tokenize all types of numerials.
+numerials.cs13(8): *
+numerials.cs13(9): * ENDFILE should Occur on line 22.
+numerials.cs13(10): */
+numerials.cs13(11): 
+numerials.cs13(12): -- Accept all digits
+numerials.cs13(13): 0 1 2 3 4 5 6 7 8 9
+                  13> (NUM, 0)
+                  13> (NUM, 1)
+                  13> (NUM, 2)
+                  13> (NUM, 3)
+                  13> (NUM, 4)
+                  13> (NUM, 5)
+                  13> (NUM, 6)
+                  13> (NUM, 7)
+                  13> (NUM, 8)
+                  13> (NUM, 9)
+numerials.cs13(14): 
+numerials.cs13(15): -- Start and end with all digits
+numerials.cs13(16): 01 12 23 34 45 56 67 78 89 90
+                  16> (NUM, 1)
+                  16> (NUM, 12)
+                  16> (NUM, 23)
+                  16> (NUM, 34)
+                  16> (NUM, 45)
+                  16> (NUM, 56)
+                  16> (NUM, 67)
+                  16> (NUM, 78)
+                  16> (NUM, 89)
+                  16> (NUM, 90)
+numerials.cs13(17): 
+numerials.cs13(18): -- Should give NUM[1], ID[a], NUM[1], ID[a1]
+numerials.cs13(19): 1a 1a1 -- [0, 1]
+                  19> (NUM, 1)
+                  19> (ID, 0) => a
+                  19> (NUM, 1)
+                  19> (ID, 1) => a1
+numerials.cs13(20): 
+numerials.cs13(21): -- Ensure the token table is at index 2
+numerials.cs13(22): b -- [2]
+                  22> (ID, 2) => b
+                  22> (ENDFILE, )

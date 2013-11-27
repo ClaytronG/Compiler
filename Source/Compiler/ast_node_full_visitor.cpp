@@ -106,8 +106,7 @@ void ASTNodeFullVisitor::Visit(BinaryNode &node) {
         std::string message = "Invalid operator";
         administrator_->messenger()->AddError(filename_, node.line_number(), message);
         error_free_ = false;
-        // TODO: What type should this be?
-        node.set_type(Token::UNIVERSAL); // ?
+        node.set_type(Token::UNIVERSAL);
       }
     }
     else if (left_type == Token::INT) {
@@ -123,8 +122,7 @@ void ASTNodeFullVisitor::Visit(BinaryNode &node) {
         std::string message = "Invalid operator";
         administrator_->messenger()->AddError(filename_, node.line_number(), message);
         error_free_ = false;
-        // TODO: What type should this be?
-        node.set_type(Token::UNIVERSAL); // ?
+        node.set_type(Token::UNIVERSAL);
       }
     }
     // Otherwise both nodes are UNIVERSAL type, so the operator has
@@ -177,7 +175,6 @@ void ASTNodeFullVisitor::Visit(CallNode &node) {
     symbol_table_->identifier_table_.push_back(entry);
     // Update the access table
     symbol_table_->acces_table_.at(node.identifier()) = symbol_table_->identifier_table_.size() - 1;
-    return;
   }
   else {
     std::string name = Administrator::spelling_table[node.identifier()];
@@ -185,58 +182,58 @@ void ASTNodeFullVisitor::Visit(CallNode &node) {
     FunctionDeclarationNode *declaration = dynamic_cast<FunctionDeclarationNode*>(symbol_table_->identifier_table_.at(identifier_index).DecPtr);
     node.set_type(declaration->type());
     node.set_declaration(declaration);
-  }
 
-  if (node.arguments()) {
-    node.arguments()->Accept(this);
-  }
-
-  // Make sure arguments are consistent
-  ParameterNode *current_param = dynamic_cast<FunctionDeclarationNode*>(symbol_table_->identifier_table_.at(symbol_table_->acces_table_.at(node.identifier())).DecPtr)->parameters();
-  ExpressionNode *current_arg = node.arguments();
-  while (current_arg != NULL) {
-    current_arg->Accept(this);
-    // Check if current_param exist, if not then 
-    if (current_param == NULL) {
-      std::string message = "Too many arguments";
-      administrator_->messenger()->AddError(filename_, node.line_number(), message);
-      error_free_ = false;
-      break;
+    if (node.arguments()) {
+      node.arguments()->Accept(this);
     }
-    // Check if the arguments are the correct type
-    else {
-      if (current_arg->type() != current_param->type()) {
-        std::string message = "Invalid type";
+
+    // Make sure arguments are consistent
+    ParameterNode *current_param = dynamic_cast<FunctionDeclarationNode*>(symbol_table_->identifier_table_.at(symbol_table_->acces_table_.at(node.identifier())).DecPtr)->parameters();
+    ExpressionNode *current_arg = node.arguments();
+    while (current_arg != NULL) {
+      current_arg->Accept(this);
+      // Check if current_param exist, if not then 
+      if (current_param == NULL) {
+        std::string message = "Too many arguments";
         administrator_->messenger()->AddError(filename_, node.line_number(), message);
         error_free_ = false;
         break;
       }
-      else if (current_param->array_parameter()) {
-        VariableNode *temp = dynamic_cast<VariableNode*>(current_arg);
-        if (temp == NULL) { // The node isn't a variable
-          std::string message = "Expected array argument";
+      // Check if the arguments are the correct type
+      else {
+        if (current_arg->type() != current_param->type()) {
+          std::string message = "Invalid argument type";
           administrator_->messenger()->AddError(filename_, node.line_number(), message);
           error_free_ = false;
+          break;
         }
-        else if (!dynamic_cast<VariableDeclarationNode*>(temp->declaration_pointer())->array_variable()) { // The node isn't an array variable
-          std::string message = "Expected array argument";
-          administrator_->messenger()->AddError(filename_, node.line_number(), message);
-          error_free_ = false;
+        else if (current_param->array_parameter()) {
+          VariableNode *temp = dynamic_cast<VariableNode*>(current_arg);
+          if (temp == NULL) { // The node isn't a variable
+            std::string message = "Expected array argument";
+            administrator_->messenger()->AddError(filename_, node.line_number(), message);
+            error_free_ = false;
+          }
+          else if (!dynamic_cast<VariableDeclarationNode*>(temp->declaration_pointer())->array_variable()) { // The node isn't an array variable
+            std::string message = "Expected array argument";
+            administrator_->messenger()->AddError(filename_, node.line_number(), message);
+            error_free_ = false;
+          }
         }
-      }
-      else if (current_param->reference_parameter()) {
+        else if (current_param->reference_parameter()) {
 
+        }
       }
+      current_arg = dynamic_cast<ExpressionNode*>(current_arg->next_node());
+      current_param = dynamic_cast<ParameterNode*>(current_param->next_parameter());
     }
-    current_arg = dynamic_cast<ExpressionNode*>(current_arg->next_node());
-    current_param = dynamic_cast<ParameterNode*>(current_param->next_parameter());
-  }
 
-  if (current_param != NULL) {
-    std::string message = "Missing arguments";
-    administrator_->messenger()->AddError(filename_, node.line_number(), message);
-    error_free_ = false;
-  }
+    if (current_param != NULL) {
+      std::string message = "Missing arguments";
+      administrator_->messenger()->AddError(filename_, node.line_number(), message);
+      error_free_ = false;
+    }
+  }  
 
   if (node.next_node() != NULL) {
     node.next_node()->Accept(this);
@@ -265,7 +262,8 @@ void ASTNodeFullVisitor::Visit(CaseNode &node) {
     }
     // Otherwise, it is a duplicate. Report an error.
     else {
-      std::string message = "Case number already defined";
+      std::string message = "Case " + Administrator::IntToString(node.case_number());
+      message += " already defined";
       administrator_->messenger()->AddError(filename_, node.line_number(), message);
       error_free_ = false;
     }
@@ -358,7 +356,7 @@ void ASTNodeFullVisitor::Visit(IfNode &node) {
   // Check the that the if expression is of BOOLEAN
   node.expression()->Accept(this);
   if (node.expression()->type() != Token::BOOL) {
-    std::string message = "If expression must be of type BOOL";
+    std::string message = "IF expression must be of type BOOL";
     administrator_->messenger()->AddError(filename_, node.line_number(), message);
     error_free_ = false;
   }
@@ -395,7 +393,7 @@ void ASTNodeFullVisitor::Visit(LoopNode &node) {
   node.statements()->Accept(this);
 
   if (!exit_statement_) {
-    std::string message = "Loop body missing exit statement";
+    std::string message = "LOOP body missing EXIT statement";
     administrator_->messenger()->AddError(filename_, node.line_number(), message);
     error_free_ = false;
   }
@@ -441,7 +439,7 @@ void ASTNodeFullVisitor::Visit(ReturnNode &node) {
     // If we're in a nonvoid function and there is no return expression, report
     // an error
     if (!node.expression()) {
-      std::string message = "Return statement missing expression";
+      std::string message = "RETURN statement missing expression";
       administrator_->messenger()->AddError(filename_, node.line_number(), message);
       error_free_ = false;
     }
@@ -534,6 +532,7 @@ void ASTNodeFullVisitor::Visit(VariableDeclarationNode &node) {
 }
 
 void ASTNodeFullVisitor::Visit(VariableNode &node) {
+  variable_array_expression_ = true;
   int index = symbol_table_->acces_table_.at(node.identifier());
   if (index == 0) {
     IdentificationTableEntry entry;

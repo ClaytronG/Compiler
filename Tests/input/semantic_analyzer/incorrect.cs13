@@ -1,0 +1,91 @@
+/** Author: Clayton Green
+  * Tests semantic analyzer error reporting.
+ **/
+
+int z;
+ 
+void f(int x)
+{
+  return;
+}
+
+void g(bool x[])
+{
+  return;
+}
+
+-- ParameterNode errors
+void h(int x, int x)    -- Double definition: x
+{
+  return;
+}
+
+-- ReturnNode errors
+int i(void)
+{
+  return;               -- RETURN statement missing expression
+  return false;         -- Invalid return type
+}
+ 
+int main(void)
+{
+  int b[3], c;
+  bool d;
+  
+  -- VariableDeclarationNode errors
+  int x[z];             -- Array expression must be static
+  int y[false];         -- Array expression must be of type INT
+  int y[1];             -- Double definition: int y
+  
+  -- AssignmentNode errors
+  a := 3;               -- Undeclaraed identifier
+  b[false] := 3;        -- Array expression must be of type INT
+  a := b[true];         -- Array expression must be of type INT
+  a := false;           -- Invalid assigment type
+  
+  -- BinaryNode errors
+  c := 1 + false;       -- Operands must be of the same type
+  d := false + false;   -- Invalid operator
+  c := 1 and 2;         -- Invalid operator 
+  
+  -- BranchNode errors
+  branch(true)          -- BRANCH expression must be of type INT
+    -- CaseNode errors
+    default: c := 1;
+    default: c := 2;    -- Default case already defined
+    case 1: c := 1;
+    case 1: c := 1;     -- Case 1 already defined
+  end;
+  
+  -- CallNode errors
+  notDeclared();        -- Function not declared
+  f(c, c);              -- Too many arguments
+  f(d);                 -- Invalid argument type
+  g(d);                 -- Expected array argument
+  g();                  -- Missing arguments
+  
+  -- ContinueNode errors
+  continue;             -- CONTINUE statement outside of LOOP
+  
+  -- ExitNode errors
+  exit;                 -- EXIT statement outside of LOOP
+  
+  -- IfNode errors
+  if (1)                -- IF expression must be of type BOOL
+  {
+    c := 1;
+  }
+  
+  -- LoopNode errors
+  loop
+    ;                   -- LOOP body missing EXIT statement
+  end;
+  
+  -- UnaryNode errors
+  c := -d;              -- Invalid type on operator, expected INT
+  d := not c;           -- Invalid type on operator, expected BOOL
+  
+  -- VariableNode errors
+  c := m + 1;           -- Undeclared identifier
+  c := b[false];        -- Array expression must be of type INT
+}

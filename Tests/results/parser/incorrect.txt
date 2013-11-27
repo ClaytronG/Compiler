@@ -1,0 +1,135 @@
+incorrect.cs13(1): int x;
+ 1> (int, )
+ Loading int
+ Entering program
+  Entering declaration
+   Entering non-void-specifier
+   Matching int
+   1> (ID, 0) => x
+   Loading ID
+   Leaving non-void-specifier
+   Matching ID
+   1> (SEMI, )
+   Loading SEMI
+   Entering dec-tail
+    Entering var-dec-tail
+     Matching SEMI
+incorrect.cs13(2): 
+incorrect.cs13(3): int f(int x) {
+     3> (int, )
+     Loading int
+    Exiting var-dec-tail
+   Exiting dec-tail
+  Exiting declaration
+  Entering declaration
+   Entering non-void-specifier
+   Matching int
+   3> (ID, 1) => f
+   Loading ID
+   Leaving non-void-specifier
+   Matching ID
+   3> (LPAREN, )
+   Loading LPAREN
+   Entering dec-tail
+    Entering fun-dec-tail
+     Matching LPAREN
+     3> (int, )
+     Loading int
+     Entering params
+      Entering param
+       Entering non-void-specifier
+       Matching int
+       3> (ID, 0) => x
+       Loading ID
+       Leaving non-void-specifier
+       Matching ID
+       3> (RPAREN, )
+       Loading RPAREN
+      Exiting param
+     Exiting params
+     Matching RPAREN
+     3> (LCRLY, )
+     Loading LCRLY
+     Entering compound-stmt
+      Matching LCRLY
+incorrect.cs13(4): int z;
+      4> (int, )
+      Loading int
+      Entering non-void-specifier
+      Matching int
+      4> (ID, 2) => z
+      Loading ID
+      Leaving non-void-specifier
+      Matching ID
+      4> (SEMI, )
+      Loading SEMI
+      Entering var-dec-tail
+       Matching SEMI
+incorrect.cs13(5): 
+incorrect.cs13(6): if(z)
+       6> (if, )
+       Loading if
+      Exiting var-dec-tail
+      Entering statement
+       Entering if-stmt
+        Matching if
+        6> (LPAREN, )
+        Loading LPAREN
+        Matching LPAREN
+        6> (ID, 2) => z
+        Loading ID
+        Entering expression
+         Entering add-exp
+          Entering term
+           Entering factor
+            Entering id-factor
+             Matching ID
+             6> (RPAREN, )
+             Loading RPAREN
+             Entering id-tail
+             Exiting id-tail
+            Exiting id-factor
+           Exiting factor
+          Exiting term
+         Exiting add-exp
+        Exiting expression
+        Matching RPAREN
+incorrect.cs13(7): return 1;
+        7> (return, )
+        Loading return
+        Entering statement
+         Entering return-stmt
+          Matching return
+          7> (NUM, 1)
+          Loading NUM
+          Entering expression
+           Entering add-exp
+            Entering term
+             Entering factor
+              Entering nid-factor
+               Matching NUM
+               7> (SEMI, )
+               Loading SEMI
+              Exiting nid-factor
+             Exiting factor
+            Exiting term
+           Exiting add-exp
+          Exiting expression
+          Matching SEMI
+incorrect.cs13(8): 
+incorrect.cs13(9): bool y;
+          9> (bool, )
+          Loading bool
+         Exiting return-stmt
+        Exiting statement
+       Exiting if-stmt
+      Exiting statement
+      Matching bool
+     Exiting compound-stmt
+    Exiting fun-dec-tail
+   Exiting dec-tail
+  Exiting declaration
+ Exiting program
+
+Errors:
+incorrect.cs13(9): Syntax Error: found 'bool', expected 'RCRLY'

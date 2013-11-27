@@ -159,7 +159,7 @@ bool Administrator::LexerPhase() {
   auto it = input_file_list_.begin();
   const auto end = input_file_list_.end();
   while (it != end) {
-    std::string filename = (*it).substr(0, (*it).find_last_of("\\/"));
+    std::string filename = (*it).substr((*it).find_last_of("/") + 1, (*it).length());
     Scanner scanner(*it, filename, this);
     if (!scanner.good()) {
       fprintf(stdout, "Error opening %s\n", filename.c_str());
@@ -194,7 +194,7 @@ bool Administrator::ParserPhase() {
   auto it = input_file_list_.begin();
   const auto end = input_file_list_.end();
   while (it != end) {
-    std::string filename = (*it).substr((*it).find_last_of("\\/")+1, (*it).length());
+    std::string filename = (*it).substr((*it).find_last_of("/") + 1, (*it).length());
     Parser parser(*it, filename, this);
     ASTNode *root = NULL;
     if (!parser.good()) {

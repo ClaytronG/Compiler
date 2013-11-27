@@ -1,0 +1,1505 @@
+correct.cs13(1): /** @author Clayton Green
+correct.cs13(2): *
+correct.cs13(3): * Test all of the productions in the given LL1 grammar.
+correct.cs13(4): */
+correct.cs13(5): -- Begins with program
+correct.cs13(6): int temp[5], temp1[temp[3+1*5]];
+ 6> (int, )
+ Loading int
+ Entering program
+  Entering declaration
+   Entering non-void-specifier
+   Matching int
+   6> (ID, 0) => temp
+   Loading ID
+   Leaving non-void-specifier
+   Matching ID
+   6> (LSQR, )
+   Loading LSQR
+   Entering dec-tail
+    Entering var-dec-tail
+     Matching LSQR
+     6> (NUM, 5)
+     Loading NUM
+     Entering add-exp
+      Entering term
+       Entering factor
+        Entering nid-factor
+         Matching NUM
+         6> (RSQR, )
+         Loading RSQR
+        Exiting nid-factor
+       Exiting factor
+      Exiting term
+     Exiting add-exp
+     Matching RSQR
+     6> (COMMA, )
+     Loading COMMA
+     Matching COMMA
+     6> (ID, 1) => temp1
+     Loading ID
+     Entering var-name
+      Matching ID
+      6> (LSQR, )
+      Loading LSQR
+      Matching LSQR
+      6> (ID, 0) => temp
+      Loading ID
+      Entering add-exp
+       Entering term
+        Entering factor
+         Entering id-factor
+          Matching ID
+          6> (LSQR, )
+          Loading LSQR
+          Entering id-tail
+           Entering var-tail
+            Matching LSQR
+            6> (NUM, 3)
+            Loading NUM
+            Entering add-exp
+             Entering term
+              Entering factor
+               Entering nid-factor
+                Matching NUM
+                6> (PLUS, )
+                Loading PLUS
+               Exiting nid-factor
+              Exiting factor
+             Exiting term
+             Entering add-op
+              Matching PLUS
+              6> (NUM, 1)
+              Loading NUM
+             Exiting add-op
+             Entering term
+              Entering factor
+               Entering nid-factor
+                Matching NUM
+                6> (MULT, )
+                Loading MULT
+               Exiting nid-factor
+              Exiting factor
+              Entering multop
+               Matching MULT
+               6> (NUM, 5)
+               Loading NUM
+              Exiting multop
+              Entering factor
+               Entering nid-factor
+                Matching NUM
+                6> (RSQR, )
+                Loading RSQR
+               Exiting nid-factor
+              Exiting factor
+             Exiting term
+            Exiting add-exp
+            Matching RSQR
+            6> (RSQR, )
+            Loading RSQR
+           Exiting var-tail
+          Exiting id-tail
+         Exiting id-factor
+        Exiting factor
+       Exiting term
+      Exiting add-exp
+      Matching RSQR
+      6> (SEMI, )
+      Loading SEMI
+     Exiting var-name
+     Matching SEMI
+correct.cs13(7): bool temp3;
+     7> (bool, )
+     Loading bool
+    Exiting var-dec-tail
+   Exiting dec-tail
+  Exiting declaration
+  Entering declaration
+   Entering non-void-specifier
+   Matching bool
+   7> (ID, 2) => temp3
+   Loading ID
+   Leaving non-void-specifier
+   Matching ID
+   7> (SEMI, )
+   Loading SEMI
+   Entering dec-tail
+    Entering var-dec-tail
+     Matching SEMI
+correct.cs13(8): int x;
+     8> (int, )
+     Loading int
+    Exiting var-dec-tail
+   Exiting dec-tail
+  Exiting declaration
+  Entering declaration
+   Entering non-void-specifier
+   Matching int
+   8> (ID, 3) => x
+   Loading ID
+   Leaving non-void-specifier
+   Matching ID
+   8> (SEMI, )
+   Loading SEMI
+   Entering dec-tail
+    Entering var-dec-tail
+     Matching SEMI
+correct.cs13(9): 
+correct.cs13(10): void foo(ref int x, int y[])
+     10> (void, )
+     Loading void
+    Exiting var-dec-tail
+   Exiting dec-tail
+  Exiting declaration
+  Entering declaration
+   Matching void
+   10> (ID, 4) => foo
+   Loading ID
+   Matching ID
+   10> (LPAREN, )
+   Loading LPAREN
+   Entering fun-dec-tail
+    Matching LPAREN
+    10> (ref, )
+    Loading ref
+    Entering params
+     Entering param
+      Matching ref
+      10> (int, )
+      Loading int
+      Entering non-void-specifier
+      Matching int
+      10> (ID, 3) => x
+      Loading ID
+      Leaving non-void-specifier
+      Matching ID
+      10> (COMMA, )
+      Loading COMMA
+     Exiting param
+     Matching COMMA
+     10> (int, )
+     Loading int
+     Entering param
+      Entering non-void-specifier
+      Matching int
+      10> (ID, 5) => y
+      Loading ID
+      Leaving non-void-specifier
+      Matching ID
+      10> (LSQR, )
+      Loading LSQR
+      Matching LSQR
+      10> (RSQR, )
+      Loading RSQR
+      Matching RSQR
+      10> (RPAREN, )
+      Loading RPAREN
+     Exiting param
+    Exiting params
+    Matching RPAREN
+correct.cs13(11): {
+    11> (LCRLY, )
+    Loading LCRLY
+    Entering compound-stmt
+     Matching LCRLY
+correct.cs13(12): int z;
+     12> (int, )
+     Loading int
+     Entering non-void-specifier
+     Matching int
+     12> (ID, 6) => z
+     Loading ID
+     Leaving non-void-specifier
+     Matching ID
+     12> (SEMI, )
+     Loading SEMI
+     Entering var-dec-tail
+      Matching SEMI
+correct.cs13(13): y[bar(-1,(temp3 <= 25) = true)] := 5;
+      13> (ID, 5) => y
+      Loading ID
+     Exiting var-dec-tail
+     Entering statement
+      Entering id-stmt
+       Matching ID
+       13> (LSQR, )
+       Loading LSQR
+       Entering id-stmt-tail
+        Entering assign-stmt-tail
+         Matching LSQR
+         13> (ID, 7) => bar
+         Loading ID
+         Entering add-exp
+          Entering term
+           Entering factor
+            Entering id-factor
+             Matching ID
+             13> (LPAREN, )
+             Loading LPAREN
+             Entering id-tail
+              Entering call-tail
+               Matching LPAREN
+               13> (MINUS, )
+               Loading MINUS
+               Entering arguments
+                Entering expression
+                 Entering add-exp
+                  Entering uminus
+                   Matching MINUS
+                   13> (NUM, 1)
+                   Loading NUM
+                  Exiting uminus
+                  Entering term
+                   Entering factor
+                    Entering nid-factor
+                     Matching NUM
+                     13> (COMMA, )
+                     Loading COMMA
+                    Exiting nid-factor
+                   Exiting factor
+                  Exiting term
+                 Exiting add-exp
+                Exiting expression
+                Matching COMMA
+                13> (LPAREN, )
+                Loading LPAREN
+                Entering expression
+                 Entering add-exp
+                  Entering term
+                   Entering factor
+                    Entering nid-factor
+                     Matching LPAREN
+                     13> (ID, 2) => temp3
+                     Loading ID
+                     Entering expression
+                      Entering add-exp
+                       Entering term
+                        Entering factor
+                         Entering id-factor
+                          Matching ID
+                          13> (LTEQ, )
+                          Loading LTEQ
+                          Entering id-tail
+                          Exiting id-tail
+                         Exiting id-factor
+                        Exiting factor
+                       Exiting term
+                      Exiting add-exp
+                      Entering relop
+                       Matching LTEQ
+                       13> (NUM, 25)
+                       Loading NUM
+                      Exiting relop
+                      Entering add-exp
+                       Entering term
+                        Entering factor
+                         Entering nid-factor
+                          Matching NUM
+                          13> (RPAREN, )
+                          Loading RPAREN
+                         Exiting nid-factor
+                        Exiting factor
+                       Exiting term
+                      Exiting add-exp
+                     Exiting expression
+                     Matching RPAREN
+                     13> (EQ, )
+                     Loading EQ
+                    Exiting nid-factor
+                   Exiting factor
+                  Exiting term
+                 Exiting add-exp
+                 Entering relop
+                  Matching EQ
+                  13> (BLIT, true)
+                  Loading BLIT
+                 Exiting relop
+                 Entering add-exp
+                  Entering term
+                   Entering factor
+                    Entering nid-factor
+                     Matching BLIT
+                     13> (RPAREN, )
+                     Loading RPAREN
+                    Exiting nid-factor
+                   Exiting factor
+                  Exiting term
+                 Exiting add-exp
+                Exiting expression
+               Exiting arguments
+               Matching RPAREN
+               13> (RSQR, )
+               Loading RSQR
+              Exiting call-tail
+             Exiting id-tail
+            Exiting id-factor
+           Exiting factor
+          Exiting term
+         Exiting add-exp
+         Matching RSQR
+         13> (ASSIGN, )
+         Loading ASSIGN
+         Matching ASSIGN
+         13> (NUM, 5)
+         Loading NUM
+         Entering expression
+          Entering add-exp
+           Entering term
+            Entering factor
+             Entering nid-factor
+              Matching NUM
+              13> (SEMI, )
+              Loading SEMI
+             Exiting nid-factor
+            Exiting factor
+           Exiting term
+          Exiting add-exp
+         Exiting expression
+         Matching SEMI
+correct.cs13(14): bar(1,false);
+         14> (ID, 7) => bar
+         Loading ID
+        Exiting assign-stmt-tail
+       Exiting id-stmt-tail
+      Exiting id-stmt
+     Exiting statement
+     Entering statement
+      Entering id-stmt
+       Matching ID
+       14> (LPAREN, )
+       Loading LPAREN
+       Entering id-stmt-tail
+        Entering call-stmt-tail
+         Entering call-tail
+          Matching LPAREN
+          14> (NUM, 1)
+          Loading NUM
+          Entering arguments
+           Entering expression
+            Entering add-exp
+             Entering term
+              Entering factor
+               Entering nid-factor
+                Matching NUM
+                14> (COMMA, )
+                Loading COMMA
+               Exiting nid-factor
+              Exiting factor
+             Exiting term
+            Exiting add-exp
+           Exiting expression
+           Matching COMMA
+           14> (BLIT, false)
+           Loading BLIT
+           Entering expression
+            Entering add-exp
+             Entering term
+              Entering factor
+               Entering nid-factor
+                Matching BLIT
+                14> (RPAREN, )
+                Loading RPAREN
+               Exiting nid-factor
+              Exiting factor
+             Exiting term
+            Exiting add-exp
+           Exiting expression
+          Exiting arguments
+          Matching RPAREN
+          14> (SEMI, )
+          Loading SEMI
+         Exiting call-tail
+         Matching SEMI
+correct.cs13(15): {
+         15> (LCRLY, )
+         Loading LCRLY
+        Exiting call-stmt-tail
+       Exiting id-stmt-tail
+      Exiting id-stmt
+     Exiting statement
+     Entering statement
+      Entering compound-stmt
+       Matching LCRLY
+correct.cs13(16): if(1>2)
+       16> (if, )
+       Loading if
+       Entering statement
+        Entering if-stmt
+         Matching if
+         16> (LPAREN, )
+         Loading LPAREN
+         Matching LPAREN
+         16> (NUM, 1)
+         Loading NUM
+         Entering expression
+          Entering add-exp
+           Entering term
+            Entering factor
+             Entering nid-factor
+              Matching NUM
+              16> (GT, )
+              Loading GT
+             Exiting nid-factor
+            Exiting factor
+           Exiting term
+          Exiting add-exp
+          Entering relop
+           Matching GT
+           16> (NUM, 2)
+           Loading NUM
+          Exiting relop
+          Entering add-exp
+           Entering term
+            Entering factor
+             Entering nid-factor
+              Matching NUM
+              16> (RPAREN, )
+              Loading RPAREN
+             Exiting nid-factor
+            Exiting factor
+           Exiting term
+          Exiting add-exp
+         Exiting expression
+         Matching RPAREN
+correct.cs13(17): if(true)
+         17> (if, )
+         Loading if
+         Entering statement
+          Entering if-stmt
+           Matching if
+           17> (LPAREN, )
+           Loading LPAREN
+           Matching LPAREN
+           17> (BLIT, true)
+           Loading BLIT
+           Entering expression
+            Entering add-exp
+             Entering term
+              Entering factor
+               Entering nid-factor
+                Matching BLIT
+                17> (RPAREN, )
+                Loading RPAREN
+               Exiting nid-factor
+              Exiting factor
+             Exiting term
+            Exiting add-exp
+           Exiting expression
+           Matching RPAREN
+correct.cs13(18): return;
+           18> (return, )
+           Loading return
+           Entering statement
+            Entering return-stmt
+             Matching return
+             18> (SEMI, )
+             Loading SEMI
+             Matching SEMI
+correct.cs13(19): else
+             19> (else, )
+             Loading else
+            Exiting return-stmt
+           Exiting statement
+           Matching else
+correct.cs13(20): exit;
+           20> (exit, )
+           Loading exit
+           Entering statement
+            Entering exit-stmt
+             Matching exit
+             20> (SEMI, )
+             Loading SEMI
+             Matching SEMI
+correct.cs13(21): }
+             21> (RCRLY, )
+             Loading RCRLY
+            Exiting exit-stmt
+           Exiting statement
+          Exiting if-stmt
+         Exiting statement
+        Exiting if-stmt
+       Exiting statement
+       Matching RCRLY
+correct.cs13(22): loop
+       22> (loop, )
+       Loading loop
+      Exiting compound-stmt
+     Exiting statement
+     Entering statement
+      Entering loop-stmt
+       Matching loop
+correct.cs13(23): if (true /= temp3) continue;
+       23> (if, )
+       Loading if
+       Entering statement
+        Entering if-stmt
+         Matching if
+         23> (LPAREN, )
+         Loading LPAREN
+         Matching LPAREN
+         23> (BLIT, true)
+         Loading BLIT
+         Entering expression
+          Entering add-exp
+           Entering term
+            Entering factor
+             Entering nid-factor
+              Matching BLIT
+              23> (NEQ, )
+              Loading NEQ
+             Exiting nid-factor
+            Exiting factor
+           Exiting term
+          Exiting add-exp
+          Entering relop
+           Matching NEQ
+           23> (ID, 2) => temp3
+           Loading ID
+          Exiting relop
+          Entering add-exp
+           Entering term
+            Entering factor
+             Entering id-factor
+              Matching ID
+              23> (RPAREN, )
+              Loading RPAREN
+              Entering id-tail
+              Exiting id-tail
+             Exiting id-factor
+            Exiting factor
+           Exiting term
+          Exiting add-exp
+         Exiting expression
+         Matching RPAREN
+         23> (continue, )
+         Loading continue
+         Entering statement
+          Entering continue-stmt
+           Matching continue
+           23> (SEMI, )
+           Loading SEMI
+           Matching SEMI
+correct.cs13(24): else exit;
+           24> (else, )
+           Loading else
+          Exiting continue-stmt
+         Exiting statement
+         Matching else
+         24> (exit, )
+         Loading exit
+         Entering statement
+          Entering exit-stmt
+           Matching exit
+           24> (SEMI, )
+           Loading SEMI
+           Matching SEMI
+correct.cs13(25): end;
+           25> (end, )
+           Loading end
+          Exiting exit-stmt
+         Exiting statement
+        Exiting if-stmt
+       Exiting statement
+       Matching end
+       25> (SEMI, )
+       Loading SEMI
+       Matching SEMI
+correct.cs13(26): 
+correct.cs13(27): branch(x)
+       27> (branch, )
+       Loading branch
+      Exiting loop-stmt
+     Exiting statement
+     Entering statement
+      Entering branch-stmt
+       Matching branch
+       27> (LPAREN, )
+       Loading LPAREN
+       Matching LPAREN
+       27> (ID, 3) => x
+       Loading ID
+       Entering add-exp
+        Entering term
+         Entering factor
+          Entering id-factor
+           Matching ID
+           27> (RPAREN, )
+           Loading RPAREN
+           Entering id-tail
+           Exiting id-tail
+          Exiting id-factor
+         Exiting factor
+        Exiting term
+       Exiting add-exp
+       Matching RPAREN
+correct.cs13(28): case 1 : return;
+       28> (case, )
+       Loading case
+       Entering case-stmt
+        Matching case
+        28> (NUM, 1)
+        Loading NUM
+        Matching NUM
+        28> (COLON, )
+        Loading COLON
+        Matching COLON
+        28> (return, )
+        Loading return
+        Entering statement
+         Entering return-stmt
+          Matching return
+          28> (SEMI, )
+          Loading SEMI
+          Matching SEMI
+correct.cs13(29): default : return;
+          29> (default, )
+          Loading default
+         Exiting return-stmt
+        Exiting statement
+       Exiting case-stmt
+       Entering case-stmt
+        Matching default
+        29> (COLON, )
+        Loading COLON
+        Matching COLON
+        29> (return, )
+        Loading return
+        Entering statement
+         Entering return-stmt
+          Matching return
+          29> (SEMI, )
+          Loading SEMI
+          Matching SEMI
+correct.cs13(30): end;
+          30> (end, )
+          Loading end
+         Exiting return-stmt
+        Exiting statement
+       Exiting case-stmt
+       Matching end
+       30> (SEMI, )
+       Loading SEMI
+       Matching SEMI
+correct.cs13(31): }
+       31> (RCRLY, )
+       Loading RCRLY
+      Exiting branch-stmt
+     Exiting statement
+     Matching RCRLY
+correct.cs13(32): 
+correct.cs13(33): int bar(int x, bool y)
+     33> (int, )
+     Loading int
+    Exiting compound-stmt
+   Exiting fun-dec-tail
+  Exiting declaration
+  Entering declaration
+   Entering non-void-specifier
+   Matching int
+   33> (ID, 7) => bar
+   Loading ID
+   Leaving non-void-specifier
+   Matching ID
+   33> (LPAREN, )
+   Loading LPAREN
+   Entering dec-tail
+    Entering fun-dec-tail
+     Matching LPAREN
+     33> (int, )
+     Loading int
+     Entering params
+      Entering param
+       Entering non-void-specifier
+       Matching int
+       33> (ID, 3) => x
+       Loading ID
+       Leaving non-void-specifier
+       Matching ID
+       33> (COMMA, )
+       Loading COMMA
+      Exiting param
+      Matching COMMA
+      33> (bool, )
+      Loading bool
+      Entering param
+       Entering non-void-specifier
+       Matching bool
+       33> (ID, 5) => y
+       Loading ID
+       Leaving non-void-specifier
+       Matching ID
+       33> (RPAREN, )
+       Loading RPAREN
+      Exiting param
+     Exiting params
+     Matching RPAREN
+correct.cs13(34): {
+     34> (LCRLY, )
+     Loading LCRLY
+     Entering compound-stmt
+      Matching LCRLY
+correct.cs13(35): ;
+      35> (SEMI, )
+      Loading SEMI
+      Entering statement
+       Entering null-stmt
+        Matching SEMI
+correct.cs13(36): return 1;
+        36> (return, )
+        Loading return
+       Exiting null-stmt
+      Exiting statement
+      Entering statement
+       Entering return-stmt
+        Matching return
+        36> (NUM, 1)
+        Loading NUM
+        Entering expression
+         Entering add-exp
+          Entering term
+           Entering factor
+            Entering nid-factor
+             Matching NUM
+             36> (SEMI, )
+             Loading SEMI
+            Exiting nid-factor
+           Exiting factor
+          Exiting term
+         Exiting add-exp
+        Exiting expression
+        Matching SEMI
+correct.cs13(37): }
+        37> (RCRLY, )
+        Loading RCRLY
+       Exiting return-stmt
+      Exiting statement
+      Matching RCRLY
+correct.cs13(38): 
+correct.cs13(39): int main(void)
+      39> (int, )
+      Loading int
+     Exiting compound-stmt
+    Exiting fun-dec-tail
+   Exiting dec-tail
+  Exiting declaration
+  Entering declaration
+   Entering non-void-specifier
+   Matching int
+   39> (ID, 8) => main
+   Loading ID
+   Leaving non-void-specifier
+   Matching ID
+   39> (LPAREN, )
+   Loading LPAREN
+   Entering dec-tail
+    Entering fun-dec-tail
+     Matching LPAREN
+     39> (void, )
+     Loading void
+     Entering params
+      Matching void
+      39> (RPAREN, )
+      Loading RPAREN
+     Exiting params
+     Matching RPAREN
+correct.cs13(40): {
+     40> (LCRLY, )
+     Loading LCRLY
+     Entering compound-stmt
+      Matching LCRLY
+correct.cs13(41): bool x, y;
+      41> (bool, )
+      Loading bool
+      Entering non-void-specifier
+      Matching bool
+      41> (ID, 3) => x
+      Loading ID
+      Leaving non-void-specifier
+      Matching ID
+      41> (COMMA, )
+      Loading COMMA
+      Entering var-dec-tail
+       Matching COMMA
+       41> (ID, 5) => y
+       Loading ID
+       Entering var-name
+        Matching ID
+        41> (SEMI, )
+        Loading SEMI
+       Exiting var-name
+       Matching SEMI
+correct.cs13(42): x := 3 > 3;  
+       42> (ID, 3) => x
+       Loading ID
+      Exiting var-dec-tail
+      Entering statement
+       Entering id-stmt
+        Matching ID
+        42> (ASSIGN, )
+        Loading ASSIGN
+        Entering id-stmt-tail
+         Entering assign-stmt-tail
+          Matching ASSIGN
+          42> (NUM, 3)
+          Loading NUM
+          Entering expression
+           Entering add-exp
+            Entering term
+             Entering factor
+              Entering nid-factor
+               Matching NUM
+               42> (GT, )
+               Loading GT
+              Exiting nid-factor
+             Exiting factor
+            Exiting term
+           Exiting add-exp
+           Entering relop
+            Matching GT
+            42> (NUM, 3)
+            Loading NUM
+           Exiting relop
+           Entering add-exp
+            Entering term
+             Entering factor
+              Entering nid-factor
+               Matching NUM
+               42> (SEMI, )
+               Loading SEMI
+              Exiting nid-factor
+             Exiting factor
+            Exiting term
+           Exiting add-exp
+          Exiting expression
+          Matching SEMI
+correct.cs13(43): y := 3 >= 9;
+          43> (ID, 5) => y
+          Loading ID
+         Exiting assign-stmt-tail
+        Exiting id-stmt-tail
+       Exiting id-stmt
+      Exiting statement
+      Entering statement
+       Entering id-stmt
+        Matching ID
+        43> (ASSIGN, )
+        Loading ASSIGN
+        Entering id-stmt-tail
+         Entering assign-stmt-tail
+          Matching ASSIGN
+          43> (NUM, 3)
+          Loading NUM
+          Entering expression
+           Entering add-exp
+            Entering term
+             Entering factor
+              Entering nid-factor
+               Matching NUM
+               43> (GTEQ, )
+               Loading GTEQ
+              Exiting nid-factor
+             Exiting factor
+            Exiting term
+           Exiting add-exp
+           Entering relop
+            Matching GTEQ
+            43> (NUM, 9)
+            Loading NUM
+           Exiting relop
+           Entering add-exp
+            Entering term
+             Entering factor
+              Entering nid-factor
+               Matching NUM
+               43> (SEMI, )
+               Loading SEMI
+              Exiting nid-factor
+             Exiting factor
+            Exiting term
+           Exiting add-exp
+          Exiting expression
+          Matching SEMI
+correct.cs13(44): z := 9 / 3;
+          44> (ID, 6) => z
+          Loading ID
+         Exiting assign-stmt-tail
+        Exiting id-stmt-tail
+       Exiting id-stmt
+      Exiting statement
+      Entering statement
+       Entering id-stmt
+        Matching ID
+        44> (ASSIGN, )
+        Loading ASSIGN
+        Entering id-stmt-tail
+         Entering assign-stmt-tail
+          Matching ASSIGN
+          44> (NUM, 9)
+          Loading NUM
+          Entering expression
+           Entering add-exp
+            Entering term
+             Entering factor
+              Entering nid-factor
+               Matching NUM
+               44> (DIV, )
+               Loading DIV
+              Exiting nid-factor
+             Exiting factor
+             Entering multop
+              Matching DIV
+              44> (NUM, 3)
+              Loading NUM
+             Exiting multop
+             Entering factor
+              Entering nid-factor
+               Matching NUM
+               44> (SEMI, )
+               Loading SEMI
+              Exiting nid-factor
+             Exiting factor
+            Exiting term
+           Exiting add-exp
+          Exiting expression
+          Matching SEMI
+correct.cs13(45): y := 1 < 2;
+          45> (ID, 5) => y
+          Loading ID
+         Exiting assign-stmt-tail
+        Exiting id-stmt-tail
+       Exiting id-stmt
+      Exiting statement
+      Entering statement
+       Entering id-stmt
+        Matching ID
+        45> (ASSIGN, )
+        Loading ASSIGN
+        Entering id-stmt-tail
+         Entering assign-stmt-tail
+          Matching ASSIGN
+          45> (NUM, 1)
+          Loading NUM
+          Entering expression
+           Entering add-exp
+            Entering term
+             Entering factor
+              Entering nid-factor
+               Matching NUM
+               45> (LT, )
+               Loading LT
+              Exiting nid-factor
+             Exiting factor
+            Exiting term
+           Exiting add-exp
+           Entering relop
+            Matching LT
+            45> (NUM, 2)
+            Loading NUM
+           Exiting relop
+           Entering add-exp
+            Entering term
+             Entering factor
+              Entering nid-factor
+               Matching NUM
+               45> (SEMI, )
+               Loading SEMI
+              Exiting nid-factor
+             Exiting factor
+            Exiting term
+           Exiting add-exp
+          Exiting expression
+          Matching SEMI
+correct.cs13(46): z := 9 mod 3;
+          46> (ID, 6) => z
+          Loading ID
+         Exiting assign-stmt-tail
+        Exiting id-stmt-tail
+       Exiting id-stmt
+      Exiting statement
+      Entering statement
+       Entering id-stmt
+        Matching ID
+        46> (ASSIGN, )
+        Loading ASSIGN
+        Entering id-stmt-tail
+         Entering assign-stmt-tail
+          Matching ASSIGN
+          46> (NUM, 9)
+          Loading NUM
+          Entering expression
+           Entering add-exp
+            Entering term
+             Entering factor
+              Entering nid-factor
+               Matching NUM
+               46> (mod, )
+               Loading mod
+              Exiting nid-factor
+             Exiting factor
+             Entering multop
+              Matching mod
+              46> (NUM, 3)
+              Loading NUM
+             Exiting multop
+             Entering factor
+              Entering nid-factor
+               Matching NUM
+               46> (SEMI, )
+               Loading SEMI
+              Exiting nid-factor
+             Exiting factor
+            Exiting term
+           Exiting add-exp
+          Exiting expression
+          Matching SEMI
+correct.cs13(47): x := x and y;
+          47> (ID, 3) => x
+          Loading ID
+         Exiting assign-stmt-tail
+        Exiting id-stmt-tail
+       Exiting id-stmt
+      Exiting statement
+      Entering statement
+       Entering id-stmt
+        Matching ID
+        47> (ASSIGN, )
+        Loading ASSIGN
+        Entering id-stmt-tail
+         Entering assign-stmt-tail
+          Matching ASSIGN
+          47> (ID, 3) => x
+          Loading ID
+          Entering expression
+           Entering add-exp
+            Entering term
+             Entering factor
+              Entering id-factor
+               Matching ID
+               47> (and, )
+               Loading and
+               Entering id-tail
+               Exiting id-tail
+              Exiting id-factor
+             Exiting factor
+             Entering multop
+              Matching and
+              47> (ID, 5) => y
+              Loading ID
+             Exiting multop
+             Entering factor
+              Entering id-factor
+               Matching ID
+               47> (SEMI, )
+               Loading SEMI
+               Entering id-tail
+               Exiting id-tail
+              Exiting id-factor
+             Exiting factor
+            Exiting term
+           Exiting add-exp
+          Exiting expression
+          Matching SEMI
+correct.cs13(48): y := y && x;
+          48> (ID, 5) => y
+          Loading ID
+         Exiting assign-stmt-tail
+        Exiting id-stmt-tail
+       Exiting id-stmt
+      Exiting statement
+      Entering statement
+       Entering id-stmt
+        Matching ID
+        48> (ASSIGN, )
+        Loading ASSIGN
+        Entering id-stmt-tail
+         Entering assign-stmt-tail
+          Matching ASSIGN
+          48> (ID, 5) => y
+          Loading ID
+          Entering expression
+           Entering add-exp
+            Entering term
+             Entering factor
+              Entering id-factor
+               Matching ID
+               48> (ANDTHEN, )
+               Loading ANDTHEN
+               Entering id-tail
+               Exiting id-tail
+              Exiting id-factor
+             Exiting factor
+             Entering multop
+              Matching ANDTHEN
+              48> (ID, 3) => x
+              Loading ID
+             Exiting multop
+             Entering factor
+              Entering id-factor
+               Matching ID
+               48> (SEMI, )
+               Loading SEMI
+               Entering id-tail
+               Exiting id-tail
+              Exiting id-factor
+             Exiting factor
+            Exiting term
+           Exiting add-exp
+          Exiting expression
+          Matching SEMI
+correct.cs13(49): x := x or y;
+          49> (ID, 3) => x
+          Loading ID
+         Exiting assign-stmt-tail
+        Exiting id-stmt-tail
+       Exiting id-stmt
+      Exiting statement
+      Entering statement
+       Entering id-stmt
+        Matching ID
+        49> (ASSIGN, )
+        Loading ASSIGN
+        Entering id-stmt-tail
+         Entering assign-stmt-tail
+          Matching ASSIGN
+          49> (ID, 3) => x
+          Loading ID
+          Entering expression
+           Entering add-exp
+            Entering term
+             Entering factor
+              Entering id-factor
+               Matching ID
+               49> (or, )
+               Loading or
+               Entering id-tail
+               Exiting id-tail
+              Exiting id-factor
+             Exiting factor
+            Exiting term
+            Entering add-op
+             Matching or
+             49> (ID, 5) => y
+             Loading ID
+            Exiting add-op
+            Entering term
+             Entering factor
+              Entering id-factor
+               Matching ID
+               49> (SEMI, )
+               Loading SEMI
+               Entering id-tail
+               Exiting id-tail
+              Exiting id-factor
+             Exiting factor
+            Exiting term
+           Exiting add-exp
+          Exiting expression
+          Matching SEMI
+correct.cs13(50): y := y || x;
+          50> (ID, 5) => y
+          Loading ID
+         Exiting assign-stmt-tail
+        Exiting id-stmt-tail
+       Exiting id-stmt
+      Exiting statement
+      Entering statement
+       Entering id-stmt
+        Matching ID
+        50> (ASSIGN, )
+        Loading ASSIGN
+        Entering id-stmt-tail
+         Entering assign-stmt-tail
+          Matching ASSIGN
+          50> (ID, 5) => y
+          Loading ID
+          Entering expression
+           Entering add-exp
+            Entering term
+             Entering factor
+              Entering id-factor
+               Matching ID
+               50> (ORELSE, )
+               Loading ORELSE
+               Entering id-tail
+               Exiting id-tail
+              Exiting id-factor
+             Exiting factor
+            Exiting term
+            Entering add-op
+             Matching ORELSE
+             50> (ID, 3) => x
+             Loading ID
+            Exiting add-op
+            Entering term
+             Entering factor
+              Entering id-factor
+               Matching ID
+               50> (SEMI, )
+               Loading SEMI
+               Entering id-tail
+               Exiting id-tail
+              Exiting id-factor
+             Exiting factor
+            Exiting term
+           Exiting add-exp
+          Exiting expression
+          Matching SEMI
+correct.cs13(51): }
+          51> (RCRLY, )
+          Loading RCRLY
+         Exiting assign-stmt-tail
+        Exiting id-stmt-tail
+       Exiting id-stmt
+      Exiting statement
+      Matching RCRLY
+correct.cs13(52): 
+      52> (ENDFILE, )
+      Loading ENDFILE
+     Exiting compound-stmt
+    Exiting fun-dec-tail
+   Exiting dec-tail
+  Exiting declaration
+ Exiting program
+
+Abstract Syntax Tree
+Program
+  Variable Declaration
+    | id: temp
+    | type: int[]
+    | array expression:
+      5
+  Variable Declaration
+    | id: temp1
+    | type: int[]
+    | array expression:
+      Variable
+        | id: temp
+        | array expression:
+          Binary Node
+            | op: PLUS
+            | left:
+              3
+            | right:
+              Binary Node
+                | op: MULT
+                | left:
+                  1
+                | right:
+                  5
+  Variable Declaration
+    | id: temp3
+    | type: bool
+  Variable Declaration
+    | id: x
+    | type: int
+  Function Declaration
+    | id: foo
+    | return: void
+    | parameters:
+      Param
+        | id: x
+        | type: ref int
+      Param
+        | id: y
+        | type: int[]
+      Compound
+        | variables:
+          Variable Declaration
+            | id: z
+            | type: int
+        | statements:
+          Assignment
+            | id: y
+            | array expression:
+              Call
+                | id: bar
+                | arguments:
+                  Unary Node
+                    | op: MINUS
+                    | expression:
+                      1
+                  1
+                  Binary Node
+                    | op: EQ
+                    | left:
+                      Binary Node
+                        | op: LTEQ
+                        | left:
+                          Variable
+                            | id: temp3
+                        | right:
+                          25
+                    | right:
+                      true
+            | equals:
+              5
+          Call
+            | id: bar
+            | arguments:
+              1
+              false
+          Compound
+            | variables:
+            | statements:
+              If Node
+                | expression:
+                  Binary Node
+                    | op: GT
+                    | left:
+                      1
+                    | right:
+                      2
+                | then statement:
+                  If Node
+                    | expression:
+                      true
+                    | then statement:
+                      Return
+                    | else statement:
+                      EXIT
+          Loop
+            | statement:
+              If Node
+                | expression:
+                  Binary Node
+                    | op: NEQ
+                    | left:
+                      true
+                    | right:
+                      Variable
+                        | id: temp3
+                | then statement:
+                  Continue
+                | else statement:
+                  EXIT
+          Branch
+            | expression:
+              Variable
+                | id: x
+            | cases:
+              Case
+                number: 1
+                statement:
+                  Return
+              Case
+                number: default
+                statement:
+                  Return
+  Function Declaration
+    | id: bar
+    | return: int
+    | parameters:
+      Param
+        | id: x
+        | type: int
+      Param
+        | id: y
+        | type: bool
+      Compound
+        | variables:
+        | statements:
+          NULL
+          Return
+            | expression:
+              1
+  Function Declaration
+    | id: main
+    | return: int
+      Compound
+        | variables:
+          Variable Declaration
+            | id: x
+            | type: bool
+          Variable Declaration
+            | id: y
+            | type: bool
+        | statements:
+          Assignment
+            | id: x
+            | equals:
+              Binary Node
+                | op: GT
+                | left:
+                  3
+                | right:
+                  3
+          Assignment
+            | id: y
+            | equals:
+              Binary Node
+                | op: GTEQ
+                | left:
+                  3
+                | right:
+                  9
+          Assignment
+            | id: z
+            | equals:
+              Binary Node
+                | op: DIV
+                | left:
+                  9
+                | right:
+                  3
+          Assignment
+            | id: y
+            | equals:
+              Binary Node
+                | op: LT
+                | left:
+                  1
+                | right:
+                  2
+          Assignment
+            | id: z
+            | equals:
+              Binary Node
+                | op: mod
+                | left:
+                  9
+                | right:
+                  3
+          Assignment
+            | id: x
+            | equals:
+              Binary Node
+                | op: and
+                | left:
+                  Variable
+                    | id: x
+                | right:
+                  Variable
+                    | id: y
+          Assignment
+            | id: y
+            | equals:
+              Binary Node
+                | op: ANDTHEN
+                | left:
+                  Variable
+                    | id: y
+                | right:
+                  Variable
+                    | id: x
+          Assignment
+            | id: x
+            | equals:
+              Binary Node
+                | op: or
+                | left:
+                  Variable
+                    | id: x
+                | right:
+                  Variable
+                    | id: y
+          Assignment
+            | id: y
+            | equals:
+              Binary Node
+                | op: ORELSE
+                | left:
+                  Variable
+                    | id: y
+                | right:
+                  Variable
+                    | id: x

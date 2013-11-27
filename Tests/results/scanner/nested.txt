@@ -1,0 +1,22 @@
+nested.cs13(1): /* @author Ashton Fedler
+nested.cs13(2): * @email fedler@unbc.ca
+nested.cs13(3): * @data September 24 2013
+nested.cs13(4): *
+nested.cs13(5): * Description:
+nested.cs13(6): * This file tests that the cs13 Scanner can properly
+nested.cs13(7): * tokenize nested comments.
+nested.cs13(8): */
+nested.cs13(9): 
+nested.cs13(10): /* foo
+nested.cs13(11): /* bar */
+nested.cs13(12): bar
+nested.cs13(13): /* blab
+nested.cs13(14): * bla
+nested.cs13(15): * ba
+nested.cs13(16): */
+nested.cs13(17): */
+nested.cs13(18): 
+nested.cs13(19): -- Should get ID with index 0 and ENDFILE at line 20
+nested.cs13(20): a -- [0]
+               20> (ID, 0) => a
+               20> (ENDFILE, )

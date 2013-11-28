@@ -378,7 +378,7 @@ void ASTNodeCodeVisitor::Visit(CompoundNode &node) {
   bool lcs = false;
   if (!function_compound_ && node.local_variables() > 0) {
     lcs = true;
-    *output_ += CreateQuad("ecs", std::to_string(node.num_locals()), "-", "-");
+    *output_ += CreateQuad("ecs", Administrator::IntToString(node.num_locals()), "-", "-");
   }
 
   function_compound_ = false;
@@ -418,7 +418,7 @@ void ASTNodeCodeVisitor::Visit(ExitNode &node) {
 void ASTNodeCodeVisitor::Visit(FunctionDeclarationNode &node) {
   // Create the quad for the function header
   *output_ += "\n";
-  *output_ += CreateQuad("fun", Administrator::spelling_table[node.identifier()], std::to_string(node.compound()->num_locals()), "-");
+  *output_ += CreateQuad("fun", Administrator::spelling_table[node.identifier()], Administrator::IntToString(node.compound()->num_locals()), "-");
   // Move onto the body of the function
   function_compound_ = true;
   current_num_parameters_ = node.num_parameters();

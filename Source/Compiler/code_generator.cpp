@@ -34,7 +34,7 @@ void CodeGenerator::InitOutput() {
     }
   }
   std::string quadruple = "(start,";
-  quadruple += std::to_string(count);
+  quadruple += Administrator::IntToString(count);
   quadruple += ",-,-)\n";
   output_ += quadruple;
   output_ += "(rval,-,-,t1)\n";

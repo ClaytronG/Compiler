@@ -83,7 +83,7 @@ bool Administrator::Compile() {
       // Create the output file
       if (!output_filename_.empty()) {
         output_file_ = fopen(output_filename_.c_str(), "w");
-        fprintf(output_file_, gen.output().c_str());
+        fprintf(output_file_, "%s", gen.output().c_str());
       }
       std::string message = "\n" + gen.output();
       messenger_.PrintMessage(message);
